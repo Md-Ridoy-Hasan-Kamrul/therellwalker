@@ -265,5 +265,3 @@ Built with ❤️ by the TherellWalker Team
 ---
 
 **Note:** This is a client project built with production-level architecture and modern best practices.
-#   t h e r e l l w a l k e r  
- 
