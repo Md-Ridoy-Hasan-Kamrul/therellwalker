@@ -28,7 +28,10 @@ const EmailVerification = () => {
       className='min-h-screen w-full flex justify-center items-center p-5'
       style={{ backgroundColor: '#0D061A' }}
     >
-      <div className='w-[600px] p-20 bg-Levender-20 rounded-[20px] outline outline-offset-[-1px] backdrop-blur-[200px] inline-flex justify-start items-center gap-2.5'>
+      <div
+        className='w-[600px] p-20 rounded-[20px] backdrop-blur-[200px] inline-flex justify-center items-center gap-2.5'
+        style={{ backgroundColor: '#1B0C33' }}
+      >
         <div className='flex-1 inline-flex flex-col justify-start items-center gap-12'>
           <div className='self-stretch flex flex-col justify-start items-end gap-7'>
             <div className='self-stretch flex flex-col justify-start items-start gap-11'>
@@ -40,10 +43,7 @@ const EmailVerification = () => {
                   Hi! Welcome back, you've been missed
                 </div>
               </div>
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className='self-stretch flex flex-col justify-start items-start gap-7'
-              >
+              <div className='self-stretch flex flex-col justify-start items-start gap-7'>
                 <div className='self-stretch flex flex-col justify-start items-start gap-4'>
                   <div className="self-stretch justify-start text-white text-2xl font-semibold font-['Lato'] leading-9">
                     Email
@@ -53,7 +53,7 @@ const EmailVerification = () => {
                       type='email'
                       placeholder='example@gmail.com'
                       {...register('email', { required: 'Email is required' })}
-                      className="w-full bg-transparent text-white text-base font-normal font-['Open_Sans'] leading-normal focus:outline-none"
+                      className="w-full bg-transparent text-white text-base font-normal font-['Open_Sans'] leading-normal focus:outline-none placeholder:text-white/50"
                     />
                   </div>
                   {errors.email && (
@@ -62,7 +62,7 @@ const EmailVerification = () => {
                     </p>
                   )}
                 </div>
-              </form>
+              </div>
             </div>
           </div>
           <button
@@ -75,14 +75,14 @@ const EmailVerification = () => {
             </div>
           </button>
           <div className='self-stretch inline-flex justify-center items-center gap-3'>
-            <div className='w-32 h-0 outline outline-offset-[-0.50px] outline-neutral-600'></div>
+            <div className='w-32 h-0 outline outline-1 outline-offset-[-0.50px] outline-neutral-600'></div>
             <div className="text-center justify-start text-white text-base font-normal font-['Open_Sans'] leading-normal">
               Or sign in with
             </div>
-            <div className='w-32 h-0 outline outline-offset-[-0.50px] outline-neutral-600'></div>
+            <div className='w-32 h-0 outline outline-1 outline-offset-[-0.50px] outline-neutral-600'></div>
           </div>
-          <div className='self-stretch flex flex-col justify-start items-center gap-8'>
-            <button className='self-stretch px-6 py-3 bg-white rounded-[65px] inline-flex justify-center items-center gap-2 hover:bg-gray-50 transition-colors'>
+          <div className='self-stretch h-24 flex flex-col justify-start items-center gap-8'>
+            <button className='self-stretch flex-1 min-w-11 px-6 py-3.5 bg-white rounded-[100px] shadow-[0px_5px_35px_0px_rgba(18,18,18,0.05)] inline-flex justify-center items-center gap-4 hover:bg-gray-50 transition-colors'>
               <div className='flex justify-center items-center gap-4'>
                 <svg
                   width='25'
@@ -108,7 +108,7 @@ const EmailVerification = () => {
                     fill='#1565C0'
                   />
                 </svg>
-                <div className="text-center text-[#344054] text-base font-semibold font-['Inter']">
+                <div className="text-center text-[#344054] text-base font-semibold font-['Poppins']">
                   Continue with Google
                 </div>
               </div>
