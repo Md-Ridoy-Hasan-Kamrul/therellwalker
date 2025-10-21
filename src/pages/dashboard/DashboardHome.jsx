@@ -39,7 +39,7 @@ const ChartCard = ({ title, children }) => {
 
 const DashboardHome = () => {
   return (
-    <div className='flex flex-col gap-6'>
+    <div className='flex flex-col gap-6 pb-10'>
       {/* KPI Cards */}
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5'>
         <KpiCard
@@ -69,6 +69,48 @@ const DashboardHome = () => {
         </ChartCard>
         <ChartCard title='Profit by Direction'>
           <p>Profit by Direction Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Monthly Performance'>
+          <p>Monthly Performance Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Risk Analysis'>
+          <p>Risk Analysis Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Trade Distribution'>
+          <p>Trade Distribution Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Profit Factor'>
+          <p>Profit Factor Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Win/Loss Ratio'>
+          <p>Win/Loss Ratio Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Average Trade Duration'>
+          <p>Average Trade Duration Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Best Trading Days'>
+          <p>Best Trading Days Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Drawdown Analysis'>
+          <p>Drawdown Analysis Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Expectancy'>
+          <p>Expectancy Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Sharpe Ratio'>
+          <p>Sharpe Ratio Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Recovery Factor'>
+          <p>Recovery Factor Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Calmar Ratio'>
+          <p>Calmar Ratio Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Max Consecutive Wins'>
+          <p>Max Consecutive Wins Chart will be here.</p>
+        </ChartCard>
+        <ChartCard title='Max Consecutive Losses'>
+          <p>Max Consecutive Losses Chart will be here.</p>
         </ChartCard>
       </div>
     </div>

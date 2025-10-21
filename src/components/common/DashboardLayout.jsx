@@ -24,15 +24,24 @@ export const DashboardLayout = () => {
   const title = getTitleFromPath(location.pathname);
 
   return (
-    <div className='min-h-screen flex flex-col bg-brand-dark text-white'>
-      <Header title={title} />
-      <div className='flex flex-1 overflow-hidden'>
-        <Sidebar />
-        <main className='flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto'>
+    <div className='h-screen w-screen flex flex-col bg-brand-dark text-white overflow-hidden'>
+      {/* Fixed Header */}
+      <div className='flex-shrink-0 z-30'>
+        <Header title={title} />
+      </div>
+      
+      {/* Main Content Area with Sidebar - Critical: min-h-0 for flex overflow */}
+      <div className='flex flex-1 min-h-0 overflow-hidden'>
+        {/* Fixed Sidebar */}
+        <div className='flex-shrink-0 overflow-y-auto'>
+          <Sidebar />
+        </div>
+        
+        {/* Scrollable Content Area - This will scroll */}
+        <main className='flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 md:p-8'>
           <Outlet />
         </main>
       </div>
-      {/* Floating Feedback Button can be added here */}
     </div>
   );
 };

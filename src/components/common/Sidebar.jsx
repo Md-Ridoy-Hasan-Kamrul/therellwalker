@@ -22,7 +22,7 @@ export const Sidebar = () => {
   const inactiveStyle = 'text-zinc-400 font-normal hover:bg-neutral-700/50';
 
   return (
-    <aside className='hidden md:flex w-80 h-screen bg-neutral-800 px-6 py-8 flex-col overflow-hidden'>
+    <aside className='hidden md:flex w-80 bg-neutral-800 px-6 py-8 flex-col overflow-y-auto'>
       <nav className='flex flex-col items-center gap-4 mt-4'>
         {navLinks.map((link) => {
           const Icon = link.icon;
