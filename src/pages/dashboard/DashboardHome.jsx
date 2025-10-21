@@ -2,15 +2,26 @@ import React from 'react';
 import { FaChartBar, FaWallet, FaTrophy } from 'react-icons/fa';
 
 // Pixel-Perfect KPI Card Component with multi-layer gradient
-const KpiCard = ({ title, value, icon, iconBgColor, valueColor }) => {
+const KpiCard = ({
+  title,
+  value,
+  icon,
+  iconBgColor,
+  valueColor,
+  hasBottomGradient,
+}) => {
   const Icon = icon;
   return (
     // Main Card Container with the exact multi-layer gradient from Figma
     <div
       className={`
         w-full h-40 p-6 rounded-2xl border border-white/10 flex flex-col justify-between 
-        shadow-[0px_44px_250px_0px_rgba(110,33,196,0.30),inset_0px_-11px_25px_0px_rgba(255,255,255,1.00)]
-        bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(88deg,rgba(92,46,212,0.5)_0.11%,rgba(158,79,199,0.4)_63.8%)]
+        shadow-[0px_44px_250px_0px_rgba(110,33,196,0.30)]
+        ${
+          hasBottomGradient
+            ? 'bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(88deg,#5C2ED480_0.11%,#9E4FC766_63.8%)]'
+            : 'bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(88deg,rgba(92,46,212,0.5)_0.11%,rgba(158,79,199,0.4)_63.8%)]'
+        }
       `}
     >
       {/* Icon Container */}
@@ -60,6 +71,7 @@ const DashboardHome = () => {
           icon={FaChartBar}
           iconBgColor='bg-gradient-to-b from-purple-600 to-violet-700'
           valueColor='bg-gradient-to-r from-[#5C2ED4] to-[#9E4FC7] text-transparent bg-clip-text'
+          hasBottomGradient={true}
         />
         <KpiCard
           title='Total Profit'
@@ -67,6 +79,7 @@ const DashboardHome = () => {
           icon={FaWallet}
           iconBgColor='bg-gradient-to-b from-amber-400 to-amber-600'
           valueColor='text-amber-400'
+          hasBottomGradient={false}
         />
         <KpiCard
           title='Avg Take Profit'
@@ -74,6 +87,7 @@ const DashboardHome = () => {
           icon={FaTrophy}
           iconBgColor='bg-gradient-to-b from-pink-500 to-rose-600'
           valueColor='text-pink-400'
+          hasBottomGradient={false}
         />
       </div>
 
