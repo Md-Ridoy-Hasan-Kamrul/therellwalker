@@ -23,6 +23,7 @@ import DashboardHome from '../pages/dashboard/DashboardHome';
 import TradeEntry from '../pages/dashboard/TradeEntry';
 import TradeLog from '../pages/dashboard/TradeLog';
 import Reflections from '../pages/dashboard/Reflections';
+import Profile from '../pages/dashboard/Profile';
 
 const AppRouter = () => {
   const { user } = useAuth();
@@ -39,6 +40,7 @@ const AppRouter = () => {
             { path: 'trade-entry', element: <TradeEntry /> },
             { path: 'trade-log', element: <TradeLog /> },
             { path: 'reflections', element: <Reflections /> },
+            { path: 'profile', element: <Profile /> },
           ],
         },
       ],

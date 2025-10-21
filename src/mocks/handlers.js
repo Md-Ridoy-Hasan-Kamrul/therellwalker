@@ -18,6 +18,17 @@ export const handlers = [
         },
         token: 'fake-jwt-token-12345',
       });
+    } else if (email && password.length >= 6) {
+      // Onno kono valid email/password dile o login hobe (testing er jonno)
+      const userName = email.split('@')[0];
+      return HttpResponse.json({
+        user: {
+          id: 2,
+          name: userName.charAt(0).toUpperCase() + userName.slice(1),
+          email: email,
+        },
+        token: 'fake-jwt-token-' + Date.now(),
+      });
     } else {
       // Invalid credentials hole error response
       return HttpResponse.json(
