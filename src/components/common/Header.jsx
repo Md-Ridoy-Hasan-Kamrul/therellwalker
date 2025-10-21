@@ -80,6 +80,11 @@ export const Header = ({ title }) => {
             <p className="text-white text-base font-medium font-['Poppins']">
               {user ? user.name : 'Guest'}
             </p>
+            {user && user.email && (
+              <p className="text-white/70 text-xs font-normal font-['Poppins']">
+                {user.email}
+              </p>
+            )}
           </div>
           <IoChevronDown
             className={`text-white w-5 h-5 transition-transform duration-200 ${
