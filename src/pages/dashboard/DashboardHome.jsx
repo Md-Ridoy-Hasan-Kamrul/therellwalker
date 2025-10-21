@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaChartBar, FaWallet, FaTrophy } from 'react-icons/fa';
+import { BsFillChatLeftDotsFill } from 'react-icons/bs';
 
 // Pixel-Perfect KPI Card Component with multi-layer gradient
 const KpiCard = ({
@@ -240,22 +241,25 @@ const DashboardHome = () => {
         <ProfitByDirectionChart />
       </div>
 
-      {/* Feedback Button - Fixed Position at Bottom Right */}
-      <div className='fixed right-0 bottom-4 z-50'>
-        <div className='w-12 h-48 px-6 py-4 origin-top-left -rotate-90 bg-gradient-to-l from-gray-800 to-pink-500 rounded-tl-3xl rounded-tr-3xl shadow-[0px_20px_50px_0px_rgba(55,69,87,0.10)] inline-flex justify-start items-center gap-6 cursor-pointer hover:opacity-90 transition-opacity'>
-          <div className='flex justify-start items-center gap-6'>
-            <div className='w-8 h-8 relative overflow-hidden flex items-center justify-center'>
-              <svg
-                className='w-7 h-7 text-white'
-                fill='currentColor'
-                viewBox='0 0 24 24'
-              >
-                <path d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z' />
-              </svg>
-            </div>
-            <div className="text-white text-lg font-semibold font-['Poppins'] whitespace-nowrap">
+      {/* Feedback Button - Fixed at bottom right of screen */}
+      <div className='fixed right-0 bottom-20 z-50'>
+        <div className='w-12 h-44 bg-gradient-to-b from-[#924a8f] to-[#5d3658] rounded-tl-3xl rounded-bl-3xl shadow-xl flex flex-col items-center justify-between py-5 cursor-pointer hover:opacity-90 transition-opacity'>
+          {/* Feedback Text - Vertical (rotated 90 degrees counter-clockwise) */}
+          <div className='flex-1 flex items-center justify-center'>
+            <span
+              className="text-white text-sm font-semibold font-['Poppins'] tracking-wide"
+              style={{
+                writingMode: 'vertical-rl',
+                transform: 'rotate(180deg)',
+              }}
+            >
               Feedback
-            </div>
+            </span>
+          </div>
+
+          {/* Message Icon - White background box with solid chat bubble icon */}
+          <div className='w-9 h-9 rounded-md flex items-center justify-center'>
+            <BsFillChatLeftDotsFill className='w-6 h-6 text-white -rotate-90' />
           </div>
         </div>
       </div>
