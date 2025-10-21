@@ -3,16 +3,28 @@ import { http, HttpResponse } from 'msw';
 
 export const handlers = [
   // Example: Login API
-  http.post('/api/auth/login', async () => {
-    // Ekhane amra fake user data pathabo
-    return HttpResponse.json({
-      user: {
-        id: 1,
-        name: 'Sanju', // Tomar design-e "Sanju" chilo
-        email: 'sanju@example.com',
-      },
-      token: 'fake-jwt-token-12345',
-    });
+  http.post('/api/auth/login', async ({ request }) => {
+    // Request theke email o password nibo
+    const { email, password } = await request.json();
+
+    // Tomar dewa credentials check korbo
+    if (email === 'kamrul@gmail.com' && password === '12345678') {
+      // Shudu valid credentials hole dashboard e redirect hobe
+      return HttpResponse.json({
+        user: {
+          id: 1,
+          name: 'Kamrul',
+          email: 'kamrul@gmail.com',
+        },
+        token: 'fake-jwt-token-12345',
+      });
+    } else {
+      // Invalid credentials hole error response
+      return HttpResponse.json(
+        { message: 'Invalid email or password' },
+        { status: 401 }
+      );
+    }
   }),
 
   // Example: Trade Log data paoar API
