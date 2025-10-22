@@ -14,10 +14,10 @@ const KpiCard = ({
   const Icon = icon;
   return (
     // Main Card Container with RGB border glow effect
-    <div className='relative w-full h-40 rounded-2xl p-[1px] bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.30),0_0_30px_rgba(168,85,247,0.4)]'>
+    <div className='relative w-full h-48 rounded-2xl p-[1px] bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.30),0_0_30px_rgba(168,85,247,0.4)]'>
       <div
         className={`
-          w-full h-full p-6 rounded-2xl flex flex-col justify-between 
+          w-full h-full p-8 rounded-2xl flex flex-col justify-between 
           ${
             hasBottomGradient
               ? 'bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(88deg,#5C2ED480_0.11%,#9E4FC766_63.8%)]'
@@ -27,18 +27,18 @@ const KpiCard = ({
       >
         {/* Icon Container */}
         <div
-          className={`w-10 h-10 ${iconBgColor} rounded-full flex items-center justify-center flex-shrink-0`}
+          className={`w-12 h-12 ${iconBgColor} rounded-full flex items-center justify-center flex-shrink-0`}
         >
-          <Icon className='w-5 h-5 text-white' />
+          <Icon className='w-6 h-6 text-white' />
         </div>
 
         {/* Text Content Container */}
-        <div className='flex flex-col'>
-          <p className='text-white text-3xl font-semibold font-["Poppins"] leading-tight'>
+        <div className='flex flex-col gap-1'>
+          <p className='text-white text-4xl font-semibold font-["Poppins"] leading-tight'>
             {value}
           </p>
           <p
-            className={`text-base font-medium font-["Poppins"] leading-normal ${valueColor}`}
+            className={`text-lg font-medium font-["Poppins"] leading-normal ${valueColor}`}
           >
             {title}
           </p>
