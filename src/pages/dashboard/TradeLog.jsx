@@ -138,6 +138,60 @@ const TradeLog = () => {
   const hasActiveFilters =
     filters.timeOfDay !== 'all' || filters.direction !== 'all';
 
+  // Export function to download CSV
+  const handleExport = () => {
+    // CSV headers
+    const headers = [
+      'Trade ID',
+      'Date/Time',
+      'Ticker',
+      'Direction',
+      'Entry',
+      'Exit',
+      'Qty',
+      'P&L',
+      'Notes',
+    ];
+
+    // Convert filtered trades to CSV rows
+    const csvRows = [
+      headers.join(','), // Header row
+      ...filteredTrades.map((trade) =>
+        [
+          trade.id,
+          `"${trade.dateTime}"`, // Wrap in quotes to handle commas
+          trade.ticker,
+          trade.direction,
+          trade.entry,
+          trade.exit,
+          trade.qty,
+          trade.pnl,
+          trade.notes,
+        ].join(',')
+      ),
+    ];
+
+    // Create CSV string
+    const csvContent = csvRows.join('\n');
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    // Generate filename with current date
+    const currentDate = new Date().toISOString().split('T')[0];
+    const filename = `trade-log-${currentDate}.csv`;
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className='w-full bg-neutral-900 inline-flex flex-col justify-start items-start gap-10 p-6'>
       {/* Header Section */}
@@ -315,7 +369,10 @@ const TradeLog = () => {
             )}
           </div>
           {/* Export Button */}
-          <div className='flex justify-start items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity'>
+          <div 
+            className='flex justify-start items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity'
+            onClick={handleExport}
+          >
             <div className='w-6 h-6 relative overflow-hidden'>
               <svg
                 className='w-4 h-5 absolute left-[3.75px] top-[1.50px]'
