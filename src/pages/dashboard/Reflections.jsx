@@ -74,7 +74,7 @@ const Reflections = () => {
     <div className='flex gap-6 w-full h-full'>
       {/* Left Section - Reflection Input */}
       <div
-        className='w-[60%] h-fit min-h-[440px] px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-between items-start gap-2.5'
+        className='w-[75%] h-fit min-h-[440px] px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-between items-start gap-2.5'
         style={{
           boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
         }}
