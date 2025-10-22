@@ -46,13 +46,12 @@ const Reflections = () => {
   };
 
   return (
-    <div className='flex gap-6 p-6'>
+    <div className='flex gap-6 w-full h-full'>
       {/* Left Section - Reflection Input */}
       <div
-        className='w-[581px] h-[524px] px-6 pt-6 pb-10 bg-gradient-to-br from-white/20 to-white/0 rounded-2xl border border-white/0 flex flex-col justify-start items-start gap-2.5'
+        className='flex-1 h-fit px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-start items-start gap-2.5'
         style={{
-          boxShadow:
-            '0px 44px 81.5px 0px rgba(110, 33, 196, 0.30), inset 0px -11px 24.6px 0px rgba(255, 255, 255, 1.00)',
+          boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
         }}
       >
         <div className='self-stretch flex flex-col justify-start items-start gap-5'>
@@ -115,20 +114,19 @@ const Reflections = () => {
 
       {/* Right Section - Past Reflections */}
       <div
-        className='w-72 h-[526px] px-6 pt-6 pb-10 bg-gradient-to-br from-white/20 to-white/0 rounded-2xl border border-white/0 flex flex-col justify-start items-start gap-2.5'
+        className='w-80 h-fit px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-start items-start gap-2.5'
         style={{
-          boxShadow:
-            '0px 44px 126.2px 0px rgba(110, 33, 196, 0.30), inset 0px -11px 24.6px 0px rgba(255, 255, 255, 1.00)',
+          boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
         }}
       >
-        <div className='w-64 flex flex-col justify-start items-start gap-6'>
+        <div className='w-full flex flex-col justify-start items-start gap-6'>
           <div className="self-stretch justify-start text-white text-xs font-normal font-['Poppins']">
             Review Past Reflections
           </div>
 
           <div className='self-stretch flex justify-end items-start gap-[5px]'>
             {/* Scrollable Reflections List */}
-            <div className='w-60 h-96 flex flex-col justify-start items-start gap-4 overflow-y-auto pr-2'>
+            <div className='flex-1 h-96 flex flex-col justify-start items-start gap-4 overflow-y-auto pr-2 custom-scrollbar'>
               {pastReflections.map((item, index) => (
                 <div
                   key={item.id}
@@ -146,22 +144,6 @@ const Reflections = () => {
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Scrollbar */}
-            <div className='w-6 flex flex-col justify-start items-center gap-[3px]'>
-              {/* Up Arrow */}
-              <div className='w-6 h-6 relative overflow-hidden cursor-pointer hover:opacity-70'>
-                <div className='w-3 h-2 absolute left-[6px] top-[7.08px] bg-zinc-600'></div>
-              </div>
-
-              {/* Scrollbar Track */}
-              <div className='w-1.5 h-96 bg-neutral-500 rounded-[70px]'></div>
-
-              {/* Down Arrow */}
-              <div className='w-6 h-6 relative rotate-180 overflow-hidden cursor-pointer hover:opacity-70'>
-                <div className='w-3 h-2 absolute left-[6px] top-[8px] bg-zinc-600'></div>
-              </div>
             </div>
           </div>
         </div>
