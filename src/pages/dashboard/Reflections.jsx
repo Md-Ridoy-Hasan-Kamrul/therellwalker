@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import FeedbackButton from '../../components/common/FeedbackButton';
 
 const Reflections = () => {
   const [reflection, setReflection] = useState('');
@@ -169,6 +170,9 @@ const Reflections = () => {
           </div>
         </div>
       </div>
+
+      {/* Feedback Button */}
+      <FeedbackButton />
     </div>
   );
 };
