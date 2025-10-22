@@ -59,15 +59,17 @@ const TradeEntry = () => {
             <input
               type='date'
               name='date'
+              id='date-input'
               value={formData.date}
               onChange={handleInputChange}
-              className="bg-transparent text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-clear-button]:hidden"
+              className="bg-transparent text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
             />
             <svg
-              className='w-4 h-4 pointer-events-none flex-shrink-0'
+              className='w-4 h-4 flex-shrink-0 cursor-pointer'
               viewBox='0 0 16 16'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
+              onClick={() => document.getElementById('date-input').showPicker()}
             >
               <path
                 d='M12.6667 2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V13.3333C2 14.0697 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0697 14 13.3333V4C14 3.26362 13.403 2.66667 12.6667 2.66667Z'
@@ -108,15 +110,17 @@ const TradeEntry = () => {
             <input
               type='time'
               name='time'
+              id='time-input'
               value={formData.time}
               onChange={handleInputChange}
-              className="bg-transparent text-zinc-400 text-sm font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-clear-button]:hidden"
+              className="bg-transparent text-zinc-400 text-sm font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
             />
             <svg
-              className='w-4 h-4 pointer-events-none flex-shrink-0'
+              className='w-4 h-4 flex-shrink-0 cursor-pointer'
               viewBox='0 0 16 16'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
+              onClick={() => document.getElementById('time-input').showPicker()}
             >
               <path
                 d='M8 14.6667C11.6819 14.6667 14.6667 11.6819 14.6667 8C14.6667 4.3181 11.6819 1.33333 8 1.33333C4.3181 1.33333 1.33333 4.3181 1.33333 8C1.33333 11.6819 4.3181 14.6667 8 14.6667Z'
@@ -258,7 +262,7 @@ const TradeEntry = () => {
               onChange={handleInputChange}
               className="bg-transparent text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
-            <div className='flex flex-col gap-0.5'>
+            <div className='flex flex-col gap-1'>
               <button
                 type='button'
                 onClick={() =>
@@ -324,7 +328,7 @@ const TradeEntry = () => {
               onChange={handleInputChange}
               className="bg-transparent text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
-            <div className='flex flex-col gap-0.5'>
+            <div className='flex flex-col gap-1'>
               <button
                 type='button'
                 onClick={() =>
@@ -394,7 +398,7 @@ const TradeEntry = () => {
               onChange={handleInputChange}
               className="bg-transparent text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
-            <div className='flex flex-col gap-0.5'>
+            <div className='flex flex-col gap-1'>
               <button
                 type='button'
                 onClick={() =>
@@ -460,7 +464,7 @@ const TradeEntry = () => {
               onChange={handleInputChange}
               className="bg-transparent text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
-            <div className='flex flex-col gap-0.5'>
+            <div className='flex flex-col gap-1'>
               <button
                 type='button'
                 onClick={() =>
@@ -529,7 +533,7 @@ const TradeEntry = () => {
             onChange={handleInputChange}
             className="bg-transparent text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
-          <div className='flex flex-col gap-0.5'>
+          <div className='flex flex-col gap-1'>
             <button
               type='button'
               onClick={() =>
