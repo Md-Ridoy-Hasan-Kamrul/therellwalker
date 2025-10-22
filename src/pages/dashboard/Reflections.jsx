@@ -49,7 +49,7 @@ const Reflections = () => {
     <div className='flex gap-6 w-full h-full'>
       {/* Left Section - Reflection Input */}
       <div
-        className='flex-1 h-fit px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-start items-start gap-2.5'
+        className='w-[60%] h-fit px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-start items-start gap-2.5'
         style={{
           boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
         }}
@@ -114,7 +114,7 @@ const Reflections = () => {
 
       {/* Right Section - Past Reflections */}
       <div
-        className='w-80 h-fit px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-start items-start gap-2.5'
+        className='w-[40%] h-fit px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-start items-start gap-2.5'
         style={{
           boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
         }}
