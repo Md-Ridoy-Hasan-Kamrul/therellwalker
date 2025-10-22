@@ -223,7 +223,7 @@ const DashboardHome = () => {
           icon={FaWallet}
           iconBgColor='bg-gradient-to-b from-amber-400 to-amber-600'
           valueColor='text-amber-400'
-          hasBottomGradient={false}
+          hasBottomGradient={true}
         />
         <KpiCard
           title='Avg Take Profit'
@@ -231,7 +231,7 @@ const DashboardHome = () => {
           icon={FaTrophy}
           iconBgColor='bg-gradient-to-b from-pink-500 to-rose-600'
           valueColor='text-pink-400'
-          hasBottomGradient={false}
+          hasBottomGradient={true}
         />
       </div>
 
