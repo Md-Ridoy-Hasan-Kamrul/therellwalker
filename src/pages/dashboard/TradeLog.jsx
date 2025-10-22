@@ -1,70 +1,142 @@
-import React from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import FeedbackButton from '../../components/common/FeedbackButton';
 
 const TradeLog = () => {
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [filters, setFilters] = useState({
+    timeOfDay: 'all', // 'all', 'am', 'pm'
+    direction: 'all', // 'all', 'long', 'short'
+  });
+  const filterDropdownRef = useRef(null);
+
   // Sample trade data
-  const trades = [
-    {
-      id: '#005',
-      dateTime: '10/16/2025 11:31 AM',
-      ticker: 'ES',
-      direction: 'Long',
-      entry: '$0.00',
-      exit: '$0.00',
-      qty: 1,
-      pnl: '+$0.00',
-      isProfitable: true,
-      notes: '-',
-    },
-    {
-      id: '#004',
-      dateTime: '10/17/2025 10:08 AM',
-      ticker: 'ES',
-      direction: 'Long',
-      entry: '$0.00',
-      exit: '$0.00',
-      qty: 1,
-      pnl: '+$0.00',
-      isProfitable: true,
-      notes: '-',
-    },
-    {
-      id: '#003',
-      dateTime: '10/16/2025 11:31 AM',
-      ticker: 'ES',
-      direction: 'Long',
-      entry: '$0.00',
-      exit: '$0.00',
-      qty: 1,
-      pnl: '+$0.00',
-      isProfitable: true,
-      notes: '-',
-    },
-    {
-      id: '#002',
-      dateTime: '10/16/2025 11:31 AM',
-      ticker: 'ES',
-      direction: 'Long',
-      entry: '$0.00',
-      exit: '$0.00',
-      qty: 1,
-      pnl: '+$0.00',
-      isProfitable: true,
-      notes: '-',
-    },
-    {
-      id: '#001',
-      dateTime: '10/17/2025 00:30 AM',
-      ticker: 'YM',
-      direction: 'Long',
-      entry: '$8000.00',
-      exit: '$2000.00',
-      qty: 1,
-      pnl: '$-6000.00',
-      isProfitable: false,
-      notes: '-',
-    },
-  ];
+  const trades = useMemo(
+    () => [
+      {
+        id: '#005',
+        dateTime: '10/16/2025 11:31 AM',
+        ticker: 'ES',
+        direction: 'Short',
+        entry: '$0.00',
+        exit: '$0.00',
+        qty: 1,
+        pnl: '+$0.00',
+        isProfitable: true,
+        notes: '-',
+      },
+      {
+        id: '#004',
+        dateTime: '10/17/2025 10:08 PM',
+        ticker: 'ES',
+        direction: 'Long',
+        entry: '$0.00',
+        exit: '$0.00',
+        qty: 1,
+        pnl: '+$0.00',
+        isProfitable: true,
+        notes: '-',
+      },
+      {
+        id: '#003',
+        dateTime: '10/16/2025 11:31 AM',
+        ticker: 'ES',
+        direction: 'Long',
+        entry: '$0.00',
+        exit: '$0.00',
+        qty: 1,
+        pnl: '+$0.00',
+        isProfitable: true,
+        notes: '-',
+      },
+      {
+        id: '#002',
+        dateTime: '10/16/2025 11:31 PM',
+        ticker: 'ES',
+        direction: 'Short',
+        entry: '$0.00',
+        exit: '$0.00',
+        qty: 1,
+        pnl: '+$0.00',
+        isProfitable: true,
+        notes: '-',
+      },
+      {
+        id: '#001',
+        dateTime: '10/17/2025 00:30 AM',
+        ticker: 'YM',
+        direction: 'Long',
+        entry: '$8000.00',
+        exit: '$2000.00',
+        qty: 1,
+        pnl: '$-6000.00',
+        isProfitable: false,
+        notes: '-',
+      },
+    ],
+    []
+  );
+
+  // Click outside handler to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        filterDropdownRef.current &&
+        !filterDropdownRef.current.contains(event.target)
+      ) {
+        setShowFilterDropdown(false);
+      }
+    };
+
+    if (showFilterDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showFilterDropdown]);
+
+  // Filter logic
+  const filteredTrades = useMemo(() => {
+    return trades.filter((trade) => {
+      // Filter by time of day (AM/PM)
+      if (filters.timeOfDay !== 'all') {
+        const timeString = trade.dateTime.toUpperCase();
+        if (filters.timeOfDay === 'am' && !timeString.includes('AM')) {
+          return false;
+        }
+        if (filters.timeOfDay === 'pm' && !timeString.includes('PM')) {
+          return false;
+        }
+      }
+
+      // Filter by direction (Long/Short)
+      if (filters.direction !== 'all') {
+        if (filters.direction.toLowerCase() !== trade.direction.toLowerCase()) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [trades, filters]);
+
+  const handleFilterChange = (filterType, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [filterType]: value,
+    }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      timeOfDay: 'all',
+      direction: 'all',
+    });
+  };
+
+  const hasActiveFilters =
+    filters.timeOfDay !== 'all' || filters.direction !== 'all';
 
   return (
     <div className='w-full bg-neutral-900 inline-flex flex-col justify-start items-start gap-10 p-6'>
@@ -74,24 +146,173 @@ const TradeLog = () => {
           Trade Log
         </div>
         <div className='flex justify-start items-center gap-11'>
-          {/* Filter Button */}
-          <div className='flex justify-start items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity'>
-            <div className='w-6 h-6 relative overflow-hidden'>
-              <svg
-                className='w-5 h-4 absolute left-[2.25px] top-[3.75px]'
-                viewBox='0 0 20 16'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M0 0H20V2.67H0V0ZM4 6.67H16V9.33H4V6.67ZM8 13.33H12V16H8V13.33Z'
-                  fill='#6366F1'
-                />
-              </svg>
+          {/* Filter Button with Dropdown */}
+          <div className='relative' ref={filterDropdownRef}>
+            <div
+              className='flex justify-start items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity'
+              onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+            >
+              <div className='w-6 h-6 relative overflow-hidden'>
+                <svg
+                  className='w-5 h-4 absolute left-[2.25px] top-[3.75px]'
+                  viewBox='0 0 20 16'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M0 0H20V2.67H0V0ZM4 6.67H16V9.33H4V6.67ZM8 13.33H12V16H8V13.33Z'
+                    fill='#6366F1'
+                  />
+                </svg>
+              </div>
+              <div className="text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
+                Filter
+                {hasActiveFilters && (
+                  <span className='ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-semibold text-white bg-indigo-500 rounded-full'>
+                    {(filters.timeOfDay !== 'all' ? 1 : 0) +
+                      (filters.direction !== 'all' ? 1 : 0)}
+                  </span>
+                )}
+              </div>
             </div>
-            <div className="text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
-              Filter
-            </div>
+
+            {/* Filter Dropdown */}
+            {showFilterDropdown && (
+              <div className='absolute right-0 top-full mt-2 w-72 bg-stone-800 rounded-lg shadow-xl z-50 border border-zinc-700'>
+                <div className='p-4 space-y-4'>
+                  {/* Header */}
+                  <div className='flex justify-between items-center border-b border-zinc-700 pb-3'>
+                    <h3 className="text-white text-lg font-semibold font-['Poppins']">
+                      Filter Options
+                    </h3>
+                    {hasActiveFilters && (
+                      <button
+                        onClick={clearFilters}
+                        className='text-indigo-400 text-sm font-medium hover:text-indigo-300 transition-colors'
+                      >
+                        Clear All
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Time of Day Filter */}
+                  <div className='space-y-2'>
+                    <label className="text-zinc-300 text-sm font-medium font-['Poppins'] block">
+                      Time of Day
+                    </label>
+                    <div className='flex flex-col gap-2'>
+                      <label className='flex items-center gap-2 cursor-pointer'>
+                        <input
+                          type='radio'
+                          name='timeOfDay'
+                          value='all'
+                          checked={filters.timeOfDay === 'all'}
+                          onChange={(e) =>
+                            handleFilterChange('timeOfDay', e.target.value)
+                          }
+                          className='w-4 h-4 text-indigo-500 focus:ring-indigo-500 focus:ring-2'
+                        />
+                        <span className="text-zinc-400 text-sm font-['Poppins']">
+                          All
+                        </span>
+                      </label>
+                      <label className='flex items-center gap-2 cursor-pointer'>
+                        <input
+                          type='radio'
+                          name='timeOfDay'
+                          value='am'
+                          checked={filters.timeOfDay === 'am'}
+                          onChange={(e) =>
+                            handleFilterChange('timeOfDay', e.target.value)
+                          }
+                          className='w-4 h-4 text-indigo-500 focus:ring-indigo-500 focus:ring-2'
+                        />
+                        <span className="text-zinc-400 text-sm font-['Poppins']">
+                          AM (Morning)
+                        </span>
+                      </label>
+                      <label className='flex items-center gap-2 cursor-pointer'>
+                        <input
+                          type='radio'
+                          name='timeOfDay'
+                          value='pm'
+                          checked={filters.timeOfDay === 'pm'}
+                          onChange={(e) =>
+                            handleFilterChange('timeOfDay', e.target.value)
+                          }
+                          className='w-4 h-4 text-indigo-500 focus:ring-indigo-500 focus:ring-2'
+                        />
+                        <span className="text-zinc-400 text-sm font-['Poppins']">
+                          PM (Evening)
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Direction Filter */}
+                  <div className='space-y-2'>
+                    <label className="text-zinc-300 text-sm font-medium font-['Poppins'] block">
+                      Direction
+                    </label>
+                    <div className='flex flex-col gap-2'>
+                      <label className='flex items-center gap-2 cursor-pointer'>
+                        <input
+                          type='radio'
+                          name='direction'
+                          value='all'
+                          checked={filters.direction === 'all'}
+                          onChange={(e) =>
+                            handleFilterChange('direction', e.target.value)
+                          }
+                          className='w-4 h-4 text-indigo-500 focus:ring-indigo-500 focus:ring-2'
+                        />
+                        <span className="text-zinc-400 text-sm font-['Poppins']">
+                          All
+                        </span>
+                      </label>
+                      <label className='flex items-center gap-2 cursor-pointer'>
+                        <input
+                          type='radio'
+                          name='direction'
+                          value='long'
+                          checked={filters.direction === 'long'}
+                          onChange={(e) =>
+                            handleFilterChange('direction', e.target.value)
+                          }
+                          className='w-4 h-4 text-indigo-500 focus:ring-indigo-500 focus:ring-2'
+                        />
+                        <span className="text-zinc-400 text-sm font-['Poppins']">
+                          Long
+                        </span>
+                      </label>
+                      <label className='flex items-center gap-2 cursor-pointer'>
+                        <input
+                          type='radio'
+                          name='direction'
+                          value='short'
+                          checked={filters.direction === 'short'}
+                          onChange={(e) =>
+                            handleFilterChange('direction', e.target.value)
+                          }
+                          className='w-4 h-4 text-indigo-500 focus:ring-indigo-500 focus:ring-2'
+                        />
+                        <span className="text-zinc-400 text-sm font-['Poppins']">
+                          Short
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Apply Button */}
+                  <button
+                    onClick={() => setShowFilterDropdown(false)}
+                    className="w-full px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium font-['Poppins'] rounded-lg transition-colors"
+                  >
+                    Apply Filters
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           {/* Export Button */}
           <div className='flex justify-start items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity'>
@@ -150,46 +371,54 @@ const TradeLog = () => {
 
         {/* Table Rows */}
         <div className='self-stretch flex flex-col justify-start items-start w-full'>
-          {trades.map((trade, index) => (
-            <div
-              key={trade.id}
-              className={`w-full px-2 py-4 ${
-                index % 2 === 0 ? 'bg-zinc-800' : 'bg-stone-900'
-              } flex items-center justify-between`}
-            >
-              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-                {trade.id}
-              </div>
-              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[160px]">
-                {trade.dateTime}
-              </div>
-              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-                {trade.ticker}
-              </div>
-              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                {trade.direction}
-              </div>
-              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                {trade.entry}
-              </div>
-              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                {trade.exit}
-              </div>
-              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[60px]">
-                {trade.qty}
-              </div>
-              <div
-                className={`${
-                  trade.isProfitable ? 'text-green-500' : 'text-red-500'
-                } text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[110px]`}
-              >
-                {trade.pnl}
-              </div>
-              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-                {trade.notes}
+          {filteredTrades.length === 0 ? (
+            <div className='w-full px-2 py-8 bg-zinc-800 flex items-center justify-center'>
+              <div className="text-zinc-400 text-base font-medium font-['Poppins']">
+                No trades found matching the selected filters.
               </div>
             </div>
-          ))}
+          ) : (
+            filteredTrades.map((trade, index) => (
+              <div
+                key={trade.id}
+                className={`w-full px-2 py-4 ${
+                  index % 2 === 0 ? 'bg-zinc-800' : 'bg-stone-900'
+                } flex items-center justify-between`}
+              >
+                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+                  {trade.id}
+                </div>
+                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[160px]">
+                  {trade.dateTime}
+                </div>
+                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+                  {trade.ticker}
+                </div>
+                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                  {trade.direction}
+                </div>
+                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                  {trade.entry}
+                </div>
+                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                  {trade.exit}
+                </div>
+                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[60px]">
+                  {trade.qty}
+                </div>
+                <div
+                  className={`${
+                    trade.isProfitable ? 'text-green-500' : 'text-red-500'
+                  } text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[110px]`}
+                >
+                  {trade.pnl}
+                </div>
+                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+                  {trade.notes}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
