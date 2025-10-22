@@ -115,76 +115,76 @@ const TradeLog = () => {
       </div>
 
       {/* Table Section */}
-      <div className='self-stretch rounded flex flex-col justify-start items-start'>
+      <div className='self-stretch rounded flex flex-col justify-start items-start w-full'>
         {/* Table Header */}
-        <div className='w-full px-2 py-4 bg-stone-900 inline-flex justify-start items-center gap-4 overflow-x-auto'>
-          <div className="min-w-[100px] text-white text-base font-normal font-['Poppins']">
+        <div className='w-full px-2 py-4 bg-stone-900 flex items-center justify-between'>
+          <div className="text-white text-base font-normal font-['Poppins'] flex-shrink-0">
             Trade ID
           </div>
-          <div className="min-w-[150px] text-white text-base font-normal font-['Poppins']">
+          <div className="text-white text-base font-normal font-['Poppins'] flex-shrink-0">
             Date/Time
           </div>
-          <div className="min-w-[80px] text-white text-base font-normal font-['Poppins']">
+          <div className="text-white text-base font-normal font-['Poppins'] flex-shrink-0">
             Ticker
           </div>
-          <div className="min-w-[100px] text-white text-base font-normal font-['Poppins']">
+          <div className="text-white text-base font-normal font-['Poppins'] flex-shrink-0">
             Direction
           </div>
-          <div className="min-w-[100px] text-white text-base font-normal font-['Poppins']">
+          <div className="text-white text-base font-normal font-['Poppins'] flex-shrink-0">
             Entry
           </div>
-          <div className="min-w-[100px] text-white text-base font-normal font-['Poppins']">
+          <div className="text-white text-base font-normal font-['Poppins'] flex-shrink-0">
             Exit
           </div>
-          <div className="min-w-[60px] text-white text-base font-normal font-['Poppins']">
+          <div className="text-white text-base font-normal font-['Poppins'] flex-shrink-0">
             Qty
           </div>
-          <div className="min-w-[120px] text-white text-base font-normal font-['Poppins']">
+          <div className="text-white text-base font-normal font-['Poppins'] flex-shrink-0">
             P&L
           </div>
-          <div className="min-w-[80px] text-white text-base font-normal font-['Poppins']">
+          <div className="text-white text-base font-normal font-['Poppins'] flex-shrink-0">
             Notes
           </div>
         </div>
 
         {/* Table Rows */}
-        <div className='self-stretch flex flex-col justify-start items-start'>
+        <div className='self-stretch flex flex-col justify-start items-start w-full'>
           {trades.map((trade, index) => (
             <div
               key={trade.id}
-              className={`self-stretch px-2 py-4 ${
+              className={`w-full px-2 py-4 ${
                 index % 2 === 0 ? 'bg-zinc-800' : 'bg-stone-900'
-              } inline-flex justify-start items-center gap-4 overflow-x-auto`}
+              } flex items-center justify-between`}
             >
-              <div className="min-w-[100px] text-white text-sm font-normal font-['Poppins']">
+              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0">
                 {trade.id}
               </div>
-              <div className="min-w-[150px] text-white text-sm font-normal font-['Poppins']">
+              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0">
                 {trade.dateTime}
               </div>
-              <div className="min-w-[80px] text-white text-sm font-normal font-['Poppins']">
+              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0">
                 {trade.ticker}
               </div>
-              <div className="min-w-[100px] text-white text-sm font-normal font-['Poppins']">
+              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0">
                 {trade.direction}
               </div>
-              <div className="min-w-[100px] text-white text-sm font-normal font-['Poppins']">
+              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0">
                 {trade.entry}
               </div>
-              <div className="min-w-[100px] text-white text-sm font-normal font-['Poppins']">
+              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0">
                 {trade.exit}
               </div>
-              <div className="min-w-[60px] text-white text-sm font-normal font-['Poppins']">
+              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0">
                 {trade.qty}
               </div>
               <div
-                className={`min-w-[120px] ${
+                className={`${
                   trade.isProfitable ? 'text-green-500' : 'text-red-500'
-                } text-sm font-normal font-['Poppins']`}
+                } text-sm font-normal font-['Poppins'] flex-shrink-0`}
               >
                 {trade.pnl}
               </div>
-              <div className="min-w-[80px] text-white text-sm font-normal font-['Poppins']">
+              <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0">
                 {trade.notes}
               </div>
             </div>
