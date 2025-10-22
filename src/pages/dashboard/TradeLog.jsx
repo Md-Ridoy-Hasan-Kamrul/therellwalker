@@ -178,11 +178,11 @@ const TradeLog = () => {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
-    
+
     // Generate filename with current date
     const currentDate = new Date().toISOString().split('T')[0];
     const filename = `trade-log-${currentDate}.csv`;
-    
+
     link.setAttribute('href', url);
     link.setAttribute('download', filename);
     link.style.visibility = 'hidden';
@@ -369,7 +369,7 @@ const TradeLog = () => {
             )}
           </div>
           {/* Export Button */}
-          <div 
+          <div
             className='flex justify-start items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity'
             onClick={handleExport}
           >
