@@ -74,7 +74,7 @@ const Reflections = () => {
     <div className='flex gap-6 w-full h-full'>
       {/* Left Section - Reflection Input */}
       <div
-        className='w-[60%] min-h-[520px] px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-between items-start gap-2.5'
+        className='w-[60%] h-fit min-h-[440px] px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-between items-start gap-2.5'
         style={{
           boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
         }}
@@ -114,7 +114,7 @@ const Reflections = () => {
             </button>
 
             {/* Reflection Input and Save Button */}
-            <div className='self-stretch flex flex-col justify-between items-end gap-10 flex-1'>
+            <div className='self-stretch flex flex-col justify-start items-end gap-6'>
               {/* Text Area */}
               <textarea
                 value={reflection}
@@ -139,7 +139,7 @@ const Reflections = () => {
 
       {/* Right Section - Past Reflections */}
       <div
-        className='w-[40%] min-h-[520px] px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-start items-start gap-2.5'
+        className='w-[40%] h-fit min-h-[440px] px-6 pt-6 pb-10 bg-gradient-to-br from-white/5 to-transparent rounded-2xl border border-white/10 flex flex-col justify-start items-start gap-2.5'
         style={{
           boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
         }}
@@ -151,7 +151,7 @@ const Reflections = () => {
 
           <div className='self-stretch flex justify-end items-start gap-[5px]'>
             {/* Scrollable Reflections List */}
-            <div className='flex-1 max-h-[480px] flex flex-col justify-start items-start gap-4 overflow-y-auto pr-2 custom-scrollbar'>
+            <div className='flex-1 max-h-[425px] flex flex-col justify-start items-start gap-4 overflow-y-auto pr-2 custom-scrollbar'>
               {pastReflections.map((item) => (
                 <div
                   key={item.id}
