@@ -75,24 +75,24 @@ const Reflections = () => {
     <div className='flex gap-6 w-full h-full'>
       {/* Left Section - Reflection Input */}
       <div
-        className='w-[75%] h-fit min-h-[440px] rounded-2xl flex flex-col justify-between items-start gap-2.5 relative'
+        className='w-[75%] h-fit min-h-[440px] rounded-2xl flex flex-col justify-between items-start gap-2.5 relative overflow-hidden'
         style={{
           background:
             'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%)',
           boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
         }}
       >
-        {/* Gradient Border */}
+        {/* Inner Bottom and Left Border */}
         <div
-          className='absolute inset-0 rounded-2xl'
+          className='absolute inset-0 rounded-2xl pointer-events-none'
           style={{
-            padding: '1px',
-            background:
-              'linear-gradient(135deg, rgba(236, 72, 153, 0.5), rgba(79, 70, 229, 0.5), rgba(167, 139, 250, 0.3))',
-            WebkitMask:
-              'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            WebkitMaskComposite: 'xor',
-            maskComposite: 'exclude',
+            background: `
+              linear-gradient(to right, #9E4FC733, transparent 50%),
+              linear-gradient(to top, #5C2ED440, transparent 50%)
+            `,
+            backgroundPosition: 'left, bottom',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '2px 100%, 100% 2px',
           }}
         />
         <div className='relative z-10 w-full h-full px-6 pt-6 pb-10 flex flex-col justify-between items-start gap-2.5'>
@@ -157,24 +157,24 @@ const Reflections = () => {
 
       {/* Right Section - Past Reflections */}
       <div
-        className='w-[40%] h-fit min-h-[440px] rounded-2xl flex flex-col justify-start items-start gap-2.5 relative'
+        className='w-[40%] h-fit min-h-[440px] rounded-2xl flex flex-col justify-start items-start gap-2.5 relative overflow-hidden'
         style={{
           background:
             'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%)',
           boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
         }}
       >
-        {/* Gradient Border */}
+        {/* Inner Bottom and Left Border */}
         <div
-          className='absolute inset-0 rounded-2xl'
+          className='absolute inset-0 rounded-2xl pointer-events-none'
           style={{
-            padding: '1px',
-            background:
-              'linear-gradient(135deg, rgba(236, 72, 153, 0.5), rgba(79, 70, 229, 0.5), rgba(167, 139, 250, 0.3))',
-            WebkitMask:
-              'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            WebkitMaskComposite: 'xor',
-            maskComposite: 'exclude',
+            background: `
+              linear-gradient(to right, #9E4FC733, transparent 50%),
+              linear-gradient(to top, #5C2ED440, transparent 50%)
+            `,
+            backgroundPosition: 'left, bottom',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '2px 100%, 100% 2px',
           }}
         />
         <div className='relative z-10 w-full h-full px-6 pt-6 pb-10 flex flex-col justify-start items-start gap-2.5'>
