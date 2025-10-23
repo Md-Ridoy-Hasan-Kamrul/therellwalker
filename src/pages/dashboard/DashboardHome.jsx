@@ -199,7 +199,7 @@ const ProfitByDirectionChart = () => {
           >
             <div
               className="text-center text-white text-sm font-normal font-['Poppins'] absolute"
-              style={{ left: 'calc(30% - 24px)' }}
+              style={{ left: 'calc(31.5% - 24px)' }}
             >
               Long
             </div>
