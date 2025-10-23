@@ -78,10 +78,10 @@ const EquityCurveChart = () => {
               <div className='w-full h-px absolute top-[220px] left-0 bg-neutral-400' />
 
               {/* Vertical Line from Point */}
-              <div className='w-px h-[220px] absolute left-[25%] top-0 bg-amber-400/30 border-l border-dashed border-amber-400' />
+              <div className='w-px h-[220px] absolute left-[28%] top-0 bg-amber-400/30 border-l border-dashed border-amber-400' />
 
               {/* Tooltip */}
-              <div className='w-20 p-2.5 absolute left-[calc(25%-40px)] top-[40px] bg-white rounded-lg inline-flex flex-col justify-start items-start gap-2 z-10 shadow-[0_10px_40px_rgba(0,0,0,0.4)] transform hover:scale-105 transition-transform'>
+              <div className='w-20 p-2.5 absolute left-[calc(28%-40px)] top-[40px] bg-white rounded-lg inline-flex flex-col justify-start items-start gap-2 z-10 shadow-[0_10px_40px_rgba(0,0,0,0.4)] transform hover:scale-105 transition-transform'>
                 <div className="text-slate-800 text-[10px] font-normal font-['Poppins']">
                   #002
                 </div>
@@ -91,7 +91,7 @@ const EquityCurveChart = () => {
               </div>
 
               {/* Data Point */}
-              <div className='w-3.5 h-3.5 bg-amber-400 rounded-full absolute left-[calc(25%-7px)] top-[103px] z-10 shadow-[0_0_20px_rgba(251,191,36,0.8),0_0_40px_rgba(251,191,36,0.4)]' />
+              <div className='w-3.5 h-3.5 bg-amber-400 rounded-full absolute left-[calc(28%-7px)] top-[103px] z-10 shadow-[0_0_20px_rgba(251,191,36,0.8),0_0_40px_rgba(251,191,36,0.4)]' />
             </div>
           </div>
 
