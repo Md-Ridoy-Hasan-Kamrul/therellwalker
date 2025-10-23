@@ -167,8 +167,11 @@ const ProfitByDirectionChart = () => {
               <div className='w-full h-px absolute top-[165px] left-0 bg-white/50' />
               <div className='w-full h-px absolute top-[220px] left-0 bg-white/50' />
 
-              {/* Vertical Line from Bar */}
+              {/* Vertical Line from Long Bar */}
               <div className='w-px h-[220px] absolute left-[30%] top-0 bg-white/30 border-l border-dashed border-white/50' />
+
+              {/* Vertical Line from Short Bar */}
+              <div className='w-px h-[220px] absolute left-[70%] top-0 bg-white/30 border-l border-dashed border-white/50' />
 
               {/* Bar for Long with 3D effect */}
               <div className='w-24 h-[220px] rounded-tl-lg rounded-tr-lg absolute left-[calc(30%-48px)] bottom-0 bg-gradient-to-br from-purple-500 via-violet-600 to-purple-700 shadow-[0_10px_40px_rgba(139,92,246,0.5),inset_0_-2px_10px_rgba(0,0,0,0.3),inset_0_2px_10px_rgba(255,255,255,0.2)] transform hover:scale-105 transition-transform' />
