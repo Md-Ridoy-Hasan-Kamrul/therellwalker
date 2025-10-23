@@ -75,11 +75,13 @@ const Reflections = () => {
     <div className='flex gap-6 w-full h-full'>
       {/* Left Section - Reflection Input */}
       <div
-        className='w-[75%] h-fit min-h-[440px] rounded-2xl flex flex-col justify-between items-start gap-2.5 relative overflow-hidden'
+        className='w-[75%] h-fit min-h-[440px] rounded-2xl flex flex-col justify-between items-start gap-2.5 relative overflow-hidden backdrop-blur-xl'
         style={{
           background:
-            'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%)',
-          boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
+            'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
+          boxShadow:
+            '0px 8px 32px 0px rgba(0, 0, 0, 0.6), inset 0px 1px 1px 0px rgba(255, 255, 255, 0.1)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
         }}
       >
         {/* Inner Bottom and Left Border */}
@@ -87,8 +89,8 @@ const Reflections = () => {
           className='absolute inset-0 rounded-2xl pointer-events-none'
           style={{
             background: `
-              linear-gradient(to right, #9E4FC733, transparent 50%),
-              linear-gradient(to top, #5C2ED440, transparent 50%)
+              linear-gradient(to right, rgba(158, 79, 199, 0.15), transparent 50%),
+              linear-gradient(to top, rgba(92, 46, 212, 0.15), transparent 50%)
             `,
             backgroundPosition: 'left, bottom',
             backgroundRepeat: 'no-repeat',
@@ -98,11 +100,11 @@ const Reflections = () => {
         <div className='relative z-10 w-full h-full px-6 pt-6 pb-10 flex flex-col justify-between items-start gap-2.5'>
           <div className='self-stretch flex flex-col justify-start items-start gap-5'>
             {/* Header */}
-            <div className='w-60 flex flex-col justify-start items-start gap-4'>
+            <div className='w-full flex flex-col justify-start items-start gap-4'>
               <div className="justify-start text-white text-2xl font-semibold font-['Poppins'] leading-loose">
                 Reflections
               </div>
-              <div className="self-stretch justify-start text-white text-xs font-normal font-['Poppins']">
+              <div className="self-stretch justify-start text-white text-base font-normal font-['Poppins'] leading-relaxed">
                 Reflect on the mind behind the market.
               </div>
             </div>
@@ -157,11 +159,13 @@ const Reflections = () => {
 
       {/* Right Section - Past Reflections */}
       <div
-        className='w-[40%] h-fit min-h-[440px] rounded-2xl flex flex-col justify-start items-start gap-2.5 relative overflow-hidden'
+        className='w-[40%] h-fit min-h-[440px] rounded-2xl flex flex-col justify-start items-start gap-2.5 relative overflow-hidden backdrop-blur-xl'
         style={{
           background:
-            'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%)',
-          boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.5)',
+            'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
+          boxShadow:
+            '0px 8px 32px 0px rgba(0, 0, 0, 0.6), inset 0px 1px 1px 0px rgba(255, 255, 255, 0.1)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
         }}
       >
         {/* Inner Bottom and Left Border */}
@@ -169,8 +173,8 @@ const Reflections = () => {
           className='absolute inset-0 rounded-2xl pointer-events-none'
           style={{
             background: `
-              linear-gradient(to right, #9E4FC733, transparent 50%),
-              linear-gradient(to top, #5C2ED440, transparent 50%)
+              linear-gradient(to right, rgba(158, 79, 199, 0.15), transparent 50%),
+              linear-gradient(to top, rgba(92, 46, 212, 0.15), transparent 50%)
             `,
             backgroundPosition: 'left, bottom',
             backgroundRepeat: 'no-repeat',
@@ -179,17 +183,17 @@ const Reflections = () => {
         />
         <div className='relative z-10 w-full h-full px-6 pt-6 pb-10 flex flex-col justify-start items-start gap-2.5'>
           <div className='w-full flex flex-col justify-start items-start gap-6'>
-            <div className="self-stretch justify-start text-white text-xs font-normal font-['Poppins']">
+            <div className="self-stretch justify-start text-white text-base font-medium font-['Poppins'] leading-relaxed">
               Review Past Reflections
             </div>
 
-            <div className='self-stretch flex justify-end items-start gap-[5px]'>
+            <div className='self-stretch flex justify-end items-start gap-1 relative'>
               {/* Scrollable Reflections List */}
               <div className='flex-1 max-h-[425px] flex flex-col justify-start items-start gap-4 overflow-y-auto pr-2 custom-scrollbar'>
                 {pastReflections.map((item) => (
                   <div
                     key={item.id}
-                    className='self-stretch p-2.5 bg-neutral-700 rounded-lg flex flex-col justify-start items-start gap-2.5 cursor-pointer hover:bg-neutral-600 transition-colors flex-shrink-0'
+                    className='self-stretch p-2.5 bg-neutral-700/50 backdrop-blur-sm rounded-lg flex flex-col justify-start items-start gap-2.5 cursor-pointer hover:bg-neutral-600/60 transition-all duration-300 flex-shrink-0 border border-white/5 hover:border-white/10 hover:shadow-lg'
                   >
                     <div className="self-stretch justify-start text-white text-xs font-normal font-['Poppins']">
                       {item.date}
