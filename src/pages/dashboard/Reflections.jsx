@@ -1,74 +1,111 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FeedbackButton from '../../components/common/FeedbackButton';
+import { reflectionPrompts, groupNames } from '../../data/reflectionPrompts';
 
 const Reflections = () => {
   const [reflection, setReflection] = useState('');
-  const [prompt] = useState(
-    'What emotions did you feel most while trading today?'
-  );
+  const [currentPrompt, setCurrentPrompt] = useState('');
+  const [currentGroup, setCurrentGroup] = useState('');
 
-  // Mock data for past reflections
-  const pastReflections = [
-    {
-      id: 1,
-      date: '10/17/2025, 10:11:25 AM',
-      prompt: 'What emotions did you feel most while trading today?',
-    },
-    {
-      id: 2,
-      date: '10/17/2025, 10:11:25 AM',
-      prompt: 'What emotions did you feel most while trading today?',
-    },
-    {
-      id: 3,
-      date: '10/17/2025, 10:11:25 AM',
-      prompt: 'What emotions did you feel most while trading today?',
-    },
-    {
-      id: 4,
-      date: '10/17/2025, 10:11:25 AM',
-      prompt: 'What emotions did you feel most while trading today?',
-    },
-    {
-      id: 5,
-      date: '10/17/2025, 10:11:25 AM',
-      prompt: 'What emotions did you feel most while trading today?',
-    },
-    {
-      id: 6,
-      date: '10/16/2025, 09:30:15 AM',
-      prompt: 'What did you learn from your trades today?',
-    },
-    {
-      id: 7,
-      date: '10/16/2025, 09:30:15 AM',
-      prompt: 'Did you follow your trading plan today?',
-    },
-    {
-      id: 8,
-      date: '10/15/2025, 02:45:30 PM',
-      prompt: 'What could you have done differently in your trades?',
-    },
-    {
-      id: 9,
-      date: '10/15/2025, 02:45:30 PM',
-      prompt: 'How well did you manage risk today?',
-    },
-    {
-      id: 10,
-      date: '10/14/2025, 11:20:45 AM',
-      prompt: 'What was your biggest challenge while trading today?',
-    },
-  ];
+  // Load saved reflections and rotation state from localStorage
+  const [pastReflections, setPastReflections] = useState(() => {
+    const saved = localStorage.getItem('ledger_reflections');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [rotationState, setRotationState] = useState(() => {
+    const saved = localStorage.getItem('ledger_prompt_rotation');
+    return saved
+      ? JSON.parse(saved)
+      : {
+          currentGroupIndex: 0,
+          promptIndexes: [0, 0, 0, 0], // Track which prompt we're on in each group
+        };
+  });
+
+  // Get current prompt based on rotation state
+  useEffect(() => {
+    const groupIndex = rotationState.currentGroupIndex;
+    const groupName = groupNames[groupIndex];
+    const promptIndex = rotationState.promptIndexes[groupIndex];
+    const prompt = reflectionPrompts[groupName][promptIndex];
+
+    setCurrentPrompt(prompt);
+    setCurrentGroup(groupName);
+  }, [rotationState]);
+
+  // Save rotation state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem(
+      'ledger_prompt_rotation',
+      JSON.stringify(rotationState)
+    );
+  }, [rotationState]);
+
+  // Save reflections to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('ledger_reflections', JSON.stringify(pastReflections));
+  }, [pastReflections]);
 
   const handleRefreshPrompt = () => {
-    // Logic to fetch a new prompt
-    console.log('Refreshing prompt...');
+    // Move to next group
+    const nextGroupIndex =
+      (rotationState.currentGroupIndex + 1) % groupNames.length;
+
+    setRotationState({
+      ...rotationState,
+      currentGroupIndex: nextGroupIndex,
+    });
   };
 
   const handleSaveReflection = () => {
-    // Logic to save reflection
-    console.log('Saving reflection:', reflection);
+    if (!reflection.trim()) {
+      return;
+    }
+
+    // Create new reflection entry
+    const newReflection = {
+      id: Date.now(),
+      date: new Date().toLocaleString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      }),
+      prompt: currentPrompt,
+      group: currentGroup,
+      answer: reflection,
+    };
+
+    // Add to reflections history
+    setPastReflections([newReflection, ...pastReflections]);
+
+    // Move to next prompt in current group
+    const currentGroupIndex = rotationState.currentGroupIndex;
+    const currentPromptIndex = rotationState.promptIndexes[currentGroupIndex];
+    const totalPromptsInGroup =
+      reflectionPrompts[groupNames[currentGroupIndex]].length;
+
+    // Move to next prompt in the same group
+    const nextPromptIndex = (currentPromptIndex + 1) % totalPromptsInGroup;
+
+    // Update prompt indexes
+    const newPromptIndexes = [...rotationState.promptIndexes];
+    newPromptIndexes[currentGroupIndex] = nextPromptIndex;
+
+    // Move to next group
+    const nextGroupIndex = (currentGroupIndex + 1) % groupNames.length;
+
+    setRotationState({
+      currentGroupIndex: nextGroupIndex,
+      promptIndexes: newPromptIndexes,
+    });
+
+    // Clear reflection input
+    setReflection('');
   };
 
   return (
@@ -111,22 +148,43 @@ const Reflections = () => {
 
             {/* Content */}
             <div className='self-stretch flex flex-col justify-start items-start gap-5'>
+              {/* Category Badge */}
+              <div className='inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-full border border-purple-400/30'>
+                <div className="text-purple-200 text-xs font-semibold font-['Poppins'] uppercase tracking-wider">
+                  {currentGroup}
+                </div>
+              </div>
+
               <div className="justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
                 Daily Prompt
               </div>
 
               {/* Prompt Display */}
-              <div className='self-stretch h-10 p-2.5 bg-zinc-800 rounded border border-white/10 flex justify-between items-start'>
-                <div className="justify-start text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight">
-                  {prompt}
+              <div className='self-stretch min-h-[60px] p-4 bg-zinc-800 rounded border border-white/10 flex justify-start items-center'>
+                <div className="justify-start text-white text-sm font-normal font-['Poppins'] leading-relaxed">
+                  {currentPrompt}
                 </div>
               </div>
 
               {/* Refresh Button */}
               <button
                 onClick={handleRefreshPrompt}
-                className='h-10 px-2.5 py-2.5 bg-neutral-600 rounded border border-white/10 flex justify-start items-start gap-16 hover:bg-neutral-500 transition-colors'
+                className='h-10 px-4 py-2.5 bg-neutral-600 rounded border border-white/10 flex justify-start items-center gap-2 hover:bg-neutral-500 transition-colors'
               >
+                <svg
+                  className='w-4 h-4'
+                  viewBox='0 0 16 16'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14C9.17841 14 10.2784 13.6515 11.2 13.05M14 8L11.5 5.5M14 8L11.5 10.5'
+                    stroke='#d1d5db'
+                    strokeWidth='1.5'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
                 <div className="justify-start text-stone-300 text-sm font-normal font-['Poppins'] leading-tight tracking-tight">
                   Refresh Prompt
                 </div>
@@ -139,13 +197,18 @@ const Reflections = () => {
                   value={reflection}
                   onChange={(e) => setReflection(e.target.value)}
                   placeholder='Write your reflection here...'
-                  className="self-stretch h-32 p-2.5 bg-stone-900 rounded border border-white/10 text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight placeholder:text-zinc-500 resize-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                  className="self-stretch min-h-[140px] p-4 bg-stone-900 rounded border border-white/10 text-white text-sm font-normal font-['Poppins'] leading-relaxed placeholder:text-zinc-500 resize-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
                 />
 
                 {/* Save Button */}
                 <button
                   onClick={handleSaveReflection}
-                  className='px-6 py-3 rounded-lg flex justify-center items-center gap-2 hover:opacity-90 transition-opacity cursor-pointer'
+                  disabled={!reflection.trim()}
+                  className={`px-6 py-3 rounded-lg flex justify-center items-center gap-2 transition-opacity cursor-pointer ${
+                    !reflection.trim()
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:opacity-90'
+                  }`}
                   style={{
                     background:
                       'linear-gradient(89deg, #A33076 -2.62%, #353689 103.6%)',
@@ -194,19 +257,37 @@ const Reflections = () => {
             <div className='self-stretch flex justify-end items-start gap-1 relative'>
               {/* Scrollable Reflections List */}
               <div className='flex-1 max-h-[425px] flex flex-col justify-start items-start gap-4 overflow-y-auto pr-2 custom-scrollbar'>
-                {pastReflections.map((item) => (
-                  <div
-                    key={item.id}
-                    className='self-stretch p-2.5 bg-neutral-700/50 backdrop-blur-sm rounded-lg flex flex-col justify-start items-start gap-2.5 cursor-pointer hover:bg-neutral-600/60 transition-all duration-300 flex-shrink-0 border border-white/5 hover:border-white/10 hover:shadow-lg'
-                  >
-                    <div className="self-stretch justify-start text-white text-xs font-normal font-['Poppins']">
-                      {item.date}
-                    </div>
-                    <div className="self-stretch justify-start text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight">
-                      {item.prompt}
+                {pastReflections.length === 0 ? (
+                  <div className='w-full py-8 flex items-center justify-center'>
+                    <div className="text-zinc-500 text-sm text-center font-['Poppins']">
+                      No reflections yet.
+                      <br />
+                      Start journaling your thoughts!
                     </div>
                   </div>
-                ))}
+                ) : (
+                  pastReflections.map((item) => (
+                    <div
+                      key={item.id}
+                      className='self-stretch p-3 bg-neutral-700/50 backdrop-blur-sm rounded-lg flex flex-col justify-start items-start gap-2 cursor-pointer hover:bg-neutral-600/60 transition-all duration-300 flex-shrink-0 border border-white/5 hover:border-white/10 hover:shadow-lg'
+                    >
+                      <div className='flex items-center gap-2 mb-1'>
+                        <div className='px-2 py-0.5 bg-purple-600/30 rounded text-purple-300 text-[10px] font-semibold font-["Poppins"] uppercase tracking-wide'>
+                          {item.group}
+                        </div>
+                      </div>
+                      <div className="self-stretch justify-start text-zinc-300 text-xs font-normal font-['Poppins']">
+                        {item.date}
+                      </div>
+                      <div className="self-stretch justify-start text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight italic">
+                        "{item.prompt}"
+                      </div>
+                      <div className="self-stretch justify-start text-white text-sm font-normal font-['Poppins'] leading-relaxed mt-1">
+                        {item.answer}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -215,6 +296,24 @@ const Reflections = () => {
 
       {/* Feedback Button */}
       <FeedbackButton />
+
+      {/* Custom Scrollbar Styles */}
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(168, 85, 247, 0.5);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(168, 85, 247, 0.7);
+        }
+      `}</style>
     </div>
   );
 };

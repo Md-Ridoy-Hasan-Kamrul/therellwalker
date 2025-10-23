@@ -1,24 +1,47 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useTradeContext } from '../../context/TradeContext';
 import { toast } from 'react-toastify';
+import { calculatePnL } from '../../utils/calculatePnL';
 
 const TradeEntry = () => {
-  const navigate = useNavigate();
   const { addTrade } = useTradeContext();
+
+  // Get current date and time in required format
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const year = String(now.getFullYear()).slice(-2);
+    const hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours % 12 || 12;
+
+    return {
+      date: `${month}/${day}/${year}`,
+      time: `${String(displayHours).padStart(2, '0')}:${minutes}:${seconds}`,
+      period: period,
+    };
+  };
+
+  const currentDateTime = getCurrentDateTime();
+
   const [formData, setFormData] = useState({
-    date: '10/16/2025',
-    time: '04:32 PM',
-    period: 'PM',
-    ticker: '',
-    direction: 'Short',
-    entryPrice: 0,
-    exitPrice: 0,
-    stopLoss: 0,
-    takeProfit: 0,
+    date: currentDateTime.date,
+    time: currentDateTime.time,
+    period: currentDateTime.period,
+    ticker: 'NQ',
+    direction: 'Long',
+    entryPrice: '',
+    exitPrice: '',
+    stopLoss: '',
+    takeProfit: '',
     quantity: 1,
     notes: '',
   });
+
+  const tickers = ['NQ', 'YM', 'ES', 'MNQ', 'MYM', 'MES'];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,36 +58,20 @@ const TradeEntry = () => {
     }));
   };
 
-  const calculatePBL = () => {
-    const { entryPrice, exitPrice, quantity, direction, ticker } = formData;
-
-    // Point values for different tickers
-    const POINT_VALUES = {
-      NQ: 20,
-      YM: 5,
-      ES: 50,
-      MNQ: 2,
-      MYM: 0.5,
-      MES: 5,
-    };
-
-    const entry = Number(entryPrice);
-    const exit = Number(exitPrice);
-    const qty = Number(quantity);
-    const pointValue = POINT_VALUES[ticker.toUpperCase()] || 20;
-
-    let pointDifference = 0;
-    let pbl = 0;
-
-    if (direction === 'Long') {
-      pointDifference = exit - entry;
-      pbl = pointDifference * qty * pointValue;
-    } else {
-      pointDifference = entry - exit;
-      pbl = pointDifference * qty * pointValue;
+  const calculatedPnL = () => {
+    if (!formData.entryPrice || !formData.exitPrice || !formData.ticker) {
+      return 0;
     }
 
-    return pbl;
+    const { pnl } = calculatePnL(
+      formData.entryPrice,
+      formData.exitPrice,
+      formData.quantity,
+      formData.direction,
+      formData.ticker
+    );
+
+    return pnl;
   };
 
   const handleLogTrade = () => {
@@ -78,21 +85,32 @@ const TradeEntry = () => {
     }
 
     // Add trade using context
-    addTrade(formData);
+    const newTrade = addTrade(formData);
 
-    // Show success message
-    toast.success('Trade logged successfully!', {
+    // Show success message with trade ID
+    toast.success(`Trade #${newTrade.id} logged successfully!`, {
       position: 'bottom-right',
       autoClose: 2000,
     });
 
-    // Redirect to Trade Log after a short delay
-    setTimeout(() => {
-      navigate('/trade-log');
-    }, 2000);
+    // Reset form to default values
+    const resetDateTime = getCurrentDateTime();
+    setFormData({
+      date: resetDateTime.date,
+      time: resetDateTime.time,
+      period: resetDateTime.period,
+      ticker: 'NQ',
+      direction: 'Long',
+      entryPrice: '',
+      exitPrice: '',
+      stopLoss: '',
+      takeProfit: '',
+      quantity: 1,
+      notes: '',
+    });
   };
 
-  const pbl = calculatePBL();
+  const pnl = calculatedPnL();
 
   return (
     <div className='w-full p-10 bg-neutral-900 flex flex-col justify-start items-start gap-6'>
@@ -242,15 +260,23 @@ const TradeEntry = () => {
         <div className="justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
           Ticker
         </div>
-        <div className='self-stretch px-6 py-3 bg-white/10 rounded-lg border-none inline-flex justify-between items-center'>
-          <input
-            type='text'
-            name='ticker'
-            value={formData.ticker}
-            onChange={handleInputChange}
-            className="bg-transparent text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full"
-            placeholder=''
-          />
+        <div className='self-stretch flex justify-start items-center gap-3'>
+          {tickers.map((tickerOption) => (
+            <button
+              key={tickerOption}
+              type='button'
+              onClick={() => handleRadioChange('ticker', tickerOption)}
+              className={`px-6 py-3 rounded-lg transition-all ${
+                formData.ticker === tickerOption
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold'
+                  : 'bg-white/10 text-zinc-400 hover:bg-white/20'
+              }`}
+            >
+              <div className="text-sm font-medium font-['Poppins']">
+                {tickerOption}
+              </div>
+            </button>
+          ))}
         </div>
       </div>
 
@@ -655,14 +681,18 @@ const TradeEntry = () => {
         </div>
       </div>
 
-      {/* Calculated PBL and Log Trade Button */}
+      {/* Calculated PnL and Log Trade Button */}
       <div className='w-full flex flex-col justify-start items-center gap-11'>
-        <div className='w-32 flex flex-col justify-start items-start gap-3'>
-          <div className="self-stretch justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
-            Calculated PBL
+        <div className='w-full flex flex-col justify-start items-center gap-3'>
+          <div className="self-stretch text-center text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
+            Calculated P&L
           </div>
-          <div className="self-stretch justify-start text-white text-3xl font-medium font-['Poppins'] leading-normal">
-            {pbl >= 0 ? '+' : ''}${pbl.toFixed(2)}
+          <div
+            className={`self-stretch text-center text-3xl font-medium font-['Poppins'] leading-normal ${
+              pnl >= 0 ? 'text-green-500' : 'text-red-500'
+            }`}
+          >
+            {pnl >= 0 ? '+' : ''}${pnl.toFixed(2)}
           </div>
         </div>
         <button

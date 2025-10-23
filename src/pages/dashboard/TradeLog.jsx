@@ -93,15 +93,15 @@ const TradeLog = () => {
       headers.join(','), // Header row
       ...filteredTrades.map((trade) =>
         [
-          trade.id,
+          `#${trade.id}`,
           `"${trade.dateTime}"`, // Wrap in quotes to handle commas
           trade.ticker,
           trade.direction,
-          trade.entry,
-          trade.exit,
+          trade.entryPrice.toFixed(2),
+          trade.exitPrice.toFixed(2),
           trade.qty,
-          trade.pnl,
-          trade.notes,
+          trade.pnl.toFixed(2),
+          `"${trade.notes}"`,
         ].join(',')
       ),
     ];
@@ -378,7 +378,7 @@ const TradeLog = () => {
                 } flex items-center justify-between`}
               >
                 <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-                  {trade.id}
+                  #{trade.id}
                 </div>
                 <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[160px]">
                   {trade.dateTime}
@@ -390,10 +390,10 @@ const TradeLog = () => {
                   {trade.direction}
                 </div>
                 <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                  {trade.entry}
+                  ${trade.entryPrice.toFixed(2)}
                 </div>
                 <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                  {trade.exit}
+                  ${trade.exitPrice.toFixed(2)}
                 </div>
                 <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[60px]">
                   {trade.qty}
@@ -401,11 +401,11 @@ const TradeLog = () => {
                 <div
                   className={`${
                     trade.isProfitable ? 'text-green-500' : 'text-red-500'
-                  } text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[110px]`}
+                  } text-sm font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]`}
                 >
-                  {trade.pnl}
+                  {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
                 </div>
-                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
                   {trade.notes}
                 </div>
               </div>
