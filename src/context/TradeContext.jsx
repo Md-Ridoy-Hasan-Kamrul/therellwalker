@@ -129,8 +129,8 @@ export const TradeProvider = ({ children }) => {
     const maxId = Math.max(...tradeIds, 0);
     const newId = `#${String(maxId + 1).padStart(3, '0')}`;
 
-    // Format date and time
-    const dateTime = `${tradeData.date} ${tradeData.time}`;
+    // Format date and time with AM/PM
+    const dateTime = `${tradeData.date} ${tradeData.time} ${tradeData.period}`;
 
     // Create new trade object
     const newTrade = {
