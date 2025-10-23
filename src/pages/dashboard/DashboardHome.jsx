@@ -78,10 +78,10 @@ const EquityCurveChart = () => {
               <div className='w-full h-px absolute top-[220px] left-0 bg-neutral-400' />
 
               {/* Vertical Line from Point */}
-              <div className='w-px h-[220px] absolute left-[30%] top-0 bg-amber-400/30 border-l border-dashed border-amber-400' />
+              <div className='w-px h-[220px] absolute left-[25%] top-0 bg-amber-400/30 border-l border-dashed border-amber-400' />
 
               {/* Tooltip */}
-              <div className='w-20 p-2.5 absolute left-[calc(30%-40px)] top-[40px] bg-white rounded-lg inline-flex flex-col justify-start items-start gap-2 z-10 shadow-[0_10px_40px_rgba(0,0,0,0.4)] transform hover:scale-105 transition-transform'>
+              <div className='w-20 p-2.5 absolute left-[calc(25%-40px)] top-[40px] bg-white rounded-lg inline-flex flex-col justify-start items-start gap-2 z-10 shadow-[0_10px_40px_rgba(0,0,0,0.4)] transform hover:scale-105 transition-transform'>
                 <div className="text-slate-800 text-[10px] font-normal font-['Poppins']">
                   #002
                 </div>
@@ -91,7 +91,7 @@ const EquityCurveChart = () => {
               </div>
 
               {/* Data Point */}
-              <div className='w-3.5 h-3.5 bg-amber-400 rounded-full absolute left-[calc(30%-7px)] top-[103px] z-10 shadow-[0_0_20px_rgba(251,191,36,0.8),0_0_40px_rgba(251,191,36,0.4)]' />
+              <div className='w-3.5 h-3.5 bg-amber-400 rounded-full absolute left-[calc(25%-7px)] top-[103px] z-10 shadow-[0_0_20px_rgba(251,191,36,0.8),0_0_40px_rgba(251,191,36,0.4)]' />
             </div>
           </div>
 
@@ -167,13 +167,13 @@ const ProfitByDirectionChart = () => {
               <div className='w-full h-px absolute top-[220px] left-0 bg-white/50' />
 
               {/* Vertical Line from Bar */}
-              <div className='w-px h-[220px] absolute left-[25%] top-0 bg-white/30 border-l border-dashed border-white/50' />
+              <div className='w-px h-[220px] absolute left-[30%] top-0 bg-white/30 border-l border-dashed border-white/50' />
 
               {/* Bar for Long with 3D effect */}
-              <div className='w-24 h-[220px] rounded-tl-lg rounded-tr-lg absolute left-[calc(25%-48px)] bottom-0 bg-gradient-to-br from-purple-500 via-violet-600 to-purple-700 shadow-[0_10px_40px_rgba(139,92,246,0.5),inset_0_-2px_10px_rgba(0,0,0,0.3),inset_0_2px_10px_rgba(255,255,255,0.2)] transform hover:scale-105 transition-transform' />
+              <div className='w-24 h-[220px] rounded-tl-lg rounded-tr-lg absolute left-[calc(30%-48px)] bottom-0 bg-gradient-to-br from-purple-500 via-violet-600 to-purple-700 shadow-[0_10px_40px_rgba(139,92,246,0.5),inset_0_-2px_10px_rgba(0,0,0,0.3),inset_0_2px_10px_rgba(255,255,255,0.2)] transform hover:scale-105 transition-transform' />
 
               {/* Tooltip */}
-              <div className='w-24 p-2.5 bg-white rounded-lg flex flex-col justify-start items-start gap-2 absolute left-[calc(25%+20px)] top-[80px] z-10 shadow-[0_10px_40px_rgba(0,0,0,0.4)] transform hover:scale-105 transition-transform'>
+              <div className='w-24 p-2.5 bg-white rounded-lg flex flex-col justify-start items-start gap-2 absolute left-[calc(30%+20px)] top-[80px] z-10 shadow-[0_10px_40px_rgba(0,0,0,0.4)] transform hover:scale-105 transition-transform'>
                 <div className="text-neutral-600 text-[10px] font-normal font-['Epilogue']">
                   Long
                 </div>
@@ -186,7 +186,7 @@ const ProfitByDirectionChart = () => {
 
           {/* X-Axis Labels - Below chart */}
           <div
-            className='flex justify-between items-center mt-2'
+            className='flex items-center mt-2 relative'
             style={{
               marginLeft: '56px',
               width: 'calc(100% - 56px)',
@@ -194,14 +194,14 @@ const ProfitByDirectionChart = () => {
             }}
           >
             <div
-              className="text-center text-white text-sm font-normal font-['Poppins']"
-              style={{ marginLeft: '48px' }}
+              className="text-center text-white text-sm font-normal font-['Poppins'] absolute"
+              style={{ left: 'calc(30% - 24px)' }}
             >
               Long
             </div>
             <div
-              className="text-center text-white text-sm font-normal font-['Poppins']"
-              style={{ marginRight: '48px' }}
+              className="text-center text-white text-sm font-normal font-['Poppins'] absolute"
+              style={{ left: 'calc(70% - 24px)' }}
             >
               Short
             </div>
