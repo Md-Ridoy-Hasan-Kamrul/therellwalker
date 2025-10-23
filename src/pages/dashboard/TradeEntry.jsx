@@ -667,7 +667,11 @@ const TradeEntry = () => {
         </div>
         <button
           onClick={handleLogTrade}
-          className='w-full px-6 py-3 bg-gradient-to-l from-pink-700 to-indigo-900 rounded-lg inline-flex justify-center items-center gap-2 hover:opacity-90 transition-opacity cursor-pointer'
+          className='w-full px-6 py-3 rounded-lg inline-flex justify-center items-center gap-2 hover:opacity-90 transition-opacity cursor-pointer'
+          style={{
+            background:
+              'linear-gradient(89deg, #A33076 -2.62%, #353689 103.6%)',
+          }}
         >
           <div className="text-center justify-start text-white text-base font-semibold font-['Poppins'] leading-normal">
             Log Trade
