@@ -49,18 +49,18 @@ export const Header = ({ title }) => {
   };
 
   return (
-    <header className='w-full px-4 sm:px-8 md:px-11 py-5 bg-gradient-to-l from-gray-800 to-fuchsia-900 border-b border-slate-100/25 flex justify-between items-center'>
-      <h1 className="hidden md:block text-white text-2xl font-semibold font-['Poppins'] leading-loose">
+    <header className='w-full px-11 py-5 bg-gradient-to-t from-[#2C223B] to-[#892E6D] border-b border-slate-100/25 flex justify-between items-center'>
+      <h1 className="text-white text-2xl font-semibold font-['Poppins'] leading-loose">
         {title}
       </h1>
 
-      <div className='flex items-center gap-4'>
+      <div className='flex items-center gap-6'>
         <LogoIcon />
-        <div>
-          <h2 className="text-amber-400 text-2xl md:text-3xl font-semibold font-['Poppins']">
+        <div className='w-36 flex flex-col items-center'>
+          <h2 className="text-amber-400 text-3xl font-semibold font-['Poppins'] leading-10">
             MyLedger
           </h2>
-          <p className="text-amber-400 text-[10px] font-semibold font-['Poppins']">
+          <p className="self-stretch text-amber-400 text-[10px] font-semibold font-['Poppins'] leading-3">
             Track Trades, Train Mindset
           </p>
         </div>
