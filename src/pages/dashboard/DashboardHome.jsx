@@ -101,7 +101,8 @@ const EquityCurveChart = () => {
             style={{
               marginLeft: '56px',
               width: 'calc(100% - 56px)',
-              paddingRight: '4px',
+              paddingLeft: '20px',
+              paddingRight: '20px',
             }}
           >
             <div className="text-center text-white text-sm font-normal font-['Poppins']">
