@@ -243,7 +243,7 @@ const ProfitByDirectionChart = ({ longStats, shortStats }) => {
               />
             </BarChart>
           </ResponsiveContainer>
-          
+
           {/* Custom Legend positioned at bottom aligned with x-axis */}
           <div className='absolute -bottom-2 right-65 flex items-center gap-4 pb-1'>
             <div className='flex items-center gap-2'>
