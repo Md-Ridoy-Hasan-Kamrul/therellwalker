@@ -14,10 +14,10 @@ const navLinks = [
 
 export const Sidebar = () => {
   const baseStyle =
-    'w-full px-6 py-4 rounded-lg flex items-center gap-6 transition-all duration-200 h-16';
+    'w-full px-6 py-4 rounded-lg inline-flex items-center gap-6 transition-all duration-200 h-16';
 
   const activeStyle =
-    'bg-gradient-to-l from-gray-800 via-fuchsia-800 to-pink-500 shadow-[0px_20px_50px_0px_rgba(55,69,87,0.10)] text-white font-semibold';
+    'bg-gradient-to-r from-[#2C223B] via-[#942F73] to-[#862D6D] shadow-[0px_20px_50px_0px_rgba(55,69,87,0.10)] text-white font-semibold';
 
   const inactiveStyle = 'text-zinc-400 font-normal hover:bg-neutral-700/50';
 
