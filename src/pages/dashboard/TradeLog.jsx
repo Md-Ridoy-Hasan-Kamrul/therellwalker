@@ -1,80 +1,15 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import FeedbackButton from '../../components/common/FeedbackButton';
+import { useTradeContext } from '../../context/TradeContext';
 
 const TradeLog = () => {
+  const { trades } = useTradeContext();
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [filters, setFilters] = useState({
     timeOfDay: 'all', // 'all', 'am', 'pm'
     direction: 'all', // 'all', 'long', 'short'
   });
   const filterDropdownRef = useRef(null);
-
-  // Sample trade data
-  const trades = useMemo(
-    () => [
-      {
-        id: '#005',
-        dateTime: '10/16/2025 11:31 AM',
-        ticker: 'ES',
-        direction: 'Short',
-        entry: '$0.00',
-        exit: '$0.00',
-        qty: 1,
-        pnl: '+$0.00',
-        isProfitable: true,
-        notes: '-',
-      },
-      {
-        id: '#004',
-        dateTime: '10/17/2025 10:08 PM',
-        ticker: 'ES',
-        direction: 'Long',
-        entry: '$0.00',
-        exit: '$0.00',
-        qty: 1,
-        pnl: '+$0.00',
-        isProfitable: true,
-        notes: '-',
-      },
-      {
-        id: '#003',
-        dateTime: '10/16/2025 11:31 AM',
-        ticker: 'ES',
-        direction: 'Long',
-        entry: '$0.00',
-        exit: '$0.00',
-        qty: 1,
-        pnl: '+$0.00',
-        isProfitable: true,
-        notes: '-',
-      },
-      {
-        id: '#002',
-        dateTime: '10/16/2025 11:31 PM',
-        ticker: 'ES',
-        direction: 'Short',
-        entry: '$0.00',
-        exit: '$0.00',
-        qty: 1,
-        pnl: '+$0.00',
-        isProfitable: true,
-        notes: '-',
-      },
-      {
-        id: '#001',
-        dateTime: '10/17/2025 00:30 AM',
-        ticker: 'YM',
-        direction: 'Long',
-        entry: '$8000.00',
-        exit: '$2000.00',
-        qty: 1,
-        pnl: '$-6000.00',
-        isProfitable: false,
-        notes: '-',
-      },
-    ],
-    []
-  );
 
   // Click outside handler to close dropdown
   useEffect(() => {

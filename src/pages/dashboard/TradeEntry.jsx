@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTradeContext } from '../../context/TradeContext';
+import { toast } from 'react-toastify';
 
 const TradeEntry = () => {
+  const navigate = useNavigate();
+  const { addTrade } = useTradeContext();
   const [formData, setFormData] = useState({
     date: '10/16/2025',
     time: '04:32 PM',
@@ -31,14 +36,60 @@ const TradeEntry = () => {
   };
 
   const calculatePBL = () => {
-    const { entryPrice, exitPrice, quantity, direction } = formData;
+    const { entryPrice, exitPrice, quantity, direction, ticker } = formData;
+
+    // Point values for different tickers
+    const POINT_VALUES = {
+      NQ: 20,
+      YM: 5,
+      ES: 50,
+      MNQ: 2,
+      MYM: 0.5,
+      MES: 5,
+    };
+
+    const entry = Number(entryPrice);
+    const exit = Number(exitPrice);
+    const qty = Number(quantity);
+    const pointValue = POINT_VALUES[ticker.toUpperCase()] || 20;
+
+    let pointDifference = 0;
     let pbl = 0;
+
     if (direction === 'Long') {
-      pbl = (exitPrice - entryPrice) * quantity;
+      pointDifference = exit - entry;
+      pbl = pointDifference * qty * pointValue;
     } else {
-      pbl = (entryPrice - exitPrice) * quantity;
+      pointDifference = entry - exit;
+      pbl = pointDifference * qty * pointValue;
     }
+
     return pbl;
+  };
+
+  const handleLogTrade = () => {
+    // Validate required fields
+    if (!formData.ticker || !formData.entryPrice || !formData.exitPrice) {
+      toast.error('Please fill in Ticker, Entry Price, and Exit Price', {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    // Add trade using context
+    addTrade(formData);
+
+    // Show success message
+    toast.success('Trade logged successfully!', {
+      position: 'bottom-right',
+      autoClose: 2000,
+    });
+
+    // Redirect to Trade Log after a short delay
+    setTimeout(() => {
+      navigate('/trade-log');
+    }, 2000);
   };
 
   const pbl = calculatePBL();
@@ -614,7 +665,10 @@ const TradeEntry = () => {
             {pbl >= 0 ? '+' : ''}${pbl.toFixed(2)}
           </div>
         </div>
-        <button className='w-full px-6 py-3 bg-gradient-to-l from-pink-700 to-indigo-900 rounded-lg inline-flex justify-center items-center gap-2'>
+        <button
+          onClick={handleLogTrade}
+          className='w-full px-6 py-3 bg-gradient-to-l from-pink-700 to-indigo-900 rounded-lg inline-flex justify-center items-center gap-2 hover:opacity-90 transition-opacity cursor-pointer'
+        >
           <div className="text-center justify-start text-white text-base font-semibold font-['Poppins'] leading-normal">
             Log Trade
           </div>
