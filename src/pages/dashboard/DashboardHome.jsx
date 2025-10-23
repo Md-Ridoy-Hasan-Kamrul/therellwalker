@@ -3,26 +3,15 @@ import { FaChartBar, FaWallet, FaTrophy } from 'react-icons/fa';
 import FeedbackButton from '../../components/common/FeedbackButton';
 
 // Pixel-Perfect KPI Card Component with multi-layer gradient
-const KpiCard = ({
-  title,
-  value,
-  icon,
-  iconBgColor,
-  valueColor,
-  hasBottomGradient,
-}) => {
+const KpiCard = ({ title, value, icon, iconBgColor, valueColor }) => {
   const Icon = icon;
   return (
     // Main Card Container with RGB border glow effect
-    <div className='relative w-full h-48 rounded-2xl p-[1px] bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.30),0_0_30px_rgba(168,85,247,0.4)]'>
+    <div className='relative w-full h-48 rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
       <div
         className={`
           w-full h-full p-8 rounded-2xl flex flex-col justify-between 
-          ${
-            hasBottomGradient
-              ? 'bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(88deg,#5C2ED480_0.11%,#9E4FC766_63.8%)]'
-              : 'bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(88deg,rgba(92,46,212,0.5)_0.11%,rgba(158,79,199,0.4)_63.8%)]'
-          }
+          bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]
         `}
       >
         {/* Icon Container */}
@@ -51,8 +40,8 @@ const KpiCard = ({
 // Equity Curve Chart Component
 const EquityCurveChart = () => {
   return (
-    <div className='relative w-full min-h-[380px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.30),0_0_30px_rgba(168,85,247,0.4)]'>
-      <div className='w-full h-full px-6 pt-6 pb-12 rounded-2xl inline-flex flex-col justify-start items-start gap-2.5 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(88deg,rgba(92,46,212,0.5)_0.11%,rgba(158,79,199,0.4)_63.8%)]'>
+    <div className='relative w-full min-h-[380px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
+      <div className='w-full h-full px-6 pt-6 pb-12 rounded-2xl inline-flex flex-col justify-start items-start gap-2.5 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
         <div className='self-stretch flex flex-col justify-start items-start gap-6'>
           <div className="self-stretch justify-start text-white/95 text-xl font-semibold font-['Poppins'] leading-loose">
             Equity Curve
@@ -140,8 +129,8 @@ const EquityCurveChart = () => {
 // Profit by Direction Chart Component
 const ProfitByDirectionChart = () => {
   return (
-    <div className='relative w-full min-h-[380px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.30),0_0_30px_rgba(168,85,247,0.4)]'>
-      <div className='w-full h-full px-6 pt-6 pb-12 rounded-2xl inline-flex flex-col justify-start items-start gap-2.5 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(88deg,rgba(92,46,212,0.5)_0.11%,rgba(158,79,199,0.4)_63.8%)]'>
+    <div className='relative w-full min-h-[380px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
+      <div className='w-full h-full px-6 pt-6 pb-12 rounded-2xl inline-flex flex-col justify-start items-start gap-2.5 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
         <div className='flex flex-col justify-start items-start gap-6 w-full'>
           <div className="justify-start text-white text-xl font-semibold font-['Poppins'] leading-loose">
             Profit by Direction
@@ -234,7 +223,6 @@ const DashboardHome = () => {
           icon={FaChartBar}
           iconBgColor='bg-gradient-to-b from-purple-600 to-violet-700'
           valueColor='bg-gradient-to-r from-[#5C2ED4] to-[#9E4FC7] text-transparent bg-clip-text'
-          hasBottomGradient={true}
         />
         <KpiCard
           title='Total Profit'
@@ -242,7 +230,6 @@ const DashboardHome = () => {
           icon={FaWallet}
           iconBgColor='bg-gradient-to-b from-amber-400 to-amber-600'
           valueColor='text-amber-400'
-          hasBottomGradient={true}
         />
         <KpiCard
           title='Avg Take Profit'
@@ -250,7 +237,6 @@ const DashboardHome = () => {
           icon={FaTrophy}
           iconBgColor='bg-gradient-to-b from-pink-500 to-rose-600'
           valueColor='text-pink-400'
-          hasBottomGradient={true}
         />
       </div>
 
