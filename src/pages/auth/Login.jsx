@@ -62,7 +62,7 @@ const Login = () => {
                   <input
                     id='email'
                     type='email'
-                    placeholder='example@gmail.com'
+                    placeholder='kamrul@gmail.com'
                     {...register('email', { required: 'Email is required' })}
                     className="self-stretch px-6 py-3 bg-white/10 rounded-xl text-white text-base font-normal font-['Open_Sans'] leading-normal placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-violet-600"
                   />
@@ -81,7 +81,7 @@ const Login = () => {
                     <input
                       id='password'
                       type={showPassword ? 'text' : 'password'}
-                      placeholder='Aex@8465'
+                      placeholder='12345678'
                       {...register('password', {
                         required: 'Password is required',
                       })}
