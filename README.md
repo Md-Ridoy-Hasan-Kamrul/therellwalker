@@ -1,8 +1,8 @@
-# 📊 TherellWalker - Trading Journal Application
+#  TherellWalker - Trading Journal Application
 
 A professional trading journal platform designed to help traders track, analyze, and improve their trading performance through comprehensive trade logging and reflection features.
 
-## ✨ Features
+##  Features
 
 ### Authentication System
 
@@ -25,7 +25,7 @@ A professional trading journal platform designed to help traders track, analyze,
 - **Toast Notifications** - Real-time feedback for user actions
 - **Form Validation** - React Hook Form for robust input handling
 
-## 🚀 Tech Stack
+##  Tech Stack
 
 ### Frontend Framework
 
@@ -67,7 +67,7 @@ A professional trading journal platform designed to help traders track, analyze,
 - **Vite Plugin React** - Fast refresh and HMR
 - **MSW** - API mocking for seamless development
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 therellwalker/
@@ -126,7 +126,7 @@ therellwalker/
 └── vite.config.js                     # Vite configuration
 ```
 
-## 🎨 Design System
+##  Design System
 
 ### Colors
 
@@ -142,7 +142,7 @@ therellwalker/
 - **Buttons:** Lato (600 - Semibold)
 - **Google Button:** Poppins (600 - Semibold)
 
-## 🛠️ Installation & Setup
+##  Installation & Setup
 
 ### Prerequisites
 
@@ -175,14 +175,14 @@ therellwalker/
    http://localhost:5173
    ```
 
-## 📜 Available Scripts
+##  Available Scripts
 
 - **`npm run dev`** - Start development server with HMR
 - **`npm run build`** - Build production-ready application
 - **`npm run preview`** - Preview production build locally
 - **`npm run lint`** - Run ESLint for code quality checks
 
-## 🔐 Authentication Flow
+##  Authentication Flow
 
 ### Signup Process
 
@@ -206,7 +206,7 @@ therellwalker/
 4. Create new password → `/create-new-password`
 5. Password updated → Redirect to login
 
-## 🎯 Key Features Implementation
+##  Key Features Implementation
 
 ### Protected Routes
 
@@ -233,7 +233,7 @@ therellwalker/
 - LocalStorage for session persistence
 - Custom hooks for reusable logic
 
-## 🚧 Future Enhancements
+##  Future Enhancements
 
 - [ ] Trade analytics and charts
 - [ ] Performance metrics dashboard
@@ -244,7 +244,7 @@ therellwalker/
 - [ ] Social features (share reflections)
 - [ ] AI-powered trade insights
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -254,16 +254,17 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
+##  License
 
 This project is private and proprietary.
 
-## 👨‍💻 Developer
+##  Developer
 
-Built with ❤️ by the TherellWalker Team
+Built with  by the TherellWalker Team
 
 ---
 
 **Note:** This is a client project built with production-level architecture and modern best practices.
-#   t h e r e l l w a l k e r _ - 5 0 0 _ W e b _ o p e r a  
+#   t h e r e l l w a l k e r _ - 5 0 0 _ W e b _ o p e r a 
+ 
  
