@@ -6,6 +6,8 @@ const Reflections = () => {
   const [reflection, setReflection] = useState('');
   const [currentPrompt, setCurrentPrompt] = useState('');
   const [currentGroup, setCurrentGroup] = useState('');
+  const [selectedReflection, setSelectedReflection] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Load saved reflections and rotation state from localStorage
   const [pastReflections, setPastReflections] = useState(() => {
@@ -108,11 +110,21 @@ const Reflections = () => {
     setReflection('');
   };
 
+  const handleOpenModal = (item) => {
+    setSelectedReflection(item);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedReflection(null);
+  };
+
   return (
     <div className='flex gap-6 w-full h-full'>
       {/* Left Section - Reflection Input */}
       <div
-        className='w-[75%] h-fit min-h-[440px] rounded-2xl flex flex-col justify-between items-start gap-2.5 relative overflow-hidden backdrop-blur-xl'
+        className='w-[75%] h-[600px] rounded-2xl flex flex-col justify-between items-start gap-2.5 relative overflow-hidden backdrop-blur-xl'
         style={{
           background:
             'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
@@ -226,7 +238,7 @@ const Reflections = () => {
 
       {/* Right Section - Past Reflections */}
       <div
-        className='w-[40%] h-fit min-h-[440px] rounded-2xl flex flex-col justify-start items-start gap-2.5 relative overflow-hidden backdrop-blur-xl'
+        className='w-[40%] h-[600px] rounded-2xl flex flex-col justify-start items-start gap-2.5 relative overflow-hidden backdrop-blur-xl'
         style={{
           background:
             'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
@@ -256,7 +268,7 @@ const Reflections = () => {
 
             <div className='self-stretch flex justify-end items-start gap-1 relative'>
               {/* Scrollable Reflections List */}
-              <div className='flex-1 max-h-[425px] flex flex-col justify-start items-start gap-4 overflow-y-auto pr-2 custom-scrollbar'>
+              <div className='flex-1 max-h-[480px] flex flex-col justify-start items-start gap-4 overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar'>
                 {pastReflections.length === 0 ? (
                   <div className='w-full py-8 flex items-center justify-center'>
                     <div className="text-zinc-500 text-sm text-center font-['Poppins']">
@@ -269,7 +281,8 @@ const Reflections = () => {
                   pastReflections.map((item) => (
                     <div
                       key={item.id}
-                      className='self-stretch p-3 bg-neutral-700/50 backdrop-blur-sm rounded-lg flex flex-col justify-start items-start gap-2 cursor-pointer hover:bg-neutral-600/60 transition-all duration-300 flex-shrink-0 border border-white/5 hover:border-white/10 hover:shadow-lg'
+                      onClick={() => handleOpenModal(item)}
+                      className='self-stretch w-full p-3 bg-neutral-700/50 backdrop-blur-sm rounded-lg flex flex-col justify-start items-start gap-2 cursor-pointer hover:bg-neutral-600/60 transition-all duration-300 flex-shrink-0 border border-white/5 hover:border-white/10 hover:shadow-lg'
                     >
                       <div className='flex items-center gap-2 mb-1'>
                         <div className='px-2 py-0.5 bg-purple-600/30 rounded text-purple-300 text-[10px] font-semibold font-["Poppins"] uppercase tracking-wide'>
@@ -279,10 +292,10 @@ const Reflections = () => {
                       <div className="self-stretch justify-start text-zinc-300 text-xs font-normal font-['Poppins']">
                         {item.date}
                       </div>
-                      <div className="self-stretch justify-start text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight italic">
+                      <div className="self-stretch justify-start text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight italic break-words overflow-wrap-anywhere">
                         "{item.prompt}"
                       </div>
-                      <div className="self-stretch justify-start text-white text-sm font-normal font-['Poppins'] leading-relaxed mt-1">
+                      <div className="self-stretch justify-start text-white text-sm font-normal font-['Poppins'] leading-relaxed mt-1 break-words overflow-wrap-anywhere line-clamp-3">
                         {item.answer}
                       </div>
                     </div>
@@ -296,6 +309,81 @@ const Reflections = () => {
 
       {/* Feedback Button */}
       <FeedbackButton />
+
+      {/* Modal for viewing full reflection */}
+      {isModalOpen && selectedReflection && (
+        <div
+          className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm'
+          onClick={handleCloseModal}
+        >
+          <div
+            className='relative w-full max-w-2xl mx-4 rounded-2xl overflow-hidden backdrop-blur-xl'
+            style={{
+              background:
+                'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+              boxShadow:
+                '0px 8px 32px 0px rgba(0, 0, 0, 0.8), inset 0px 1px 1px 0px rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className='flex items-center justify-between p-6 border-b border-white/10'>
+              <div className='flex items-center gap-3'>
+                <div className='px-3 py-1 bg-purple-600/30 rounded-full text-purple-300 text-xs font-semibold font-["Poppins"] uppercase tracking-wide'>
+                  {selectedReflection.group}
+                </div>
+                <div className="text-zinc-300 text-sm font-normal font-['Poppins']">
+                  {selectedReflection.date}
+                </div>
+              </div>
+              <button
+                onClick={handleCloseModal}
+                className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors'
+              >
+                <svg
+                  className='w-5 h-5 text-white'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
+                    d='M6 18L18 6M6 6l12 12'
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className='p-6 max-h-[70vh] overflow-y-auto custom-scrollbar'>
+              <div className='flex flex-col gap-4'>
+                {/* Prompt */}
+                <div>
+                  <div className="text-zinc-400 text-sm font-medium font-['Poppins'] mb-2">
+                    Prompt
+                  </div>
+                  <div className="text-zinc-300 text-base font-normal font-['Poppins'] leading-relaxed italic break-words">
+                    "{selectedReflection.prompt}"
+                  </div>
+                </div>
+
+                {/* Answer */}
+                <div>
+                  <div className="text-zinc-400 text-sm font-medium font-['Poppins'] mb-2">
+                    Your Reflection
+                  </div>
+                  <div className="text-white text-base font-normal font-['Poppins'] leading-relaxed break-words whitespace-pre-wrap">
+                    {selectedReflection.answer}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Custom Scrollbar Styles */}
       <style jsx>{`
