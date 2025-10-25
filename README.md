@@ -193,8 +193,5 @@ Built by the TherellWalker Team
 
 ---
 
-Note: I cleaned formatting, fixed typos (e.g., "Levender" → "Lavender"), removed the stray non-printable characters at the end of the original file, removed impossible or likely incorrect pinned version numbers, fixed headings and grammar, and improved clarity. If you want I can:
-- keep exact dependency versions (provide which ones),
-- push this updated README to a new branch and open a PR,
-- or make additional style/content edits. Which would you like next?
-```
+
+
