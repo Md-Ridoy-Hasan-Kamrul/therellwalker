@@ -193,8 +193,5 @@ Built by the TherellWalker Team
 
 ---
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 027aa33a2620cf205e3359fbdae1e061c9fe94a0
