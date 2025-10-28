@@ -33,11 +33,16 @@ const Login = () => {
         login(response.data);
         navigate('/');
       } else {
-        toast.error(response.message || 'Login failed');
+        toast.error(response.message || 'Login failed', {
+          autoClose: 3000,
+        });
       }
     } catch (error) {
       toast.error(
-        error.message || 'Login failed. Please check your credentials.'
+        error.message || 'Login failed. Please check your credentials.',
+        {
+          autoClose: 3000,
+        }
       );
       console.error('Login error:', error);
     } finally {
@@ -63,7 +68,9 @@ const Login = () => {
         login(response.data);
         navigate('/');
       } else {
-        toast.error(response.message || 'Google sign-in failed');
+        toast.error(response.message || 'Google sign-in failed', {
+          autoClose: 3000,
+        });
       }
     } catch (error) {
       console.error('Google sign-in error:', error);
@@ -71,10 +78,14 @@ const Login = () => {
         error.message?.includes('not found') ||
         error.message?.includes('Please sign up')
       ) {
-        toast.error('Account not found! Please sign up first.');
+        toast.error('Account not found! Please sign up first.', {
+          autoClose: 3000,
+        });
         setTimeout(() => navigate('/signup'), 2000);
       } else {
-        toast.error(error.message || 'Google sign-in failed');
+        toast.error(error.message || 'Google sign-in failed', {
+          autoClose: 3000,
+        });
       }
     } finally {
       setLoading(false);
@@ -82,7 +93,9 @@ const Login = () => {
   };
 
   const handleGoogleError = () => {
-    toast.error('Google sign-in was cancelled or failed');
+    toast.error('Google sign-in was cancelled or failed', {
+      autoClose: 3000,
+    });
   };
 
   return (
