@@ -37,7 +37,9 @@ export const Sidebar = ({ onClose }) => {
               }
             >
               <Icon className='w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0' />
-              <span className="text-base sm:text-lg font-['Poppins']">{link.text}</span>
+              <span className="text-base sm:text-lg font-['Poppins']">
+                {link.text}
+              </span>
             </NavLink>
           );
         })}

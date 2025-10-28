@@ -331,88 +331,88 @@ const TradeLog = () => {
       {/* Table Section with Horizontal Scroll */}
       <div className='self-stretch w-full overflow-x-auto'>
         <div className='min-w-[800px] rounded flex flex-col justify-start items-start'>
-        {/* Table Header */}
-        <div className='w-full px-2 py-3 sm:py-4 bg-stone-900 flex items-center justify-between'>
-          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-            Trade ID
-          </div>
-          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[160px]">
-            Date/Time
-          </div>
-          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-            Ticker
-          </div>
-          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-            Direction
-          </div>
-          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-            Entry
-          </div>
-          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-            Exit
-          </div>
-          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[60px]">
-            Qty
-          </div>
-          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]">
-            P&L
-          </div>
-          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-            Notes
-          </div>
-        </div>
-
-        {/* Table Rows */}
-        <div className='w-full flex flex-col justify-start items-start'>
-          {filteredTrades.length === 0 ? (
-            <div className='w-full px-2 py-8 bg-zinc-800 flex items-center justify-center'>
-              <div className="text-zinc-400 text-base font-medium font-['Poppins']">
-                No trades found matching the selected filters.
-              </div>
+          {/* Table Header */}
+          <div className='w-full px-2 py-3 sm:py-4 bg-stone-900 flex items-center justify-between'>
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+              Trade ID
             </div>
-          ) : (
-            filteredTrades.map((trade, index) => (
-              <div
-                key={trade.id}
-                className={`w-full px-2 py-3 sm:py-4 ${
-                  index % 2 === 0 ? 'bg-zinc-800' : 'bg-stone-900'
-                } flex items-center justify-between`}
-              >
-                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-                  #{trade.id}
-                </div>
-                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[160px]">
-                  {trade.dateTime}
-                </div>
-                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-                  {trade.ticker}
-                </div>
-                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                  {trade.direction}
-                </div>
-                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                  ${trade.entryPrice.toFixed(2)}
-                </div>
-                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                  ${trade.exitPrice.toFixed(2)}
-                </div>
-                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[60px]">
-                  {trade.qty}
-                </div>
-                <div
-                  className={`${
-                    trade.isProfitable ? 'text-green-500' : 'text-red-500'
-                  } text-xs sm:text-sm font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]`}
-                >
-                  {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
-                </div>
-                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
-                  {trade.notes}
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[160px]">
+              Date/Time
+            </div>
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+              Ticker
+            </div>
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+              Direction
+            </div>
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+              Entry
+            </div>
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+              Exit
+            </div>
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[60px]">
+              Qty
+            </div>
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]">
+              P&L
+            </div>
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+              Notes
+            </div>
+          </div>
+
+          {/* Table Rows */}
+          <div className='w-full flex flex-col justify-start items-start'>
+            {filteredTrades.length === 0 ? (
+              <div className='w-full px-2 py-8 bg-zinc-800 flex items-center justify-center'>
+                <div className="text-zinc-400 text-base font-medium font-['Poppins']">
+                  No trades found matching the selected filters.
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            ) : (
+              filteredTrades.map((trade, index) => (
+                <div
+                  key={trade.id}
+                  className={`w-full px-2 py-3 sm:py-4 ${
+                    index % 2 === 0 ? 'bg-zinc-800' : 'bg-stone-900'
+                  } flex items-center justify-between`}
+                >
+                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+                    #{trade.id}
+                  </div>
+                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[160px]">
+                    {trade.dateTime}
+                  </div>
+                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+                    {trade.ticker}
+                  </div>
+                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                    {trade.direction}
+                  </div>
+                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                    ${trade.entryPrice.toFixed(2)}
+                  </div>
+                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                    ${trade.exitPrice.toFixed(2)}
+                  </div>
+                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[60px]">
+                    {trade.qty}
+                  </div>
+                  <div
+                    className={`${
+                      trade.isProfitable ? 'text-green-500' : 'text-red-500'
+                    } text-xs sm:text-sm font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]`}
+                  >
+                    {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
+                  </div>
+                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
+                    {trade.notes}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
 

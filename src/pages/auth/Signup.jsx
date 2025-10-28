@@ -162,7 +162,9 @@ const Signup = () => {
               type='button'
               onClick={() => {
                 // Trigger Google signup
-                const googleBtn = document.querySelector('[aria-labelledby="button-label"]');
+                const googleBtn = document.querySelector(
+                  '[aria-labelledby="button-label"]'
+                );
                 if (googleBtn) googleBtn.click();
               }}
               disabled={loading}

@@ -51,7 +51,7 @@ export const DashboardLayout = () => {
       <div className='flex-shrink-0 z-30'>
         <Header title={title} onMenuClick={toggleSidebar} />
       </div>
-      
+
       {/* Main Content Area with Sidebar - Critical: min-h-0 for flex overflow */}
       <div className='flex flex-1 min-h-0 overflow-hidden relative'>
         {/* Mobile Overlay */}
@@ -67,13 +67,17 @@ export const DashboardLayout = () => {
           className={`
             fixed md:relative inset-y-0 left-0 z-50 md:z-auto
             transform transition-transform duration-300 ease-in-out
-            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            ${
+              isSidebarOpen
+                ? 'translate-x-0'
+                : '-translate-x-full md:translate-x-0'
+            }
             flex-shrink-0 overflow-y-auto
           `}
         >
           <Sidebar onClose={() => setIsSidebarOpen(false)} />
         </div>
-        
+
         {/* Scrollable Content Area - This will scroll */}
         <main className='flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 md:p-8'>
           <Outlet />

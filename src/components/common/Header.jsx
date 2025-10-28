@@ -84,7 +84,10 @@ export const Header = ({ title, onMenuClick }) => {
       </div>
 
       {/* User Profile Section */}
-      <div className='relative flex items-center gap-2 sm:gap-4' ref={dropdownRef}>
+      <div
+        className='relative flex items-center gap-2 sm:gap-4'
+        ref={dropdownRef}
+      >
         <img
           className='w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl object-cover flex-shrink-0'
           src='https://placehold.co/60x60/FFF/000?text=S'
@@ -110,7 +113,7 @@ export const Header = ({ title, onMenuClick }) => {
             }`}
           />
         </div>
-        
+
         {/* Mobile: Avatar click to open dropdown */}
         <button
           onClick={toggleDropdown}

@@ -210,7 +210,9 @@ const Login = () => {
               type='button'
               onClick={() => {
                 // Trigger Google login
-                const googleBtn = document.querySelector('[aria-labelledby="button-label"]');
+                const googleBtn = document.querySelector(
+                  '[aria-labelledby="button-label"]'
+                );
                 if (googleBtn) googleBtn.click();
               }}
               className='self-stretch px-6 py-3 bg-white rounded-[20px] shadow-[0px_5px_35px_0px_rgba(18,18,18,0.05)] inline-flex justify-center items-center gap-4 hover:bg-gray-50 transition-colors'
