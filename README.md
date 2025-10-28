@@ -5,24 +5,28 @@ A professional trading journal platform to help traders track, analyze, and impr
 ## Features
 
 ### Authentication
+
 - Secure login & registration with email verification
 - Password recovery with OTP verification
 - Protected routes for authenticated users
 - Google OAuth sign-in
 
 ### Trading Management
+
 - Trade entry with detailed fields
 - Trade log to view and manage trading history
 - Automatic profit & loss calculation
 - Trading reflections and notes
 
 ### User Experience
+
 - Responsive, mobile-first design using Tailwind CSS
 - Dark theme with purple gradients
 - Toast notifications for real-time feedback
 - Robust form validation with React Hook Form
 
 ## Tech Stack
+
 - Frontend: React (latest stable), Vite (latest stable)
 - Routing: React Router DOM
 - Styling: Tailwind CSS
@@ -96,12 +100,14 @@ therellwalker/
 ## Design System
 
 Colors
+
 - Background: #0D061A (deep purple)
 - Cards: #1B0C33 (card background)
 - Primary: #8B5CF6 / #7C3AED (brand violet)
 - Inputs: semi-transparent white overlays
 
 Typography
+
 - Headings: Lato (semibold)
 - Body: Open Sans (regular)
 - Buttons: Lato (semibold)
@@ -110,10 +116,12 @@ Typography
 ## Installation & Setup
 
 Prerequisites
+
 - Node.js (v18+ recommended)
 - npm or yarn
 
 Quick start
+
 1. Clone the repository
    ```bash
    git clone <repository-url>
@@ -134,6 +142,7 @@ Quick start
 4. Open http://localhost:5173
 
 ## Available Scripts
+
 - npm run dev — start dev server (HMR)
 - npm run build — build production assets
 - npm run preview — preview production build
@@ -142,6 +151,7 @@ Quick start
 ## Authentication Flow
 
 Signup:
+
 1. /signup — enter name and email
 2. /email-verification — email verification step
 3. /verify-otp — enter OTP
@@ -149,11 +159,13 @@ Signup:
 5. Redirect to dashboard
 
 Login:
+
 1. /login — enter credentials
 2. Validate and store session token
 3. Redirect to dashboard
 
 Password reset:
+
 1. /forgot-password — request reset
 2. Email with OTP
 3. /reset-password-otp — verify OTP
@@ -169,6 +181,7 @@ Password reset:
 - AuthContext + localStorage used for session persistence
 
 ## Future Enhancements
+
 - Trade analytics & charts
 - Performance dashboard
 - Export (CSV/PDF)
@@ -179,6 +192,7 @@ Password reset:
 - AI-powered trade insights
 
 ## Contributing
+
 1. Fork the repo
 2. Create a branch: git checkout -b feature/YourFeature
 3. Commit: git commit -m "Add feature"
@@ -186,12 +200,11 @@ Password reset:
 5. Open a Pull Request
 
 ## License
+
 Private / proprietary
 
 ## Developer
+
 Built by the TherellWalker Team
 
 ---
-
-
-
