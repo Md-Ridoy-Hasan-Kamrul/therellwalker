@@ -5,6 +5,7 @@ import {
   IoChevronDown,
   IoLogOutOutline,
   IoPersonOutline,
+  IoMenuOutline,
 } from 'react-icons/io5';
 
 const LogoIcon = () => (
@@ -13,7 +14,7 @@ const LogoIcon = () => (
   </div>
 );
 
-export const Header = ({ title }) => {
+export const Header = ({ title, onMenuClick }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -54,15 +55,26 @@ export const Header = ({ title }) => {
   };
 
   return (
-    <header className='w-full px-11 py-5 bg-gradient-to-t from-[#2C223B] to-[#892E6D] border-b border-slate-100/25 flex justify-between items-center'>
-      <h1 className="text-white text-2xl font-semibold font-['Poppins'] leading-loose">
-        {title}
-      </h1>
+    <header className='w-full px-4 sm:px-6 md:px-8 lg:px-11 py-4 sm:py-5 bg-gradient-to-t from-[#2C223B] to-[#892E6D] border-b border-slate-100/25 flex justify-between items-center gap-4'>
+      {/* Mobile Menu Button & Title */}
+      <div className='flex items-center gap-3 sm:gap-4 flex-1 md:flex-none'>
+        <button
+          onClick={onMenuClick}
+          className='md:hidden text-white hover:text-amber-400 transition-colors p-2 -ml-2'
+          aria-label='Toggle menu'
+        >
+          <IoMenuOutline className='w-6 h-6 sm:w-7 sm:h-7' />
+        </button>
+        <h1 className="text-white text-lg sm:text-xl md:text-2xl font-semibold font-['Poppins'] leading-tight sm:leading-loose truncate">
+          {title}
+        </h1>
+      </div>
 
-      <div className='flex items-center gap-6'>
+      {/* Logo Section - Hidden on small screens */}
+      <div className='hidden lg:flex items-center gap-4 xl:gap-6'>
         <LogoIcon />
-        <div className='w-36 flex flex-col items-center'>
-          <h2 className="text-amber-400 text-3xl font-semibold font-['Poppins'] leading-10">
+        <div className='w-32 xl:w-36 flex flex-col items-center'>
+          <h2 className="text-amber-400 text-2xl xl:text-3xl font-semibold font-['Poppins'] leading-8 xl:leading-10">
             MyLedger
           </h2>
           <p className="self-stretch text-amber-400 text-[10px] font-semibold font-['Poppins'] leading-3">
@@ -71,9 +83,10 @@ export const Header = ({ title }) => {
         </div>
       </div>
 
-      <div className='relative flex items-center gap-4' ref={dropdownRef}>
+      {/* User Profile Section */}
+      <div className='relative flex items-center gap-2 sm:gap-4' ref={dropdownRef}>
         <img
-          className='w-12 h-12 md:w-14 md:h-14 rounded-2xl object-cover'
+          className='w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl object-cover flex-shrink-0'
           src='https://placehold.co/60x60/FFF/000?text=S'
           alt='User avatar'
         />
@@ -81,22 +94,29 @@ export const Header = ({ title }) => {
           className='hidden sm:flex items-center gap-2 cursor-pointer'
           onClick={toggleDropdown}
         >
-          <div>
-            <p className="text-white text-base font-medium font-['Poppins']">
+          <div className='max-w-[120px] md:max-w-none'>
+            <p className="text-white text-sm md:text-base font-medium font-['Poppins'] truncate">
               {userName}
             </p>
             {userEmail && (
-              <p className="text-white/70 text-xs font-normal font-['Poppins']">
+              <p className="text-white/70 text-xs font-normal font-['Poppins'] truncate">
                 {userEmail}
               </p>
             )}
           </div>
           <IoChevronDown
-            className={`text-white w-5 h-5 transition-transform duration-200 ${
+            className={`text-white w-4 h-4 md:w-5 md:h-5 transition-transform duration-200 flex-shrink-0 ${
               isDropdownOpen ? 'rotate-180' : ''
             }`}
           />
         </div>
+        
+        {/* Mobile: Avatar click to open dropdown */}
+        <button
+          onClick={toggleDropdown}
+          className='sm:hidden absolute inset-0'
+          aria-label='Open user menu'
+        />
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (

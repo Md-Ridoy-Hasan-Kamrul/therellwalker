@@ -20,27 +20,27 @@ const KpiCard = ({ title, value, icon, iconBgColor, valueColor }) => {
   const Icon = icon;
   return (
     // Main Card Container with RGB border glow effect
-    <div className='relative w-full h-48 rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
+    <div className='relative w-full min-h-[160px] sm:min-h-[180px] md:h-48 rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
       <div
         className={`
-          w-full h-full p-8 rounded-2xl flex flex-col justify-between 
+          w-full h-full p-5 sm:p-6 md:p-8 rounded-2xl flex flex-col justify-between 
           bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]
         `}
       >
         {/* Icon Container */}
         <div
-          className={`w-12 h-12 ${iconBgColor} rounded-full flex items-center justify-center flex-shrink-0`}
+          className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 ${iconBgColor} rounded-full flex items-center justify-center flex-shrink-0`}
         >
-          <Icon className='w-6 h-6 text-white' />
+          <Icon className='w-5 h-5 sm:w-5.5 sm:h-5.5 md:w-6 md:h-6 text-white' />
         </div>
 
         {/* Text Content Container */}
-        <div className='flex flex-col gap-1'>
-          <p className='text-white text-4xl font-semibold font-["Poppins"] leading-tight'>
+        <div className='flex flex-col gap-0.5 sm:gap-1'>
+          <p className='text-white text-2xl sm:text-3xl md:text-4xl font-semibold font-["Poppins"] leading-tight'>
             {value}
           </p>
           <p
-            className={`text-lg font-medium font-["Poppins"] leading-normal ${valueColor}`}
+            className={`text-base sm:text-lg font-medium font-["Poppins"] leading-normal ${valueColor}`}
           >
             {title}
           </p>
@@ -106,16 +106,16 @@ const CustomDirectionTooltip = ({ active, payload }) => {
 // Equity Curve Chart Component
 const EquityCurveChart = ({ data }) => {
   return (
-    <div className='relative w-full min-h-[380px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
-      <div className='w-full h-full px-6 pt-6 pb-6 rounded-2xl flex flex-col justify-start items-start gap-4 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
-        <div className="self-stretch justify-start text-white/95 text-xl font-semibold font-['Poppins'] leading-loose">
+    <div className='relative w-full min-h-[320px] sm:min-h-[360px] md:min-h-[380px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
+      <div className='w-full h-full px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-4 sm:pb-5 md:pb-6 rounded-2xl flex flex-col justify-start items-start gap-3 sm:gap-4 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
+        <div className="self-stretch justify-start text-white/95 text-base sm:text-lg md:text-xl font-semibold font-['Poppins'] leading-tight sm:leading-loose">
           Equity Curve
         </div>
 
-        <ResponsiveContainer width='100%' height={300}>
+        <ResponsiveContainer width='100%' height={280}>
           <LineChart
             data={data}
-            margin={{ top: 5, right: 30, left: 20, bottom: 30 }}
+            margin={{ top: 5, right: 10, left: 0, bottom: 30 }}
           >
             <CartesianGrid
               strokeDasharray='3 3'
@@ -124,26 +124,27 @@ const EquityCurveChart = ({ data }) => {
             <XAxis
               dataKey='tradeId'
               stroke='rgba(255,255,255,0.7)'
-              tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 12 }}
+              tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11 }}
               height={20}
               label={{
                 value: 'Trade ID',
                 position: 'insideBottom',
                 offset: -30,
                 fill: 'rgba(255,255,255,0.8)',
-                style: { textAnchor: 'middle' },
+                style: { textAnchor: 'middle', fontSize: 12 },
               }}
             />
             <YAxis
               stroke='rgba(255,255,255,0.7)'
-              tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 12 }}
+              tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11 }}
+              width={60}
               label={{
                 value: 'Balance ($)',
                 angle: -90,
                 position: 'insideLeft',
-                dx: -10,
+                dx: -5,
                 fill: 'rgba(255,255,255,0.8)',
-                style: { textAnchor: 'middle' },
+                style: { textAnchor: 'middle', fontSize: 12 },
               }}
             />
             <Tooltip content={<CustomEquityTooltip />} />
@@ -151,10 +152,10 @@ const EquityCurveChart = ({ data }) => {
               type='monotone'
               dataKey='equity'
               stroke='#fbbf24'
-              strokeWidth={3}
-              dot={{ fill: '#fbbf24', strokeWidth: 2, r: 5 }}
+              strokeWidth={2}
+              dot={{ fill: '#fbbf24', strokeWidth: 2, r: 4 }}
               activeDot={{
-                r: 8,
+                r: 6,
                 fill: '#fbbf24',
                 stroke: '#fff',
                 strokeWidth: 2,
@@ -193,17 +194,17 @@ const ProfitByDirectionChart = ({ longStats, shortStats }) => {
   ];
 
   return (
-    <div className='relative w-full min-h-[380px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
-      <div className='w-full h-full px-6 pt-6 pb-6 rounded-2xl flex flex-col justify-start items-start gap-4 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
-        <div className="justify-start text-white text-xl font-semibold font-['Poppins'] leading-loose">
+    <div className='relative w-full min-h-[320px] sm:min-h-[360px] md:min-h-[380px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
+      <div className='w-full h-full px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-4 sm:pb-5 md:pb-6 rounded-2xl flex flex-col justify-start items-start gap-3 sm:gap-4 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
+        <div className="justify-start text-white text-base sm:text-lg md:text-xl font-semibold font-['Poppins'] leading-tight sm:leading-loose">
           Profit by Direction
         </div>
 
         <div className='relative w-full'>
-          <ResponsiveContainer width='100%' height={300}>
+          <ResponsiveContainer width='100%' height={280}>
             <BarChart
               data={data}
-              margin={{ top: 5, right: 30, left: 20, bottom: 30 }}
+              margin={{ top: 5, right: 10, left: 0, bottom: 30 }}
             >
               <CartesianGrid
                 strokeDasharray='3 3'
@@ -212,20 +213,21 @@ const ProfitByDirectionChart = ({ longStats, shortStats }) => {
               <XAxis
                 dataKey='direction'
                 stroke='rgba(255,255,255,0.7)'
-                tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 14 }}
+                tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 13 }}
                 height={20}
-                padding={{ left: 30, right: 30 }}
+                padding={{ left: 20, right: 20 }}
               />
               <YAxis
                 stroke='rgba(255,255,255,0.7)'
-                tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 12 }}
+                tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11 }}
+                width={50}
                 label={{
                   value: 'Number of Trades',
                   angle: -90,
                   position: 'insideLeft',
-                  dx: -10,
+                  dx: -5,
                   fill: 'rgba(255,255,255,0.8)',
-                  style: { textAnchor: 'middle' },
+                  style: { textAnchor: 'middle', fontSize: 11 },
                 }}
               />
               <Tooltip content={<CustomDirectionTooltip />} />
@@ -245,16 +247,16 @@ const ProfitByDirectionChart = ({ longStats, shortStats }) => {
           </ResponsiveContainer>
 
           {/* Custom Legend positioned at bottom aligned with x-axis */}
-          <div className='absolute -bottom-2 right-65 flex items-center gap-4 pb-1'>
+          <div className='flex items-center justify-center gap-4 sm:gap-6 mt-2'>
             <div className='flex items-center gap-2'>
               <div className='w-3 h-3 rounded-full bg-[#ef4444]'></div>
-              <span className="text-white/90 text-sm font-medium font-['Poppins']">
+              <span className="text-white/90 text-xs sm:text-sm font-medium font-['Poppins']">
                 Losses
               </span>
             </div>
             <div className='flex items-center gap-2'>
               <div className='w-3 h-3 rounded-full bg-[#10b981]'></div>
-              <span className="text-white/90 text-sm font-medium font-['Poppins']">
+              <span className="text-white/90 text-xs sm:text-sm font-medium font-['Poppins']">
                 Wins
               </span>
             </div>

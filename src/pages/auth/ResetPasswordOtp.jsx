@@ -76,11 +76,11 @@ const ResetPasswordOtp = () => {
 
   return (
     <div
-      className='min-h-screen w-full flex justify-center items-center p-5'
+      className='min-h-screen w-full flex justify-center items-center p-3 sm:p-5'
       style={{ backgroundColor: '#0D061A' }}
     >
       <div
-        className='w-[600px] p-20 rounded-[20px] backdrop-blur-[200px] inline-flex justify-start items-center gap-2.5'
+        className='w-full max-w-[600px] p-6 sm:p-10 md:p-16 lg:p-20 rounded-[20px] backdrop-blur-[200px] inline-flex justify-start items-center gap-2.5'
         style={{ backgroundColor: '#1B0C33' }}
       >
         <form

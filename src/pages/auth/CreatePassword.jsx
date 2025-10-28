@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import authService from '../../api/authService';
-import { FcGoogle } from 'react-icons/fc';
 import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
 
 const CreatePassword = () => {
@@ -62,11 +61,11 @@ const CreatePassword = () => {
 
   return (
     <div
-      className='min-h-screen w-full flex justify-center items-center p-5'
+      className='min-h-screen w-full flex justify-center items-center p-3 sm:p-5'
       style={{ backgroundColor: '#0D061A' }}
     >
       <div
-        className='w-[600px] p-20 rounded-[20px] backdrop-blur-[200px] inline-flex justify-start items-center gap-2.5'
+        className='w-full max-w-[600px] p-6 sm:p-10 md:p-16 lg:p-20 rounded-[20px] backdrop-blur-[200px] inline-flex justify-start items-center gap-2.5'
         style={{ backgroundColor: '#1B0C33' }}
       >
         <form
@@ -193,34 +192,16 @@ const CreatePassword = () => {
               {loading ? 'Creating Account...' : 'Sign up'}
             </div>
           </button>
-          <div className='self-stretch inline-flex justify-center items-center gap-3'>
-            <div className='w-32 h-0 outline-1 outline-neutral-600 outline-offset-[-0.50px]'></div>
+          <div className='self-stretch inline-flex justify-center items-center gap-2'>
             <div className="text-center justify-start text-white text-base font-normal font-['Open_Sans'] leading-normal">
-              Or sign in with
+              Have an account already?
             </div>
-            <div className='w-32 h-0 outline-1 outline-neutral-600 outline-offset-[-0.50px]'></div>
-          </div>
-          <div className='self-stretch h-24 flex flex-col justify-start items-center gap-8'>
-            <button
-              type='button'
-              className='self-stretch flex-1 min-w-11 px-6 py-3.5 bg-white rounded-[100px] shadow-[0px_5px_35px_0px_rgba(18,18,18,0.05)] inline-flex justify-center items-center gap-4 hover:bg-gray-50 transition-colors'
+            <Link
+              to='/login'
+              className="text-center justify-start text-violet-600 text-base font-normal font-['Open_Sans'] underline leading-normal hover:text-violet-500"
             >
-              <FcGoogle size={20} />
-              <span className="text-gray-900 text-sm font-semibold font-['Poppins']">
-                Continue with Google
-              </span>
-            </button>
-            <div className='self-stretch inline-flex justify-center items-center gap-2'>
-              <div className="text-center justify-start text-white text-base font-normal font-['Open_Sans'] leading-normal">
-                Have an account already?
-              </div>
-              <Link
-                to='/login'
-                className="text-center justify-start text-violet-600 text-base font-normal font-['Open_Sans'] underline leading-normal hover:text-violet-500"
-              >
-                Sign in
-              </Link>
-            </div>
+              Sign in
+            </Link>
           </div>
         </form>
       </div>

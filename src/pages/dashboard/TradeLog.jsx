@@ -128,20 +128,20 @@ const TradeLog = () => {
   };
 
   return (
-    <div className='w-full bg-neutral-900 inline-flex flex-col justify-start items-start gap-10 p-6'>
+    <div className='w-full bg-neutral-900 inline-flex flex-col justify-start items-start gap-6 sm:gap-8 md:gap-10 p-4 sm:p-5 md:p-6'>
       {/* Header Section */}
-      <div className='self-stretch inline-flex justify-between items-start flex-wrap'>
-        <div className="text-white text-2xl font-semibold font-['Poppins'] leading-loose">
+      <div className='self-stretch inline-flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0'>
+        <div className="text-white text-xl sm:text-2xl font-semibold font-['Poppins'] leading-tight sm:leading-loose">
           Trade Log
         </div>
-        <div className='flex justify-start items-center gap-11'>
+        <div className='flex justify-start items-center gap-6 sm:gap-8 md:gap-11 flex-wrap'>
           {/* Filter Button with Dropdown */}
           <div className='relative' ref={filterDropdownRef}>
             <div
-              className='flex justify-start items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity'
+              className='flex justify-start items-center gap-3 sm:gap-4 cursor-pointer hover:opacity-80 transition-opacity'
               onClick={() => setShowFilterDropdown(!showFilterDropdown)}
             >
-              <div className='w-6 h-6 relative overflow-hidden'>
+              <div className='w-6 h-6 relative overflow-hidden flex-shrink-0'>
                 <svg
                   className='w-5 h-4 absolute left-[2.25px] top-[3.75px]'
                   viewBox='0 0 20 16'
@@ -154,7 +154,7 @@ const TradeLog = () => {
                   />
                 </svg>
               </div>
-              <div className="text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
+              <div className="text-zinc-400 text-sm sm:text-base font-medium font-['Poppins'] leading-normal">
                 Filter
                 {hasActiveFilters && (
                   <span className='ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-semibold text-white bg-indigo-500 rounded-full'>
@@ -305,10 +305,10 @@ const TradeLog = () => {
           </div>
           {/* Export Button */}
           <div
-            className='flex justify-start items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity'
+            className='flex justify-start items-center gap-3 sm:gap-4 cursor-pointer hover:opacity-80 transition-opacity'
             onClick={handleExport}
           >
-            <div className='w-6 h-6 relative overflow-hidden'>
+            <div className='w-6 h-6 relative overflow-hidden flex-shrink-0'>
               <svg
                 className='w-4 h-5 absolute left-[3.75px] top-[1.50px]'
                 viewBox='0 0 16 20'
@@ -321,48 +321,49 @@ const TradeLog = () => {
                 />
               </svg>
             </div>
-            <div className="text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
+            <div className="text-zinc-400 text-sm sm:text-base font-medium font-['Poppins'] leading-normal">
               Export
             </div>
           </div>
         </div>
       </div>
 
-      {/* Table Section */}
-      <div className='self-stretch rounded flex flex-col justify-start items-start w-full'>
+      {/* Table Section with Horizontal Scroll */}
+      <div className='self-stretch w-full overflow-x-auto'>
+        <div className='min-w-[800px] rounded flex flex-col justify-start items-start'>
         {/* Table Header */}
-        <div className='w-full px-2 py-4 bg-stone-900 flex items-center justify-between'>
-          <div className="text-white text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+        <div className='w-full px-2 py-3 sm:py-4 bg-stone-900 flex items-center justify-between'>
+          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
             Trade ID
           </div>
-          <div className="text-white text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[160px]">
+          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[160px]">
             Date/Time
           </div>
-          <div className="text-white text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
             Ticker
           </div>
-          <div className="text-white text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
             Direction
           </div>
-          <div className="text-white text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
             Entry
           </div>
-          <div className="text-white text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
             Exit
           </div>
-          <div className="text-white text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[60px]">
+          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[60px]">
             Qty
           </div>
-          <div className="text-white text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]">
+          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]">
             P&L
           </div>
-          <div className="text-white text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+          <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
             Notes
           </div>
         </div>
 
         {/* Table Rows */}
-        <div className='self-stretch flex flex-col justify-start items-start w-full'>
+        <div className='w-full flex flex-col justify-start items-start'>
           {filteredTrades.length === 0 ? (
             <div className='w-full px-2 py-8 bg-zinc-800 flex items-center justify-center'>
               <div className="text-zinc-400 text-base font-medium font-['Poppins']">
@@ -373,44 +374,45 @@ const TradeLog = () => {
             filteredTrades.map((trade, index) => (
               <div
                 key={trade.id}
-                className={`w-full px-2 py-4 ${
+                className={`w-full px-2 py-3 sm:py-4 ${
                   index % 2 === 0 ? 'bg-zinc-800' : 'bg-stone-900'
                 } flex items-center justify-between`}
               >
-                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
                   #{trade.id}
                 </div>
-                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[160px]">
+                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[160px]">
                   {trade.dateTime}
                 </div>
-                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
                   {trade.ticker}
                 </div>
-                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
                   {trade.direction}
                 </div>
-                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
                   ${trade.entryPrice.toFixed(2)}
                 </div>
-                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
                   ${trade.exitPrice.toFixed(2)}
                 </div>
-                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[60px]">
+                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[60px]">
                   {trade.qty}
                 </div>
                 <div
                   className={`${
                     trade.isProfitable ? 'text-green-500' : 'text-red-500'
-                  } text-sm font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]`}
+                  } text-xs sm:text-sm font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]`}
                 >
                   {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
                 </div>
-                <div className="text-white text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
+                <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
                   {trade.notes}
                 </div>
               </div>
             ))
           )}
+        </div>
         </div>
       </div>
 
