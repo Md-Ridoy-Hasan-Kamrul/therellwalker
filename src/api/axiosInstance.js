@@ -1,15 +1,14 @@
 // src/api/axiosInstance.js
 import axios from 'axios';
 import { mockApiCalls } from './mockFallback';
+import Cookies from 'js-cookie';
 
 // Environment variable theke base URL nilam
-// Local e '/api' use hobe (MSW mock er jonno)
-// Production e real backend URL use hobe
+// Real backend URL use hobe for auth, baki gulo MSW te thakbe
 const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
 
-// Check if we should use mock fallback (production e jodi backend na thake)
-const useMockFallback =
-  import.meta.env.MODE === 'production' && baseURL === '/api';
+// Check if we should use mock fallback (only for non-auth endpoints)
+const useMockFallback = import.meta.env.MODE === 'development';
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
@@ -17,12 +16,14 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Cookies er jonno
 });
 
 // Request Interceptor: Shob request-er sathe token pathabe
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken'); // localStorage theke token nilam
+    // Cookies theke token nilam
+    const token = Cookies.get('authToken');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
@@ -39,10 +40,13 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    // Production e jodi backend na thake (405/404 error), mock fallback use korbo
-    if (useMockFallback && error.response?.status >= 400) {
-      const originalRequest = error.config;
+    const originalRequest = error.config;
 
+    // Auth endpoints er jonno mock fallback use korbo na
+    const isAuthEndpoint = originalRequest.url?.includes('/auth/');
+
+    // Production e jodi backend na thake (405/404 error) ebong auth endpoint na hoy, mock fallback use korbo
+    if (useMockFallback && !isAuthEndpoint && error.response?.status >= 400) {
       try {
         const mockData = await mockApiCalls(
           originalRequest.url,
@@ -65,7 +69,8 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status === 401) {
       // Jodi token invalid hoy, user-ke logout koraye dibe
-      localStorage.removeItem('authToken');
+      Cookies.remove('authToken');
+      localStorage.removeItem('user');
       window.location.href = '/login'; // Login page-e pathaye dilam
     }
     return Promise.reject(error);

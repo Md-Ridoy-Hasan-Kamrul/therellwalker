@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
+import authService from '../../api/authService';
 
 const CreateNewPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -19,13 +21,34 @@ const CreateNewPassword = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Change password logic here
-      console.log('New password:', data.password);
-      toast.success('Password changed successfully!');
-      navigate('/login');
+      setLoading(true);
+      // Get email from localStorage
+      const email = localStorage.getItem('resetEmail');
+
+      if (!email) {
+        toast.error('Email not found. Please start from beginning.');
+        navigate('/forgot-password');
+        return;
+      }
+
+      // Call forgot-password API
+      const response = await authService.forgotPassword(email, data.password);
+
+      if (response.success) {
+        toast.success('Password changed successfully!');
+        // Clean up
+        localStorage.removeItem('resetEmail');
+        navigate('/login');
+      } else {
+        toast.error(response.message || 'Failed to change password');
+      }
     } catch (error) {
-      toast.error('Failed to change password. Please try again.');
+      toast.error(
+        error.message || 'Failed to change password. Please try again.'
+      );
       console.error('Create new password error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -162,17 +185,18 @@ const CreateNewPassword = () => {
           <div className='self-stretch flex flex-col justify-start items-start gap-7'>
             <button
               type='submit'
-              className='self-stretch px-6 py-3 rounded-[65px] inline-flex justify-center items-center gap-2 transition-all duration-200 hover:shadow-lg'
+              disabled={loading}
+              className='self-stretch px-6 py-3 rounded-[65px] inline-flex justify-center items-center gap-2 transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed'
               style={{ backgroundColor: '#8B5CF6' }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = '#7C3AED')
+                !loading && (e.currentTarget.style.backgroundColor = '#7C3AED')
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = '#8B5CF6')
+                !loading && (e.currentTarget.style.backgroundColor = '#8B5CF6')
               }
             >
               <div className="text-center justify-start text-white text-base font-semibold font-['Lato'] leading-normal">
-                Change Password
+                {loading ? 'Changing Password...' : 'Change Password'}
               </div>
             </button>
             <button

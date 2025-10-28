@@ -19,6 +19,11 @@ export const Header = ({ title }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  // Get user name from localStorage or user object
+  const userName =
+    localStorage.getItem('userName') || user?.fname || user?.name || 'Guest';
+  const userEmail = user?.email || '';
+
   // Dropdown er baire click korle dropdown close hobe
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -78,11 +83,11 @@ export const Header = ({ title }) => {
         >
           <div>
             <p className="text-white text-base font-medium font-['Poppins']">
-              {user ? user.name : 'Guest'}
+              {userName}
             </p>
-            {user && user.email && (
+            {userEmail && (
               <p className="text-white/70 text-xs font-normal font-['Poppins']">
-                {user.email}
+                {userEmail}
               </p>
             )}
           </div>

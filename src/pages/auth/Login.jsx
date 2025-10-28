@@ -3,13 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../hooks/useAuth';
-import { api } from '../../api/axiosInstance';
-import { endpoints } from '../../api/httpEndpoints';
+import authService from '../../api/authService';
 import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
-import { FcGoogle } from 'react-icons/fc';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -20,14 +20,69 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await api.post(endpoints.auth.login, data);
-      toast.success('Login successful!');
-      login(response.data);
-      navigate('/');
+      setLoading(true);
+      const response = await authService.login(data.email, data.password);
+
+      if (response.success && response.data) {
+        // Save user name locally for display
+        const userName =
+          response.data.user.fname || response.data.user.lname || 'User';
+        localStorage.setItem('userName', userName);
+
+        toast.success('Login successful!');
+        login(response.data);
+        navigate('/');
+      } else {
+        toast.error(response.message || 'Login failed');
+      }
     } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
+      toast.error(
+        error.message || 'Login failed. Please check your credentials.'
+      );
       console.error('Login error:', error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      const response = await authService.googleSignin(
+        credentialResponse.credential
+      );
+      console.log('Google Sign-In Response:', response);
+
+      if (response.success && response.data) {
+        // Save user name locally for display
+        const userName =
+          response.data.user.fname || response.data.user.lname || 'User';
+        localStorage.setItem('userName', userName);
+
+        toast.success(`Welcome back, ${userName}!`);
+        login(response.data);
+        navigate('/');
+      } else {
+        toast.error(response.message || 'Google sign-in failed');
+      }
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      if (
+        error.message?.includes('not found') ||
+        error.message?.includes('Please sign up')
+      ) {
+        toast.error('Account not found! Please sign up first.');
+        setTimeout(() => navigate('/signup'), 2000);
+      } else {
+        toast.error(error.message || 'Google sign-in failed');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    toast.error('Google sign-in was cancelled or failed');
   };
 
   return (
@@ -116,17 +171,18 @@ const Login = () => {
           </div>
           <button
             type='submit'
-            className='self-stretch px-6 py-3 rounded-[65px] inline-flex justify-center items-center gap-2 transition-colors'
+            disabled={loading}
+            className='self-stretch px-6 py-3 rounded-[65px] inline-flex justify-center items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
             style={{ backgroundColor: '#7C3AED' }}
             onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = '#6D28D9')
+              !loading && (e.currentTarget.style.backgroundColor = '#6D28D9')
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = '#7C3AED')
+              !loading && (e.currentTarget.style.backgroundColor = '#7C3AED')
             }
           >
             <div className="text-center justify-start text-white text-base font-semibold font-['Lato'] leading-normal">
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
             </div>
           </button>
           <div className='self-stretch inline-flex justify-center items-center gap-3'>
@@ -137,15 +193,16 @@ const Login = () => {
             <div className='w-32 h-0 outline-1 outline-neutral-600 outline-offset-[-0.50px]'></div>
           </div>
           <div className='self-stretch h-24 flex flex-col justify-start items-center gap-8'>
-            <button
-              type='button'
-              className='self-stretch flex-1 min-w-11 px-6 py-3.5 bg-white rounded-[100px] shadow-[0px_5px_35px_0px_rgba(18,18,18,0.05)] inline-flex justify-center items-center gap-4 hover:bg-gray-50 transition-colors'
-            >
-              <FcGoogle size={20} />
-              <span className="text-gray-900 text-sm font-semibold font-['Poppins']">
-                Continue with Google
-              </span>
-            </button>
+            <div className='self-stretch flex-1 min-w-11 flex justify-center items-center'>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                theme='filled_blue'
+                size='large'
+                text='signin_with'
+                width='320'
+              />
+            </div>
             <div className='self-stretch inline-flex justify-center items-center gap-2'>
               <div className="text-center justify-start text-white text-base font-normal font-['Open_Sans'] leading-normal">
                 Don't have an account?

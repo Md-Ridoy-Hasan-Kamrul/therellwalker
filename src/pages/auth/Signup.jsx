@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { FcGoogle } from 'react-icons/fc';
+import { GoogleLogin } from '@react-oauth/google';
+import { useAuth } from '../../hooks/useAuth';
+import authService from '../../api/authService';
 
 const Signup = () => {
   const {
@@ -11,17 +13,59 @@ const Signup = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
     try {
-      // Store signup data temporarily (you can use context or localStorage)
-      localStorage.setItem('signupData', JSON.stringify(data));
+      // Store signup data temporarily (First name and Last name)
+      const signupData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+      };
+      localStorage.setItem('signupData', JSON.stringify(signupData));
       toast.success('Please verify your email!');
       navigate('/email-verification');
     } catch (error) {
       toast.error('Signup failed. Please try again.');
       console.error('Signup error:', error);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      const response = await authService.googleSignup(
+        credentialResponse.credential
+      );
+
+      if (response.success && response.data) {
+        // Save user name locally for display
+        const userName =
+          response.data.user.fname || response.data.user.lname || 'User';
+        localStorage.setItem('userName', userName);
+
+        toast.success(`Welcome, ${userName}!`);
+        login(response.data);
+        navigate('/');
+      } else {
+        toast.error(response.message || 'Google sign-up failed');
+      }
+    } catch (error) {
+      console.error('Google sign-up error:', error);
+      if (error.message?.includes('already exists')) {
+        toast.error('Account already exists! Please sign in.');
+        setTimeout(() => navigate('/login'), 2000);
+      } else {
+        toast.error(error.message || 'Google sign-up failed');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    toast.error('Google sign-up was cancelled or failed');
   };
 
   return (
@@ -114,15 +158,17 @@ const Signup = () => {
             <div className='w-32 h-0 outline-1 outline-neutral-600 outline-offset-[-0.50px]'></div>
           </div>
           <div className='self-stretch h-24 flex flex-col justify-start items-center gap-8'>
-            <button
-              type='button'
-              className='self-stretch flex-1 min-w-11 px-6 py-3.5 bg-white rounded-[100px] shadow-[0px_5px_35px_0px_rgba(18,18,18,0.05)] inline-flex justify-center items-center gap-4 hover:bg-gray-50 transition-colors'
-            >
-              <FcGoogle size={20} />
-              <span className="text-gray-900 text-sm font-semibold font-['Poppins']">
-                Continue with Google
-              </span>
-            </button>
+            <div className='self-stretch flex-1 min-w-11 flex justify-center items-center'>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                theme='filled_blue'
+                size='large'
+                text='signup_with'
+                width='320'
+                disabled={loading}
+              />
+            </div>
             <div className='self-stretch inline-flex justify-center items-center gap-2'>
               <div className="text-center justify-start text-white text-base font-normal font-['Open_Sans'] leading-normal">
                 Have an account already?

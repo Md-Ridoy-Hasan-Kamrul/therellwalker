@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import authService from '../../api/authService';
 
 const ResetPasswordOtp = () => {
   const {
@@ -10,16 +11,62 @@ const ResetPasswordOtp = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
 
   const onSubmit = async (formData) => {
     try {
-      // Verify OTP logic here
-      console.log('OTP Code:', formData.code);
-      toast.success('Code verified! You can now reset your password.');
-      navigate('/create-new-password'); // Navigate to create new password page
+      setLoading(true);
+      // Get email from localStorage
+      const email = localStorage.getItem('resetEmail');
+
+      if (!email) {
+        toast.error('Email not found. Please start from beginning.');
+        navigate('/forgot-password');
+        return;
+      }
+
+      // Verify OTP
+      const response = await authService.verifyOtp(email, formData.code);
+
+      if (response.success) {
+        toast.success('Code verified! You can now reset your password.');
+        navigate('/create-new-password');
+      } else {
+        toast.error(response.message || 'Invalid code');
+      }
     } catch (error) {
-      toast.error('Invalid code. Please try again.');
+      toast.error(error.message || 'Invalid code. Please try again.');
       console.error('OTP verification error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      setResending(true);
+      const email = localStorage.getItem('resetEmail');
+
+      if (!email) {
+        toast.error('Email not found. Please start from beginning.');
+        navigate('/forgot-password');
+        return;
+      }
+
+      // Resend OTP
+      const response = await authService.sendOtp(email);
+
+      if (response.success) {
+        toast.success('Code sent again to your email!');
+      } else {
+        toast.error(response.message || 'Failed to resend code');
+      }
+    } catch (error) {
+      toast.error(error.message || 'Failed to resend code');
+      console.error('Resend OTP error:', error);
+    } finally {
+      setResending(false);
     }
   };
 
@@ -75,6 +122,15 @@ const ResetPasswordOtp = () => {
                       {errors.code.message}
                     </p>
                   )}
+                  {/* Resend OTP Button */}
+                  <button
+                    type='button'
+                    onClick={handleResendOtp}
+                    disabled={resending}
+                    className='text-violet-400 hover:text-violet-300 text-sm underline disabled:opacity-50'
+                  >
+                    {resending ? 'Resending...' : 'Resend OTP'}
+                  </button>
                 </div>
               </div>
             </div>
@@ -82,17 +138,18 @@ const ResetPasswordOtp = () => {
           <div className='self-stretch flex flex-col justify-start items-start gap-7'>
             <button
               type='submit'
-              className='self-stretch px-6 py-3 rounded-[65px] inline-flex justify-center items-center gap-2 transition-all duration-200 hover:shadow-lg'
+              disabled={loading}
+              className='self-stretch px-6 py-3 rounded-[65px] inline-flex justify-center items-center gap-2 transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed'
               style={{ backgroundColor: '#8B5CF6' }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = '#7C3AED')
+                !loading && (e.currentTarget.style.backgroundColor = '#7C3AED')
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = '#8B5CF6')
+                !loading && (e.currentTarget.style.backgroundColor = '#8B5CF6')
               }
             >
               <div className="text-center justify-start text-white text-base font-semibold font-['Lato'] leading-normal">
-                Verify
+                {loading ? 'Verifying...' : 'Verify'}
               </div>
             </button>
             <button

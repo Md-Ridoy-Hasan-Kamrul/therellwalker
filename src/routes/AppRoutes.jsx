@@ -31,10 +31,10 @@ const AppRouter = () => {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <ProtectedRoute />, // Ei "Guard" ta ekhon Dashboard ke protect korbe
+      element: <ProtectedRoute />,
       children: [
         {
-          element: <MainLayout />, // Shob protected page e MainLayout thakbe
+          element: <MainLayout />,
           children: [
             { index: true, element: <DashboardHome /> },
             { path: 'trade-entry', element: <TradeEntry /> },

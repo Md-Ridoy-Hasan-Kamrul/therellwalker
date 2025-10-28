@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import authService from '../../api/authService';
 
 const EmailVerification = () => {
   const {
@@ -10,16 +11,27 @@ const EmailVerification = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (formData) => {
     try {
-      // Send verification code logic here
-      console.log('Email:', formData.email);
-      toast.success('Verification code sent!');
-      navigate('/verify-otp'); // Navigate to OTP verification page
+      setLoading(true);
+      // Call send-otp API
+      const response = await authService.sendOtp(formData.email);
+
+      if (response.success) {
+        // Save email to localStorage
+        localStorage.setItem('signupEmail', formData.email);
+        toast.success('Verification code sent to your email!');
+        navigate('/verify-otp'); // Navigate to OTP verification page
+      } else {
+        toast.error(response.message || 'Failed to send code');
+      }
     } catch (error) {
-      toast.error('Failed to send code. Please try again.');
+      toast.error(error.message || 'Failed to send code. Please try again.');
       console.error('Email verification error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,10 +80,11 @@ const EmailVerification = () => {
           <button
             onClick={handleSubmit(onSubmit)}
             type='submit'
-            className='self-stretch px-6 py-3 bg-violet-600 rounded-[65px] inline-flex justify-center items-center gap-2 hover:bg-violet-700 transition-colors'
+            disabled={loading}
+            className='self-stretch px-6 py-3 bg-violet-600 rounded-[65px] inline-flex justify-center items-center gap-2 hover:bg-violet-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
           >
             <div className="text-center justify-start text-white text-base font-semibold font-['Lato'] leading-normal">
-              Send Code
+              {loading ? 'Sending...' : 'Send Code'}
             </div>
           </button>
           <div className='self-stretch inline-flex justify-center items-center gap-3'>
