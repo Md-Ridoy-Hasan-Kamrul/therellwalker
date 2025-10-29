@@ -1,14 +1,192 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import userService from '../../api/userService';
 import {
   IoPersonOutline,
   IoMailOutline,
   IoCalendarOutline,
   IoShieldCheckmarkOutline,
+  IoCameraOutline,
+  IoCloseCircleOutline,
+  IoCheckmarkCircleOutline,
 } from 'react-icons/io5';
 
 const Profile = () => {
   const { user } = useAuth();
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const fileInputRef = useRef(null);
+
+  // Fetch profile data from backend
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const response = await userService.getProfile();
+        if (response.success) {
+          setProfileData(response.data);
+          // Update user context with fresh data
+          const userData = JSON.parse(localStorage.getItem('user') || '{}');
+          localStorage.setItem(
+            'user',
+            JSON.stringify({
+              ...userData,
+              ...response.data,
+              name: `${response.data.fname} ${response.data.lname}`,
+            })
+          );
+        }
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // Handle file selection
+  const handleFileSelect = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setUploadSuccess(false);
+
+      console.log(
+        'Uploading file:',
+        file.name,
+        'Size:',
+        file.size,
+        'Type:',
+        file.type
+      );
+
+      const response = await userService.updateProfilePhoto(file);
+
+      console.log('Upload response:', response);
+
+      if (response.success) {
+        // Backend returns full user data, extract profilePic
+        const updatedProfilePic = response.data.profilePic;
+
+        // Update profile data with new photo URL
+        setProfileData((prev) => ({
+          ...prev,
+          profilePic: updatedProfilePic,
+        }));
+
+        // Update localStorage
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+        localStorage.setItem(
+          'user',
+          JSON.stringify({
+            ...userData,
+            profilePic: updatedProfilePic,
+          })
+        );
+
+        setUploadSuccess(true);
+        setTimeout(() => setUploadSuccess(false), 3000);
+      }
+    } catch (err) {
+      console.error('Error uploading photo:', err);
+      const errorMessage = err.message || err.error || 'Failed to upload photo';
+
+      if (errorMessage === 'Route not found') {
+        alert(
+          'The photo upload endpoint is not yet available on the backend. Please contact the backend team to implement: POST /api/users/profile/photo'
+        );
+      } else {
+        alert(`Upload failed: ${errorMessage}`);
+      }
+    } finally {
+      setUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  // Handle delete photo
+  const handleDeletePhoto = async () => {
+    if (
+      !window.confirm('Are you sure you want to remove your profile photo?')
+    ) {
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const response = await userService.deleteProfilePhoto();
+
+      if (response.success) {
+        // Update profile data to remove photo
+        setProfileData((prev) => ({
+          ...prev,
+          profilePic: null,
+        }));
+
+        // Update localStorage
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+        localStorage.setItem(
+          'user',
+          JSON.stringify({
+            ...userData,
+            profilePic: null,
+          })
+        );
+
+        alert('Profile photo removed successfully');
+      }
+    } catch (err) {
+      console.error('Error deleting photo:', err);
+      alert(err.message || 'Failed to delete photo');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const fullName = profileData
+    ? `${profileData.fname} ${profileData.lname}`
+    : user?.name || 'User Name';
+
+  const email = profileData?.email || user?.email || 'email@example.com';
+  const isVerified = profileData?.isVerified ?? true;
+  const memberSince = profileData?.createdAt
+    ? new Date(profileData.createdAt).toLocaleDateString('en-US', {
+        month: 'long',
+        year: 'numeric',
+      })
+    : new Date().toLocaleDateString('en-US', {
+        month: 'long',
+        year: 'numeric',
+      });
+
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center min-h-[400px]'>
+        <div className='text-white text-xl'>Loading profile...</div>
+      </div>
+    );
+  }
 
   return (
     <div className='flex flex-col gap-6'>
@@ -28,32 +206,85 @@ const Profile = () => {
         <div className='relative bg-gradient-to-r from-violet-600/20 via-fuchsia-600/20 to-violet-600/20 p-8 border-b border-white/10'>
           <div className='flex flex-col md:flex-row items-center md:items-start gap-6'>
             {/* Avatar */}
-            <div className='relative'>
-              <div className='w-28 h-28 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-violet-700 rounded-2xl flex items-center justify-center shadow-xl ring-4 ring-white/10'>
-                <span className="text-white text-5xl font-bold font-['Poppins']">
-                  {user?.name?.charAt(0).toUpperCase() || 'U'}
-                </span>
+            <div className='relative group'>
+              <div className='w-28 h-28 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-violet-700 rounded-2xl flex items-center justify-center shadow-xl ring-4 ring-white/10 overflow-hidden'>
+                {profileData?.profilePic ? (
+                  <img
+                    src={profileData.profilePic}
+                    alt={fullName}
+                    className='w-full h-full object-cover'
+                  />
+                ) : (
+                  <span className="text-white text-5xl font-bold font-['Poppins']">
+                    {fullName.charAt(0).toUpperCase()}
+                  </span>
+                )}
               </div>
-              <div className='absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white/20 flex items-center justify-center'>
-                <IoShieldCheckmarkOutline className='text-white w-4 h-4' />
+
+              {/* Upload/Delete Photo Buttons */}
+              <div className='absolute inset-0 bg-black/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2'>
+                <input
+                  ref={fileInputRef}
+                  type='file'
+                  accept='image/*'
+                  onChange={handleFileSelect}
+                  className='hidden'
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className='p-2 bg-violet-600 hover:bg-violet-700 rounded-lg transition-colors disabled:opacity-50'
+                  title='Upload Photo'
+                >
+                  <IoCameraOutline className='text-white w-5 h-5' />
+                </button>
+                {profileData?.profilePic && (
+                  <button
+                    onClick={handleDeletePhoto}
+                    disabled={uploading}
+                    className='p-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50'
+                    title='Remove Photo'
+                  >
+                    <IoCloseCircleOutline className='text-white w-5 h-5' />
+                  </button>
+                )}
               </div>
+
+              {/* Upload Status Indicator */}
+              {uploading && (
+                <div className='absolute -top-2 -right-2 w-8 h-8 bg-blue-500 rounded-full border-4 border-white/20 flex items-center justify-center animate-pulse'>
+                  <div className='w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+                </div>
+              )}
+              {uploadSuccess && (
+                <div className='absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white/20 flex items-center justify-center animate-bounce'>
+                  <IoCheckmarkCircleOutline className='text-white w-4 h-4' />
+                </div>
+              )}
+              {!uploading && !uploadSuccess && (
+                <div className='absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white/20 flex items-center justify-center'>
+                  <IoShieldCheckmarkOutline className='text-white w-4 h-4' />
+                </div>
+              )}
             </div>
 
             {/* User Info */}
             <div className='flex-1 text-center md:text-left'>
               <h2 className="text-white text-3xl font-bold font-['Poppins'] mb-2">
-                {user?.name || 'User Name'}
+                {fullName}
               </h2>
               <p className="text-white/70 text-base font-normal font-['Poppins'] mb-4">
-                {user?.email || 'email@example.com'}
+                {email}
               </p>
               <div className='flex flex-wrap gap-2 justify-center md:justify-start'>
                 <span className='px-3 py-1 bg-violet-600/30 text-violet-300 text-xs font-medium rounded-full border border-violet-500/30'>
                   Active Account
                 </span>
-                <span className='px-3 py-1 bg-amber-600/30 text-amber-300 text-xs font-medium rounded-full border border-amber-500/30'>
-                  Verified
-                </span>
+                {isVerified && (
+                  <span className='px-3 py-1 bg-amber-600/30 text-amber-300 text-xs font-medium rounded-full border border-amber-500/30'>
+                    Verified
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -77,7 +308,7 @@ const Profile = () => {
                     Full Name
                   </p>
                   <p className="text-white text-lg font-semibold font-['Poppins'] truncate">
-                    {user?.name || 'Not set'}
+                    {fullName}
                   </p>
                 </div>
               </div>
@@ -94,7 +325,7 @@ const Profile = () => {
                     Email Address
                   </p>
                   <p className="text-white text-lg font-semibold font-['Poppins'] truncate">
-                    {user?.email || 'Not set'}
+                    {email}
                   </p>
                 </div>
               </div>
@@ -111,10 +342,7 @@ const Profile = () => {
                     Member Since
                   </p>
                   <p className="text-white text-lg font-semibold font-['Poppins']">
-                    {new Date().toLocaleDateString('en-US', {
-                      month: 'long',
-                      year: 'numeric',
-                    })}
+                    {memberSince}
                   </p>
                 </div>
               </div>
@@ -130,8 +358,12 @@ const Profile = () => {
                   <p className="text-white/50 text-xs font-medium font-['Poppins'] uppercase tracking-wider mb-1">
                     Account Status
                   </p>
-                  <p className="text-green-400 text-lg font-semibold font-['Poppins']">
-                    Active & Verified
+                  <p
+                    className={`text-lg font-semibold font-['Poppins'] ${
+                      isVerified ? 'text-green-400' : 'text-amber-400'
+                    }`}
+                  >
+                    {isVerified ? 'Active & Verified' : 'Active'}
                   </p>
                 </div>
               </div>
