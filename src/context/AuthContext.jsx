@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
-// >>>>>>>> FIX: 'export' keyword ta ekhane add kora hoyeche <<<<<<<<<<
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -9,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Cookies theke token check kora
     const token = Cookies.get('authToken');
     const savedUser = localStorage.getItem('user');
     if (token && savedUser) {
@@ -19,7 +17,6 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData) => {
-    // Token cookies e save kora (7 days expiry)
     Cookies.set('authToken', userData.token, {
       expires: 7,
       secure: true,
@@ -30,14 +27,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    // Cookies theke token remove kora
     Cookies.remove('authToken');
     localStorage.removeItem('user');
     setUser(null);
   };
 
   const updateUser = (updatedData) => {
-    // User data update kora
     const updatedUser = { ...user, ...updatedData };
     localStorage.setItem('user', JSON.stringify(updatedUser));
     setUser(updatedUser);

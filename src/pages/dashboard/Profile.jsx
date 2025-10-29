@@ -68,30 +68,16 @@ const Profile = () => {
       setUploading(true);
       setUploadSuccess(false);
 
-      console.log(
-        'Uploading file:',
-        file.name,
-        'Size:',
-        file.size,
-        'Type:',
-        file.type
-      );
-
       const response = await userService.updateProfilePhoto(file);
 
-      console.log('Upload response:', response);
-
       if (response.success) {
-        // Backend returns full user data, extract profilePic
         const updatedProfilePic = response.data.profilePic;
 
-        // Update profile data with new photo URL
         setProfileData((prev) => ({
           ...prev,
           profilePic: updatedProfilePic,
         }));
 
-        // Update AuthContext and localStorage
         updateUser({ profilePic: updatedProfilePic });
 
         setUploadSuccess(true);

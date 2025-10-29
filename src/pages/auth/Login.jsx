@@ -56,10 +56,8 @@ const Login = () => {
       const response = await authService.googleSignin(
         credentialResponse.credential
       );
-      console.log('Google Sign-In Response:', response);
 
       if (response.success && response.data) {
-        // Save user name locally for display
         const userName =
           response.data.user.fname || response.data.user.lname || 'User';
         localStorage.setItem('userName', userName);

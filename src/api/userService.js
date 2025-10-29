@@ -1,9 +1,6 @@
-// src/api/userService.js
 import axiosInstance from './axiosInstance';
 
-// User API Service - Profile and user-related APIs
 const userService = {
-  // Get user profile
   getProfile: async () => {
     try {
       const response = await axiosInstance.get('/api/users/profile');
@@ -14,13 +11,11 @@ const userService = {
     }
   },
 
-  // Update profile photo
   updateProfilePhoto: async (file) => {
     try {
       const formData = new FormData();
       formData.append('profilePic', file);
 
-      // Use PUT method to /api/users endpoint (matches backend)
       const response = await axiosInstance.put('/api/users', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -35,7 +30,6 @@ const userService = {
     }
   },
 
-  // Update profile (alternative method using PATCH)
   updateProfile: async (data) => {
     try {
       const response = await axiosInstance.patch('/api/users/profile', data);
@@ -46,12 +40,10 @@ const userService = {
     }
   },
 
-  // Delete profile photo
   deleteProfilePhoto: async () => {
     try {
-      // Send empty formData or request to remove photo
       const formData = new FormData();
-      formData.append('profilePic', ''); // Empty string to remove photo
+      formData.append('profilePic', '');
 
       const response = await axiosInstance.put('/api/users', formData, {
         headers: {

@@ -1,9 +1,6 @@
-// src/api/authService.js
 import axiosInstance from './axiosInstance';
 
-// Auth API Service - Real backend APIs
 const authService = {
-  // Send OTP to email (for signup and forgot password)
   sendOtp: async (email) => {
     try {
       const response = await axiosInstance.post('/api/auth/send-otp', {
@@ -15,7 +12,6 @@ const authService = {
     }
   },
 
-  // Verify OTP
   verifyOtp: async (email, otp) => {
     try {
       const response = await axiosInstance.post('/api/auth/verify-otp', {
@@ -28,7 +24,6 @@ const authService = {
     }
   },
 
-  // Register user (complete signup)
   register: async (fname, lname, email, password) => {
     try {
       const response = await axiosInstance.post('/api/auth/register', {
@@ -43,7 +38,6 @@ const authService = {
     }
   },
 
-  // Login with email and password
   login: async (email, password) => {
     try {
       const response = await axiosInstance.post('/api/auth/login', {
@@ -56,7 +50,6 @@ const authService = {
     }
   },
 
-  // Forgot password (reset password)
   forgotPassword: async (email, password) => {
     try {
       const response = await axiosInstance.post('/api/auth/forgot-password', {
@@ -69,7 +62,6 @@ const authService = {
     }
   },
 
-  // Google Sign Up
   googleSignup: async (idToken) => {
     try {
       const response = await axiosInstance.post('/api/auth/google-signup', {
@@ -81,7 +73,6 @@ const authService = {
     }
   },
 
-  // Google Sign In
   googleSignin: async (idToken) => {
     try {
       const response = await axiosInstance.post('/api/auth/google-signin', {

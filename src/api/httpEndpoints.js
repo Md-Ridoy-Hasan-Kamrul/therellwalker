@@ -1,4 +1,3 @@
-// src/api/httpEndpoints.js
 export const endpoints = {
   auth: {
     login: '/auth/login',

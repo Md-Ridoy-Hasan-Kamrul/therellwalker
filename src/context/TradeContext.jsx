@@ -11,13 +11,7 @@ export const useTradeContext = () => {
 };
 
 export const TradeProvider = ({ children }) => {
-  // TradeContext is now simplified - all data comes from backend APIs
-  // No need to manage local state since we're using real backend
-
-  const value = {
-    // Context can be used for shared trade-related utilities if needed
-    // For now, it's a placeholder for future enhancements
-  };
+  const value = {};
 
   return (
     <TradeContext.Provider value={value}>{children}</TradeContext.Provider>
