@@ -490,81 +490,10 @@ const TradeLog = () => {
         </div>
       </div>
 
-      {/* Pagination Controls */}
-      {!isLoading && pagination.totalPages > 1 && (
-        <div className='self-stretch flex justify-center items-center gap-2 sm:gap-3 mt-6'>
-          {/* Previous Button */}
-          <button
-            onClick={() => fetchTrades(pagination.currentPage - 1)}
-            disabled={!pagination.hasPreviousPage}
-            className={`px-3 sm:px-4 py-2 rounded-lg transition-all ${
-              pagination.hasPreviousPage
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 cursor-pointer'
-                : 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
-            }`}
-          >
-            <div className="text-sm font-medium font-['Poppins']">Previous</div>
-          </button>
-
-          {/* Page Numbers */}
-          <div className='flex items-center gap-1 sm:gap-2'>
-            {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
-              .filter((page) => {
-                // Show first page, last page, current page, and pages around current
-                const current = pagination.currentPage;
-                return (
-                  page === 1 ||
-                  page === pagination.totalPages ||
-                  (page >= current - 1 && page <= current + 1)
-                );
-              })
-              .map((page, index, array) => {
-                // Add ellipsis if there's a gap
-                const showEllipsisBefore =
-                  index > 0 && page - array[index - 1] > 1;
-
-                return (
-                  <React.Fragment key={page}>
-                    {showEllipsisBefore && (
-                      <span className="text-zinc-400 text-sm font-medium font-['Poppins'] px-2">
-                        ...
-                      </span>
-                    )}
-                    <button
-                      onClick={() => fetchTrades(page)}
-                      className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg transition-all ${
-                        pagination.currentPage === page
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold'
-                          : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
-                      }`}
-                    >
-                      <div className="text-sm font-medium font-['Poppins']">
-                        {page}
-                      </div>
-                    </button>
-                  </React.Fragment>
-                );
-              })}
-          </div>
-
-          {/* Next Button */}
-          <button
-            onClick={() => fetchTrades(pagination.currentPage + 1)}
-            disabled={!pagination.hasNextPage}
-            className={`px-3 sm:px-4 py-2 rounded-lg transition-all ${
-              pagination.hasNextPage
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 cursor-pointer'
-                : 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
-            }`}
-          >
-            <div className="text-sm font-medium font-['Poppins']">Next</div>
-          </button>
-        </div>
-      )}
-
-      {/* Page Info */}
+      {/* Pagination Controls and Info */}
       {!isLoading && pagination.totalCount > 0 && (
-        <div className='self-stretch flex justify-center items-center mt-3'>
+        <div className='self-stretch flex flex-col sm:flex-row justify-between items-center gap-4 mt-6'>
+          {/* Page Info - Left Side */}
           <div className="text-zinc-400 text-sm font-normal font-['Poppins']">
             Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{' '}
             {Math.min(
@@ -573,6 +502,80 @@ const TradeLog = () => {
             )}{' '}
             of {pagination.totalCount} trades
           </div>
+
+          {/* Pagination Buttons - Right Side */}
+          {pagination.totalPages > 1 && (
+            <div className='flex justify-center items-center gap-2 sm:gap-3'>
+              {/* Previous Button */}
+              <button
+                onClick={() => fetchTrades(pagination.currentPage - 1)}
+                disabled={!pagination.hasPreviousPage}
+                className={`px-3 sm:px-4 py-2 rounded-lg transition-all ${
+                  pagination.hasPreviousPage
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 cursor-pointer'
+                    : 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
+                }`}
+              >
+                <div className="text-sm font-medium font-['Poppins']">
+                  Previous
+                </div>
+              </button>
+
+              {/* Page Numbers */}
+              <div className='flex items-center gap-1 sm:gap-2'>
+                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                  .filter((page) => {
+                    // Show first page, last page, current page, and pages around current
+                    const current = pagination.currentPage;
+                    return (
+                      page === 1 ||
+                      page === pagination.totalPages ||
+                      (page >= current - 1 && page <= current + 1)
+                    );
+                  })
+                  .map((page, index, array) => {
+                    // Add ellipsis if there's a gap
+                    const showEllipsisBefore =
+                      index > 0 && page - array[index - 1] > 1;
+
+                    return (
+                      <React.Fragment key={page}>
+                        {showEllipsisBefore && (
+                          <span className="text-zinc-400 text-sm font-medium font-['Poppins'] px-2">
+                            ...
+                          </span>
+                        )}
+                        <button
+                          onClick={() => fetchTrades(page)}
+                          className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg transition-all ${
+                            pagination.currentPage === page
+                              ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold'
+                              : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                          }`}
+                        >
+                          <div className="text-sm font-medium font-['Poppins']">
+                            {page}
+                          </div>
+                        </button>
+                      </React.Fragment>
+                    );
+                  })}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={() => fetchTrades(pagination.currentPage + 1)}
+                disabled={!pagination.hasNextPage}
+                className={`px-3 sm:px-4 py-2 rounded-lg transition-all ${
+                  pagination.hasNextPage
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 cursor-pointer'
+                    : 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
+                }`}
+              >
+                <div className="text-sm font-medium font-['Poppins']">Next</div>
+              </button>
+            </div>
+          )}
         </div>
       )}
 
