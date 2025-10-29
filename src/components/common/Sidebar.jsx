@@ -41,7 +41,7 @@ export const Sidebar = ({ onClose, isOpen, setIsSidebarOpen }) => {
           md:translate-x-0 md:relative lg:w-80
         `}
       >
-        {/* Close Button */}
+        {/*  Close Button */}
         <div className="flex justify-end md:hidden ">
           <button className="text-2xl text-neutral-400" onClick={() => setIsSidebarOpen(false)}>
           <RxCross2/>
