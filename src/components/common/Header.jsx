@@ -24,16 +24,10 @@ export const Header = ({ title, onMenuClick }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Get user data from localStorage or user object
-  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-  const userName =
-    localStorage.getItem('userName') ||
-    user?.fname ||
-    user?.name ||
-    storedUser?.fname ||
-    'Guest';
-  const userEmail = user?.email || storedUser?.email || '';
-  const profilePic = user?.profilePic || storedUser?.profilePic || null;
+  // Get user data from AuthContext (which syncs with localStorage)
+  const userName = user?.fname || user?.name || 'Guest';
+  const userEmail = user?.email || '';
+  const profilePic = user?.profilePic || null;
 
   // Get first letter for avatar fallback
   const userInitial = userName ? userName.charAt(0).toUpperCase() : 'U';

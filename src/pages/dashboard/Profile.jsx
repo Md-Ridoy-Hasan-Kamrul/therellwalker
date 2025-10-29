@@ -14,7 +14,7 @@ import {
 } from 'react-icons/io5';
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -30,16 +30,11 @@ const Profile = () => {
         const response = await userService.getProfile();
         if (response.success) {
           setProfileData(response.data);
-          // Update user context with fresh data
-          const userData = JSON.parse(localStorage.getItem('user') || '{}');
-          localStorage.setItem(
-            'user',
-            JSON.stringify({
-              ...userData,
-              ...response.data,
-              name: `${response.data.fname} ${response.data.lname}`,
-            })
-          );
+          // Update AuthContext with fresh data from backend
+          updateUser({
+            ...response.data,
+            name: `${response.data.fname} ${response.data.lname}`,
+          });
         }
       } catch (err) {
         console.error('Error fetching profile:', err);
@@ -49,7 +44,8 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   // Handle file selection
   const handleFileSelect = async (event) => {
@@ -95,15 +91,8 @@ const Profile = () => {
           profilePic: updatedProfilePic,
         }));
 
-        // Update localStorage
-        const userData = JSON.parse(localStorage.getItem('user') || '{}');
-        localStorage.setItem(
-          'user',
-          JSON.stringify({
-            ...userData,
-            profilePic: updatedProfilePic,
-          })
-        );
+        // Update AuthContext and localStorage
+        updateUser({ profilePic: updatedProfilePic });
 
         setUploadSuccess(true);
         setTimeout(() => setUploadSuccess(false), 3000);
@@ -148,15 +137,8 @@ const Profile = () => {
           profilePic: null,
         }));
 
-        // Update localStorage
-        const userData = JSON.parse(localStorage.getItem('user') || '{}');
-        localStorage.setItem(
-          'user',
-          JSON.stringify({
-            ...userData,
-            profilePic: null,
-          })
-        );
+        // Update AuthContext and localStorage
+        updateUser({ profilePic: null });
 
         toast.success('Profile photo removed successfully!');
       }
