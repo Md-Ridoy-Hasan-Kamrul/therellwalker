@@ -75,4 +75,99 @@ export const handlers = [
       { status: 201 }
     );
   }),
+
+  // Reflections API - Get all reflections
+  http.get('/api/reflections', () => {
+    // Mock reflections data
+    return HttpResponse.json({
+      reflections: [
+        {
+          id: 1,
+          date: '10/29/2025, 09:55:09 AM',
+          prompt: 'Were you confident or doubtful when placing trades?',
+          group: 'MINDSET & CONFIDENCE',
+          answer:
+            'Today I felt very confident in my trading decisions. I followed my plan and waited for proper setups before entering.',
+        },
+        {
+          id: 2,
+          date: '10/28/2025, 02:30:15 PM',
+          prompt: 'Did you stick to your trading plan today?',
+          group: 'DISCIPLINE & CONSISTENCY',
+          answer:
+            'Yes, I stuck to my plan completely. I avoided impulsive trades and only took setups that matched my criteria.',
+        },
+        {
+          id: 3,
+          date: '10/27/2025, 11:20:45 AM',
+          prompt: "How did you manage risk in today's trades?",
+          group: 'RISK MANAGEMENT',
+          answer:
+            'I used proper position sizing and kept my stop losses tight. No trade exceeded 1% of my account.',
+        },
+      ],
+      total: 3,
+    });
+  }),
+
+  // Reflections API - Create new reflection
+  http.post('/api/reflections', async ({ request }) => {
+    const reflectionData = await request.json();
+
+    // Create reflection with auto-generated ID
+    const newReflection = {
+      id: Date.now(),
+      ...reflectionData,
+    };
+
+    return HttpResponse.json(
+      {
+        reflection: newReflection,
+        message: 'Reflection saved successfully!',
+      },
+      { status: 201 }
+    );
+  }),
+
+  // Reflections API - Get prompt state
+  http.get('/api/reflections/prompt-state', () => {
+    return HttpResponse.json({
+      currentGroupIndex: 0,
+      promptIndexes: [0, 0, 0, 0],
+    });
+  }),
+
+  // Reflections API - Update prompt state
+  http.put('/api/reflections/prompt-state', async ({ request }) => {
+    const stateData = await request.json();
+
+    return HttpResponse.json({
+      message: 'Prompt state updated successfully!',
+      state: stateData,
+    });
+  }),
+
+  // Reflections API - Delete reflection
+  http.delete('/api/reflections/:id', ({ params }) => {
+    const { id } = params;
+
+    return HttpResponse.json({
+      message: `Reflection ${id} deleted successfully!`,
+    });
+  }),
+
+  // Reflections API - Update reflection
+  http.put('/api/reflections/:id', async ({ request, params }) => {
+    const { id } = params;
+    const updateData = await request.json();
+
+    return HttpResponse.json({
+      reflection: {
+        id: parseInt(id),
+        ...updateData,
+        updatedAt: new Date().toISOString(),
+      },
+      message: 'Reflection updated successfully!',
+    });
+  }),
 ];

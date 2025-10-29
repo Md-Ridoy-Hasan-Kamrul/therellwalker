@@ -17,5 +17,9 @@ export const endpoints = {
   reflections: {
     getAll: '/reflections',
     create: '/reflections',
+    getById: (id) => `/reflections/${id}`,
+    update: (id) => `/reflections/${id}`,
+    delete: (id) => `/reflections/${id}`,
+    promptState: '/reflections/prompt-state',
   },
 };
