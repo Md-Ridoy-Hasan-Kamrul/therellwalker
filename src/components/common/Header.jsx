@@ -9,8 +9,12 @@ import {
 } from 'react-icons/io5';
 
 const LogoIcon = () => (
-  <div className='w-14 h-14 bg-gradient-to-b from-violet-700 to-fuchsia-900 rounded-lg flex items-center justify-center'>
-    {/* Ekhane SVG Icon bosbe */}
+  <div className='w-14 h-14 flex items-center justify-center'>
+    <img
+      src='/logo.png'
+      alt='MyLedger Logo'
+      className='w-14 h-14 object-contain'
+    />
   </div>
 );
 
