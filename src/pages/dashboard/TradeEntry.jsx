@@ -159,13 +159,13 @@ const TradeEntry = () => {
   const pnl = calculatedPnL();
 
   return (
-    <div className='w-full p-10 bg-neutral-900 flex flex-col justify-start items-start gap-6'>
+    <div className='w-full sm:p-10 p-5 bg-neutral-900 flex flex-col justify-start items-start gap-6'>
       <div className="justify-start text-white text-2xl font-semibold font-['Poppins'] leading-loose">
         Log New Trade
       </div>
 
       {/* Date and Time */}
-      <div className='w-full inline-flex justify-start items-center gap-3.5'>
+      <div className='w-full inline-flex sm:flex-row flex-col justify-start sm:items-center gap-3.5'>
         <div className='flex-1 inline-flex flex-col justify-start items-start gap-4'>
           <div className="self-stretch justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
             Date
@@ -306,13 +306,13 @@ const TradeEntry = () => {
         <div className="justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
           Ticker
         </div>
-        <div className='self-stretch flex justify-start items-center gap-3'>
+        <div className='self-stretch flex flex-wrap sm:justify-start sm:items-center gap-3'>
           {tickers.map((tickerOption) => (
             <button
               key={tickerOption}
               type='button'
               onClick={() => handleRadioChange('ticker', tickerOption)}
-              className={`px-6 py-3 rounded-lg transition-all ${
+              className={`sm:px-6 px-3 sm:py-3 py-1.5 rounded-lg transition-all ${
                 formData.ticker === tickerOption
                   ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold'
                   : 'bg-white/10 text-zinc-400 hover:bg-white/20'
@@ -372,12 +372,12 @@ const TradeEntry = () => {
       </div>
 
       {/* Entry Price and Exit Price */}
-      <div className='w-full inline-flex justify-start items-center gap-3.5'>
-        <div className='flex-1 inline-flex flex-col justify-start items-start gap-4'>
+      <div className='w-full inline-flex flex-col sm:flex-row justify-start items-center gap-3.5'>
+        <div className='flex-1 inline-flex flex-col justify-start items-start gap-4 w-full'>
           <div className="justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
             Entry Price
           </div>
-          <div className='self-stretch px-6 py-3 bg-white/10 rounded-lg border-none inline-flex justify-between items-center'>
+          <div className='self-stretch px-3 sm:px-6 py-3 bg-white/10 rounded-lg border-none inline-flex justify-between items-center'>
             <input
               type='number'
               name='entryPrice'
@@ -439,11 +439,11 @@ const TradeEntry = () => {
             </div>
           </div>
         </div>
-        <div className='flex-1 inline-flex flex-col justify-start items-start gap-4'>
+        <div className='flex-1 inline-flex flex-col justify-start items-start gap-4 w-full'>
           <div className="justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
             Exit Price
           </div>
-          <div className='self-stretch px-6 py-3 bg-white/10 rounded-lg border-none inline-flex justify-between items-center'>
+          <div className='self-stretch sm:px-6 px-3 py-3 bg-white/10 rounded-lg border-none inline-flex justify-between items-center'>
             <input
               type='number'
               name='exitPrice'
@@ -508,8 +508,8 @@ const TradeEntry = () => {
       </div>
 
       {/* Stop Loss and Take Profit */}
-      <div className='w-full inline-flex justify-start items-center gap-3.5'>
-        <div className='flex-1 inline-flex flex-col justify-start items-start gap-4'>
+      <div className='w-full inline-flex flex-col sm:flex-row justify-start items-center gap-3.5'>
+        <div className='flex-1 inline-flex flex-col justify-start items-start gap-4 w-full'>
           <div className="justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
             Stop Loss (points)
           </div>
@@ -575,7 +575,7 @@ const TradeEntry = () => {
             </div>
           </div>
         </div>
-        <div className='flex-1 inline-flex flex-col justify-start items-start gap-4'>
+        <div className='flex-1 inline-flex flex-col justify-start items-start gap-4 w-full'>
           <div className="justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
             Take Profit (points)
           </div>

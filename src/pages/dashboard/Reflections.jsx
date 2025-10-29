@@ -121,10 +121,10 @@ const Reflections = () => {
   };
 
   return (
-    <div className='flex gap-6 w-full h-full'>
+    <div className='flex flex-col xl:flex-row gap-6 w-full'>
       {/* Left Section - Reflection Input */}
       <div
-        className='w-[75%] h-[600px] rounded-2xl flex flex-col justify-between items-start gap-2.5 relative overflow-hidden backdrop-blur-xl'
+        className='xl:w-[75%] xl:h-[600px] w-full h-auto  rounded-2xl flex flex-col justify-between lg:items-start gap-2.5 relative backdrop-blur-xl'
         style={{
           background:
             'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
@@ -238,7 +238,7 @@ const Reflections = () => {
 
       {/* Right Section - Past Reflections */}
       <div
-        className='w-[40%] h-[600px] rounded-2xl flex flex-col justify-start items-start gap-2.5 relative overflow-hidden backdrop-blur-xl'
+        className='xl:w-[40%] xl:h-[600px] h-auto rounded-2xl flex flex-col justify-start items-start gap-2.5 relative  backdrop-blur-xl'
         style={{
           background:
             'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
@@ -268,7 +268,7 @@ const Reflections = () => {
 
             <div className='self-stretch flex justify-end items-start gap-1 relative'>
               {/* Scrollable Reflections List */}
-              <div className='flex-1 max-h-[480px] flex flex-col justify-start items-start gap-4 overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar'>
+              <div className='flex-1 xl:max-h-[480px] flex flex-col justify-start items-start gap-4 overflow-y-auto overflow-x-hidden custom-scrollbar pr-2 '>
                 {pastReflections.length === 0 ? (
                   <div className='w-full py-8 flex items-center justify-center'>
                     <div className="text-zinc-500 text-sm text-center font-['Poppins']">
@@ -317,7 +317,7 @@ const Reflections = () => {
           onClick={handleCloseModal}
         >
           <div
-            className='relative w-full max-w-2xl mx-4 rounded-2xl overflow-hidden backdrop-blur-xl'
+            className='relative w-full max-w-2xl mx-4 rounded-2xl backdrop-blur-xl'
             style={{
               background:
                 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',

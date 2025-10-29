@@ -386,32 +386,32 @@ const TradeLog = () => {
       <div className='self-stretch w-full overflow-x-auto'>
         <div className='min-w-[800px] rounded flex flex-col justify-start items-start'>
           {/* Table Header */}
-          <div className='w-full px-2 py-3 sm:py-4 bg-stone-900 flex items-center justify-between'>
-            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+          <div className='w-auto sm:w-full px-2 py-3 sm:py-4 bg-stone-900 flex items-center justify-between'>
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
               Trade ID
             </div>
-            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[160px]">
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[160px] truncate">
               Date/Time
             </div>
-            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
               Ticker
             </div>
-            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px] truncate">
               Direction
             </div>
-            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px] truncate">
               Entry
             </div>
-            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[90px] truncate">
               Exit
             </div>
-            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[60px]">
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[60px] truncate">
               Qty
             </div>
-            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]">
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px] truncate">
               P&L
             </div>
-            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
               Notes
             </div>
           </div>
@@ -447,7 +447,7 @@ const TradeLog = () => {
                 return (
                   <div
                     key={trade.id}
-                    className={`w-full px-2 py-3 sm:py-4 ${
+                    className={`w-auto sm:w-full px-2 py-3 sm:py-4 ${
                       index % 2 === 0 ? 'bg-zinc-800' : 'bg-stone-900'
                     } flex items-center justify-between`}
                   >
