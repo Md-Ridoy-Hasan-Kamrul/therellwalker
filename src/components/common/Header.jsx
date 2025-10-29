@@ -20,10 +20,19 @@ export const Header = ({ title, onMenuClick }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Get user name from localStorage or user object
+  // Get user data from localStorage or user object
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
   const userName =
-    localStorage.getItem('userName') || user?.fname || user?.name || 'Guest';
-  const userEmail = user?.email || '';
+    localStorage.getItem('userName') ||
+    user?.fname ||
+    user?.name ||
+    storedUser?.fname ||
+    'Guest';
+  const userEmail = user?.email || storedUser?.email || '';
+  const profilePic = user?.profilePic || storedUser?.profilePic || null;
+
+  // Get first letter for avatar fallback
+  const userInitial = userName ? userName.charAt(0).toUpperCase() : 'U';
 
   // Dropdown er baire click korle dropdown close hobe
   useEffect(() => {
@@ -88,11 +97,24 @@ export const Header = ({ title, onMenuClick }) => {
         className='relative flex items-center gap-2 sm:gap-4'
         ref={dropdownRef}
       >
-        <img
-          className='w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl object-cover flex-shrink-0'
-          src='https://placehold.co/60x60/FFF/000?text=S'
-          alt='User avatar'
-        />
+        {/* Profile Photo */}
+        <div className='w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl flex-shrink-0 overflow-hidden bg-gradient-to-br from-violet-600 via-fuchsia-600 to-violet-700 flex items-center justify-center'>
+          {profilePic ? (
+            <img
+              className='w-full h-full object-cover'
+              src={profilePic}
+              alt={userName}
+              onError={(e) => {
+                // Fallback if image fails to load
+                e.target.style.display = 'none';
+              }}
+            />
+          ) : (
+            <span className="text-white text-lg sm:text-xl md:text-2xl font-bold font-['Poppins']">
+              {userInitial}
+            </span>
+          )}
+        </div>
         <div
           className='hidden sm:flex items-center gap-2 cursor-pointer'
           onClick={toggleDropdown}
