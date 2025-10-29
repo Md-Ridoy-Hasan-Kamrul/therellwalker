@@ -3,7 +3,7 @@ import { BsFillChatLeftDotsFill } from 'react-icons/bs';
 
 const FeedbackButton = () => {
   const handleClick = () => {
-    window.open('https://www.facebook.com', '_blank');
+    window.open('https://docs.google.com/forms/d/e/1FAIpQLSdDf_OZLj5y7JGTj1ItEmI_CLy2KqfQFGP92NaK6Rz-GbJ0ZQ/viewform', '_blank');
   };
 
   return (
