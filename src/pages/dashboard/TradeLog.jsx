@@ -136,19 +136,28 @@ const TradeLog = () => {
     // Convert filtered trades to CSV rows
     const csvRows = [
       headers.join(','), // Header row
-      ...filteredTrades.map((trade) =>
-        [
-          `#${trade.id}`,
-          `"${trade.dateTime}"`, // Wrap in quotes to handle commas
+      ...filteredTrades.map((trade, index) => {
+        // Format date and time same as table display
+        const formattedDate = new Date(trade.date).toLocaleDateString('en-US', {
+          month: '2-digit',
+          day: '2-digit',
+          year: '2-digit',
+        });
+        const formattedTime = trade.time.substring(0, 5); // HH:MM
+        const dateTime = `${formattedDate} ${formattedTime} ${trade.period}`;
+
+        return [
+          `#${index + 1 + (pagination.currentPage - 1) * 10}`,
+          `"${dateTime}"`, // Wrap in quotes to handle commas
           trade.ticker,
           trade.direction,
           trade.entryPrice.toFixed(2),
           trade.exitPrice.toFixed(2),
-          trade.qty,
+          trade.quantity,
           trade.pnl.toFixed(2),
-          `"${trade.notes}"`,
-        ].join(',')
-      ),
+          `"${trade.notes || '-'}"`,
+        ].join(',');
+      }),
     ];
 
     // Create CSV string
