@@ -1,15 +1,60 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import FeedbackButton from '../../components/common/FeedbackButton';
-import { useTradeContext } from '../../context/TradeContext';
+import tradeService from '../../api/tradeService';
+import { toast } from 'react-toastify';
 
 const TradeLog = () => {
-  const { trades } = useTradeContext();
+  const [trades, setTrades] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    limit: 10,
+    totalCount: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  });
+  const [isLoading, setIsLoading] = useState(true);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [filters, setFilters] = useState({
     timeOfDay: 'all', // 'all', 'am', 'pm'
     direction: 'all', // 'all', 'long', 'short'
   });
   const filterDropdownRef = useRef(null);
+
+  // Fetch trades from backend
+  const fetchTrades = async (page = 1) => {
+    try {
+      setIsLoading(true);
+      const response = await tradeService.getTrades(page, 10);
+
+      if (response.success) {
+        setTrades(response.data || []);
+        setPagination(
+          response.pagination || {
+            currentPage: page,
+            limit: 10,
+            totalCount: 0,
+            totalPages: 1,
+            hasNextPage: false,
+            hasPreviousPage: false,
+          }
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching trades:', error);
+      toast.error('Failed to load trades', {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Load trades on component mount
+  useEffect(() => {
+    fetchTrades(1);
+  }, []);
 
   // Click outside handler to close dropdown
   useEffect(() => {
@@ -36,11 +81,11 @@ const TradeLog = () => {
     return trades.filter((trade) => {
       // Filter by time of day (AM/PM)
       if (filters.timeOfDay !== 'all') {
-        const timeString = trade.dateTime.toUpperCase();
-        if (filters.timeOfDay === 'am' && !timeString.includes('AM')) {
+        const period = trade.period?.toUpperCase();
+        if (filters.timeOfDay === 'am' && period !== 'AM') {
           return false;
         }
-        if (filters.timeOfDay === 'pm' && !timeString.includes('PM')) {
+        if (filters.timeOfDay === 'pm' && period !== 'PM') {
           return false;
         }
       }
@@ -364,57 +409,163 @@ const TradeLog = () => {
 
           {/* Table Rows */}
           <div className='w-full flex flex-col justify-start items-start'>
-            {filteredTrades.length === 0 ? (
+            {isLoading ? (
+              <div className='w-full px-2 py-8 bg-zinc-800 flex items-center justify-center'>
+                <div className="text-zinc-400 text-base font-medium font-['Poppins']">
+                  Loading trades...
+                </div>
+              </div>
+            ) : filteredTrades.length === 0 ? (
               <div className='w-full px-2 py-8 bg-zinc-800 flex items-center justify-center'>
                 <div className="text-zinc-400 text-base font-medium font-['Poppins']">
                   No trades found matching the selected filters.
                 </div>
               </div>
             ) : (
-              filteredTrades.map((trade, index) => (
-                <div
-                  key={trade.id}
-                  className={`w-full px-2 py-3 sm:py-4 ${
-                    index % 2 === 0 ? 'bg-zinc-800' : 'bg-stone-900'
-                  } flex items-center justify-between`}
-                >
-                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-                    #{trade.id}
-                  </div>
-                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[160px]">
-                    {trade.dateTime}
-                  </div>
-                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
-                    {trade.ticker}
-                  </div>
-                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                    {trade.direction}
-                  </div>
-                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                    ${trade.entryPrice.toFixed(2)}
-                  </div>
-                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
-                    ${trade.exitPrice.toFixed(2)}
-                  </div>
-                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[60px]">
-                    {trade.qty}
-                  </div>
+              filteredTrades.map((trade, index) => {
+                // Format date and time
+                const formattedDate = new Date(trade.date).toLocaleDateString(
+                  'en-US',
+                  {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: '2-digit',
+                  }
+                );
+                const formattedTime = trade.time.substring(0, 5); // HH:MM
+                const dateTime = `${formattedDate} ${formattedTime} ${trade.period}`;
+
+                return (
                   <div
-                    className={`${
-                      trade.isProfitable ? 'text-green-500' : 'text-red-500'
-                    } text-xs sm:text-sm font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]`}
+                    key={trade.id}
+                    className={`w-full px-2 py-3 sm:py-4 ${
+                      index % 2 === 0 ? 'bg-zinc-800' : 'bg-stone-900'
+                    } flex items-center justify-between`}
                   >
-                    {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
+                    <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
+                      #{index + 1 + (pagination.currentPage - 1) * 10}
+                    </div>
+                    <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[160px]">
+                      {dateTime}
+                    </div>
+                    <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px]">
+                      {trade.ticker}
+                    </div>
+                    <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                      {trade.direction}
+                    </div>
+                    <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                      ${trade.entryPrice.toFixed(2)}
+                    </div>
+                    <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[90px]">
+                      ${trade.exitPrice.toFixed(2)}
+                    </div>
+                    <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[60px]">
+                      {trade.quantity}
+                    </div>
+                    <div
+                      className={`${
+                        trade.pnl >= 0 ? 'text-green-500' : 'text-red-500'
+                      } text-xs sm:text-sm font-semibold font-['Poppins'] flex-shrink-0 text-center w-[110px]`}
+                    >
+                      {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
+                    </div>
+                    <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
+                      {trade.notes || '-'}
+                    </div>
                   </div>
-                  <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
-                    {trade.notes}
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>
       </div>
+
+      {/* Pagination Controls */}
+      {!isLoading && pagination.totalPages > 1 && (
+        <div className='self-stretch flex justify-center items-center gap-2 sm:gap-3 mt-6'>
+          {/* Previous Button */}
+          <button
+            onClick={() => fetchTrades(pagination.currentPage - 1)}
+            disabled={!pagination.hasPreviousPage}
+            className={`px-3 sm:px-4 py-2 rounded-lg transition-all ${
+              pagination.hasPreviousPage
+                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 cursor-pointer'
+                : 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
+            }`}
+          >
+            <div className="text-sm font-medium font-['Poppins']">Previous</div>
+          </button>
+
+          {/* Page Numbers */}
+          <div className='flex items-center gap-1 sm:gap-2'>
+            {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+              .filter((page) => {
+                // Show first page, last page, current page, and pages around current
+                const current = pagination.currentPage;
+                return (
+                  page === 1 ||
+                  page === pagination.totalPages ||
+                  (page >= current - 1 && page <= current + 1)
+                );
+              })
+              .map((page, index, array) => {
+                // Add ellipsis if there's a gap
+                const showEllipsisBefore =
+                  index > 0 && page - array[index - 1] > 1;
+
+                return (
+                  <React.Fragment key={page}>
+                    {showEllipsisBefore && (
+                      <span className="text-zinc-400 text-sm font-medium font-['Poppins'] px-2">
+                        ...
+                      </span>
+                    )}
+                    <button
+                      onClick={() => fetchTrades(page)}
+                      className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg transition-all ${
+                        pagination.currentPage === page
+                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold'
+                          : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                      }`}
+                    >
+                      <div className="text-sm font-medium font-['Poppins']">
+                        {page}
+                      </div>
+                    </button>
+                  </React.Fragment>
+                );
+              })}
+          </div>
+
+          {/* Next Button */}
+          <button
+            onClick={() => fetchTrades(pagination.currentPage + 1)}
+            disabled={!pagination.hasNextPage}
+            className={`px-3 sm:px-4 py-2 rounded-lg transition-all ${
+              pagination.hasNextPage
+                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 cursor-pointer'
+                : 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
+            }`}
+          >
+            <div className="text-sm font-medium font-['Poppins']">Next</div>
+          </button>
+        </div>
+      )}
+
+      {/* Page Info */}
+      {!isLoading && pagination.totalCount > 0 && (
+        <div className='self-stretch flex justify-center items-center mt-3'>
+          <div className="text-zinc-400 text-sm font-normal font-['Poppins']">
+            Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{' '}
+            {Math.min(
+              pagination.currentPage * pagination.limit,
+              pagination.totalCount
+            )}{' '}
+            of {pagination.totalCount} trades
+          </div>
+        </div>
+      )}
 
       {/* Feedback Button */}
       <FeedbackButton />

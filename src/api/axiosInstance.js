@@ -1,14 +1,10 @@
 // src/api/axiosInstance.js
 import axios from 'axios';
-import { mockApiCalls } from './mockFallback';
 import Cookies from 'js-cookie';
 
 // Environment variable theke base URL nilam
-// Real backend URL use hobe for auth, baki gulo MSW te thakbe
+// Real backend URL use hobe for all APIs
 const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
-
-// Check if we should use mock fallback (only for non-auth endpoints)
-const useMockFallback = import.meta.env.MODE === 'development';
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
@@ -40,33 +36,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    const originalRequest = error.config;
-
-    // Auth endpoints er jonno mock fallback use korbo na
-    const isAuthEndpoint = originalRequest.url?.includes('/auth/');
-
-    // Production e jodi backend na thake (405/404 error) ebong auth endpoint na hoy, mock fallback use korbo
-    if (useMockFallback && !isAuthEndpoint && error.response?.status >= 400) {
-      try {
-        const mockData = await mockApiCalls(
-          originalRequest.url,
-          originalRequest.method.toUpperCase(),
-          originalRequest.data ? JSON.parse(originalRequest.data) : null
-        );
-
-        return Promise.resolve({
-          data: mockData,
-          status: 200,
-          statusText: 'OK',
-          headers: originalRequest.headers,
-          config: originalRequest,
-        });
-      } catch (mockError) {
-        console.error('Mock fallback error:', mockError);
-        return Promise.reject(mockError);
-      }
-    }
-
+    // MSW disabled - Direct error handling
     if (error.response?.status === 401) {
       // Jodi token invalid hoy, user-ke logout koraye dibe
       Cookies.remove('authToken');

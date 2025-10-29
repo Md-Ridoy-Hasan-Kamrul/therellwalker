@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaChartBar, FaWallet, FaTrophy } from 'react-icons/fa';
 import {
   LineChart,
@@ -13,7 +13,8 @@ import {
   Legend,
 } from 'recharts';
 import FeedbackButton from '../../components/common/FeedbackButton';
-import { useTradeContext } from '../../context/TradeContext';
+import tradeService from '../../api/tradeService';
+import { toast } from 'react-toastify';
 
 // Pixel-Perfect KPI Card Component with multi-layer gradient
 const KpiCard = ({ title, value, icon, iconBgColor, valueColor }) => {
@@ -126,26 +127,11 @@ const EquityCurveChart = ({ data }) => {
               stroke='rgba(255,255,255,0.7)'
               tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11 }}
               height={20}
-              label={{
-                value: 'Trade ID',
-                position: 'insideBottom',
-                offset: -30,
-                fill: 'rgba(255,255,255,0.8)',
-                style: { textAnchor: 'middle', fontSize: 12 },
-              }}
             />
             <YAxis
               stroke='rgba(255,255,255,0.7)'
               tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11 }}
               width={60}
-              label={{
-                value: 'Balance ($)',
-                angle: -90,
-                position: 'insideLeft',
-                dx: -5,
-                fill: 'rgba(255,255,255,0.8)',
-                style: { textAnchor: 'middle', fontSize: 12 },
-              }}
             />
             <Tooltip content={<CustomEquityTooltip />} />
             <Line
@@ -221,14 +207,6 @@ const ProfitByDirectionChart = ({ longStats, shortStats }) => {
                 stroke='rgba(255,255,255,0.7)'
                 tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11 }}
                 width={50}
-                label={{
-                  value: 'Number of Trades',
-                  angle: -90,
-                  position: 'insideLeft',
-                  dx: -5,
-                  fill: 'rgba(255,255,255,0.8)',
-                  style: { textAnchor: 'middle', fontSize: 11 },
-                }}
               />
               <Tooltip content={<CustomDirectionTooltip />} />
               <Bar
@@ -268,53 +246,143 @@ const ProfitByDirectionChart = ({ longStats, shortStats }) => {
 };
 
 const DashboardHome = () => {
-  const { getStatistics, getEquityCurveData } = useTradeContext();
+  const [stats, setStats] = useState({
+    winRate: 0,
+    totalProfit: 0,
+    avgWinProfit: 0,
+    totalTrades: 0,
+    winningTrades: 0,
+    losingTrades: 0,
+  });
+  const [equityCurveData, setEquityCurveData] = useState([
+    { tradeId: '000', equity: 10000 },
+  ]);
+  const [profitByDirection, setProfitByDirection] = useState({
+    long: { wins: 0, losses: 0, totalPnL: 0, winRate: 0, totalTrades: 0 },
+    short: { wins: 0, losses: 0, totalPnL: 0, winRate: 0, totalTrades: 0 },
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
-  const stats = getStatistics();
-  const equityCurveData = getEquityCurveData();
+  // Fetch dashboard statistics from backend
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await tradeService.getDashboardStats();
+
+        if (response.success && response.data) {
+          const data = response.data;
+
+          // Set statistics
+          setStats({
+            winRate: data.winRate || 0,
+            totalProfit: data.totalProfit || 0,
+            avgWinProfit: data.avgWinProfit || 0,
+            totalTrades: data.totalTrades || 0,
+            winningTrades: data.winningTrades || 0,
+            losingTrades: data.losingTrades || 0,
+          });
+
+          // Set equity curve data - transform 'balance' to 'equity'
+          const transformedEquityCurve = (data.equityCurve || []).map(
+            (item) => ({
+              tradeId: item.tradeId,
+              equity: item.balance, // Backend sends 'balance', chart expects 'equity'
+              pnl: item.pnl,
+            })
+          );
+          setEquityCurveData(
+            transformedEquityCurve.length > 0
+              ? transformedEquityCurve
+              : [{ tradeId: '000', equity: 10000 }]
+          );
+
+          // Set profit by direction
+          setProfitByDirection(
+            data.profitByDirection || {
+              long: {
+                wins: 0,
+                losses: 0,
+                totalPnL: 0,
+                winRate: 0,
+                totalTrades: 0,
+              },
+              short: {
+                wins: 0,
+                losses: 0,
+                totalPnL: 0,
+                winRate: 0,
+                totalTrades: 0,
+              },
+            }
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        toast.error('Failed to load dashboard data', {
+          position: 'bottom-right',
+          autoClose: 3000,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   return (
     <div className='flex flex-col gap-6 pb-10 relative'>
-      {/* KPI Cards Grid */}
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-        <KpiCard
-          title='Win Rate'
-          value={`${stats.winRate.toFixed(1)}%`}
-          icon={FaChartBar}
-          iconBgColor='bg-gradient-to-b from-purple-600 to-violet-700'
-          valueColor='bg-gradient-to-r from-[#5C2ED4] to-[#9E4FC7] text-transparent bg-clip-text'
-        />
-        <KpiCard
-          title='Total Profit'
-          value={`${
-            stats.totalProfit >= 0 ? '+' : ''
-          }$${stats.totalProfit.toFixed(2)}`}
-          icon={FaWallet}
-          iconBgColor='bg-gradient-to-b from-amber-400 to-amber-600'
-          valueColor={
-            stats.totalProfit >= 0 ? 'text-green-400' : 'text-red-400'
-          }
-        />
-        <KpiCard
-          title='Avg Win Profit'
-          value={`$${stats.avgTakeProfit.toFixed(2)}`}
-          icon={FaTrophy}
-          iconBgColor='bg-gradient-to-b from-pink-500 to-rose-600'
-          valueColor='text-pink-400'
-        />
-      </div>
+      {isLoading ? (
+        <div className='flex items-center justify-center min-h-[400px]'>
+          <div className="text-white text-xl font-medium font-['Poppins']">
+            Loading dashboard...
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* KPI Cards Grid */}
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+            <KpiCard
+              title='Win Rate'
+              value={`${stats.winRate.toFixed(1)}%`}
+              icon={FaChartBar}
+              iconBgColor='bg-gradient-to-b from-purple-600 to-violet-700'
+              valueColor='bg-gradient-to-r from-[#5C2ED4] to-[#9E4FC7] text-transparent bg-clip-text'
+            />
+            <KpiCard
+              title='Total Profit'
+              value={`${
+                stats.totalProfit >= 0 ? '+' : ''
+              }$${stats.totalProfit.toFixed(2)}`}
+              icon={FaWallet}
+              iconBgColor='bg-gradient-to-b from-amber-400 to-amber-600'
+              valueColor={
+                stats.totalProfit >= 0 ? 'text-green-400' : 'text-red-400'
+              }
+            />
+            <KpiCard
+              title='Avg Win Profit'
+              value={`$${stats.avgWinProfit.toFixed(2)}`}
+              icon={FaTrophy}
+              iconBgColor='bg-gradient-to-b from-pink-500 to-rose-600'
+              valueColor='text-pink-400'
+            />
+          </div>
 
-      {/* Charts Grid */}
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-        <EquityCurveChart data={equityCurveData} />
-        <ProfitByDirectionChart
-          longStats={stats.longStats}
-          shortStats={stats.shortStats}
-        />
-      </div>
+          {/* Charts Grid */}
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+            <EquityCurveChart data={equityCurveData} />
+            <ProfitByDirectionChart
+              longStats={profitByDirection.long}
+              shortStats={profitByDirection.short}
+            />
+          </div>
 
-      {/* Feedback Button */}
-      <FeedbackButton />
+          {/* Feedback Button */}
+          <FeedbackButton />
+        </>
+      )}
     </div>
   );
 };

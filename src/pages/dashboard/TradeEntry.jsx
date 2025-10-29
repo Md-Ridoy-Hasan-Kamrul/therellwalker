@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { useTradeContext } from '../../context/TradeContext';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { calculatePnL } from '../../utils/calculatePnL';
+import tradeService from '../../api/tradeService';
 
 const TradeEntry = () => {
-  const { addTrade } = useTradeContext();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Get current date and time in required format
   const getCurrentDateTime = () => {
     const now = new Date();
+    const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
-    const year = String(now.getFullYear()).slice(-2);
     const hours = now.getHours();
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
@@ -19,7 +20,7 @@ const TradeEntry = () => {
     const displayHours = hours % 12 || 12;
 
     return {
-      date: `${month}/${day}/${year}`,
+      date: `${year}-${month}-${day}`, // YYYY-MM-DD for input[type="date"]
       time: `${String(displayHours).padStart(2, '0')}:${minutes}:${seconds}`,
       period: period,
     };
@@ -63,18 +64,25 @@ const TradeEntry = () => {
       return 0;
     }
 
-    const { pnl } = calculatePnL(
-      formData.entryPrice,
-      formData.exitPrice,
-      formData.quantity,
-      formData.direction,
-      formData.ticker
-    );
+    // Local P&L calculation for preview (backend will calculate the actual P&L)
+    const entry = Number(formData.entryPrice);
+    const exit = Number(formData.exitPrice);
+    const qty = Number(formData.quantity);
 
-    return pnl;
+    const pointValues = { NQ: 20, YM: 5, ES: 50, MNQ: 2, MYM: 0.5, MES: 5 };
+    const pointValue = pointValues[formData.ticker] || 20;
+
+    let pointDifference = 0;
+    if (formData.direction === 'Long') {
+      pointDifference = exit - entry;
+    } else {
+      pointDifference = entry - exit;
+    }
+
+    return pointDifference * qty * pointValue;
   };
 
-  const handleLogTrade = () => {
+  const handleLogTrade = async () => {
     // Validate required fields
     if (!formData.ticker || !formData.entryPrice || !formData.exitPrice) {
       toast.error('Please fill in Ticker, Entry Price, and Exit Price', {
@@ -84,30 +92,68 @@ const TradeEntry = () => {
       return;
     }
 
-    // Add trade using context
-    const newTrade = addTrade(formData);
+    try {
+      setIsLoading(true);
 
-    // Show success message with trade ID
-    toast.success(`Trade #${newTrade.id} logged successfully!`, {
-      position: 'bottom-right',
-      autoClose: 2000,
-    });
+      // Prepare trade data for backend
+      const tradeData = {
+        date: formData.date, // Already in YYYY-MM-DD format
+        time:
+          formData.time.length === 5 ? `${formData.time}:00` : formData.time, // Add seconds if not present
+        ticker: formData.ticker,
+        direction: formData.direction,
+        entryPrice: Number(formData.entryPrice),
+        exitPrice: Number(formData.exitPrice),
+        quantity: Number(formData.quantity),
+        notes: formData.notes || '',
+        stopLoss: formData.stopLoss ? Number(formData.stopLoss) : null,
+        takeProfit: formData.takeProfit ? Number(formData.takeProfit) : null,
+      };
 
-    // Reset form to default values
-    const resetDateTime = getCurrentDateTime();
-    setFormData({
-      date: resetDateTime.date,
-      time: resetDateTime.time,
-      period: resetDateTime.period,
-      ticker: 'NQ',
-      direction: 'Long',
-      entryPrice: '',
-      exitPrice: '',
-      stopLoss: '',
-      takeProfit: '',
-      quantity: 1,
-      notes: '',
-    });
+      // Call backend API
+      const response = await tradeService.createTrade(tradeData);
+
+      if (response.success) {
+        toast.success('Trade logged successfully!', {
+          position: 'bottom-right',
+          autoClose: 2000,
+        });
+
+        // Reset form to default values
+        const resetDateTime = getCurrentDateTime();
+        setFormData({
+          date: resetDateTime.date,
+          time: resetDateTime.time,
+          period: resetDateTime.period,
+          ticker: 'NQ',
+          direction: 'Long',
+          entryPrice: '',
+          exitPrice: '',
+          stopLoss: '',
+          takeProfit: '',
+          quantity: 1,
+          notes: '',
+        });
+
+        // Redirect to trade log after 1 second
+        setTimeout(() => {
+          navigate('/trade-log');
+        }, 1000);
+      } else {
+        toast.error(response.message || 'Failed to log trade', {
+          position: 'bottom-right',
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error logging trade:', error);
+      toast.error(error.message || 'Failed to log trade. Please try again.', {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const pnl = calculatedPnL();
@@ -697,14 +743,15 @@ const TradeEntry = () => {
         </div>
         <button
           onClick={handleLogTrade}
-          className='w-full px-6 py-3 rounded-lg inline-flex justify-center items-center gap-2 hover:opacity-90 transition-opacity cursor-pointer'
+          disabled={isLoading}
+          className='w-full px-6 py-3 rounded-lg inline-flex justify-center items-center gap-2 hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
           style={{
             background:
               'linear-gradient(89deg, #A33076 -2.62%, #353689 103.6%)',
           }}
         >
           <div className="text-center justify-start text-white text-base font-semibold font-['Poppins'] leading-normal">
-            Log Trade
+            {isLoading ? 'Logging...' : 'Log Trade'}
           </div>
         </button>
       </div>
