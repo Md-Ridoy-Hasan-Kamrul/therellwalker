@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import userService from '../../api/userService';
+import { toast } from 'react-toastify';
 import {
   IoPersonOutline,
   IoMailOutline,
@@ -9,6 +10,7 @@ import {
   IoCameraOutline,
   IoCloseCircleOutline,
   IoCheckmarkCircleOutline,
+  IoWarningOutline,
 } from 'react-icons/io5';
 
 const Profile = () => {
@@ -17,6 +19,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const fileInputRef = useRef(null);
 
   // Fetch profile data from backend
@@ -55,13 +58,13 @@ const Profile = () => {
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+      toast.error('Please select an image file');
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('File size must be less than 5MB');
+      toast.error('File size must be less than 5MB');
       return;
     }
 
@@ -104,17 +107,18 @@ const Profile = () => {
 
         setUploadSuccess(true);
         setTimeout(() => setUploadSuccess(false), 3000);
+        toast.success('Profile photo uploaded successfully!');
       }
     } catch (err) {
       console.error('Error uploading photo:', err);
       const errorMessage = err.message || err.error || 'Failed to upload photo';
 
       if (errorMessage === 'Route not found') {
-        alert(
-          'The photo upload endpoint is not yet available on the backend. Please contact the backend team to implement: POST /api/users/profile/photo'
+        toast.error(
+          'The photo upload endpoint is not yet available on the backend.'
         );
       } else {
-        alert(`Upload failed: ${errorMessage}`);
+        toast.error(`Upload failed: ${errorMessage}`);
       }
     } finally {
       setUploading(false);
@@ -127,14 +131,14 @@ const Profile = () => {
 
   // Handle delete photo
   const handleDeletePhoto = async () => {
-    if (
-      !window.confirm('Are you sure you want to remove your profile photo?')
-    ) {
-      return;
-    }
+    setShowDeleteModal(true);
+  };
 
+  // Confirm delete photo
+  const confirmDeletePhoto = async () => {
     try {
       setUploading(true);
+      setShowDeleteModal(false);
       const response = await userService.deleteProfilePhoto();
 
       if (response.success) {
@@ -154,11 +158,11 @@ const Profile = () => {
           })
         );
 
-        alert('Profile photo removed successfully');
+        toast.success('Profile photo removed successfully!');
       }
     } catch (err) {
       console.error('Error deleting photo:', err);
-      alert(err.message || 'Failed to delete photo');
+      toast.error(err.message || 'Failed to delete photo');
     } finally {
       setUploading(false);
     }
@@ -392,6 +396,55 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className='fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
+          <div className='bg-gradient-to-br from-neutral-900 to-neutral-800 rounded-2xl shadow-2xl border border-white/20 max-w-md w-full overflow-hidden animate-scale-in'>
+            {/* Modal Header */}
+            <div className='bg-gradient-to-r from-red-600/20 to-red-700/20 p-6 border-b border-white/10'>
+              <div className='flex items-center gap-4'>
+                <div className='w-14 h-14 bg-red-600/30 rounded-xl flex items-center justify-center'>
+                  <IoWarningOutline className='text-red-400 w-8 h-8' />
+                </div>
+                <div>
+                  <h3 className="text-white text-xl font-bold font-['Poppins']">
+                    Remove Profile Photo
+                  </h3>
+                  <p className="text-white/60 text-sm font-normal font-['Poppins']">
+                    This action cannot be undone
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className='p-6'>
+              <p className="text-white/80 text-base font-normal font-['Poppins'] leading-relaxed">
+                Are you sure you want to remove your profile photo? Your profile
+                will display your initials instead.
+              </p>
+            </div>
+
+            {/* Modal Footer */}
+            <div className='p-6 pt-0 flex gap-3'>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="flex-1 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-semibold font-['Poppins'] transition-all duration-300 border border-white/20"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeletePhoto}
+                disabled={uploading}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-xl text-white font-semibold font-['Poppins'] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {uploading ? 'Removing...' : 'Remove Photo'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
