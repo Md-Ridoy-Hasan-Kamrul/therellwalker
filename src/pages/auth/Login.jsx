@@ -26,7 +26,10 @@ const Login = () => {
       if (response.success && response.data) {
         // Save user name locally for display
         const userName =
-          response.data.user.fname || response.data.user.lname || 'User';
+          response.data.user.username ||
+          response.data.user.fname ||
+          response.data.user.lname ||
+          'User';
         localStorage.setItem('userName', userName);
 
         toast.success('Login successful!');
@@ -58,8 +61,14 @@ const Login = () => {
       );
 
       if (response.success && response.data) {
+        // Preserve existing username if user originally signed up with email/password
+        const existingUserName = localStorage.getItem('userName');
         const userName =
-          response.data.user.fname || response.data.user.lname || 'User';
+          existingUserName ||
+          response.data.user.username ||
+          response.data.user.fname ||
+          response.data.user.lname ||
+          'User';
         localStorage.setItem('userName', userName);
 
         toast.success(`Welcome back, ${userName}!`);
@@ -116,7 +125,7 @@ const Login = () => {
                   Sign in
                 </div>
                 <div className="self-stretch text-center justify-start text-white text-base sm:text-lg md:text-xl font-normal font-['Open_Sans'] leading-relaxed sm:leading-loose px-2">
-                  Hi! Welcome back, you've been missed
+                  Welcome back! Let's continue your trading journey
                 </div>
               </div>
               <div className='self-stretch flex flex-col justify-start items-start gap-7'>
@@ -128,7 +137,7 @@ const Login = () => {
                   <input
                     id='email'
                     type='email'
-                    placeholder='kamrul@gmail.com'
+                    placeholder='example@gmail.com'
                     {...register('email', { required: 'Email is required' })}
                     className="self-stretch px-6 py-3 bg-white/10 rounded-xl text-white text-base font-normal font-['Open_Sans'] leading-normal placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-violet-600"
                   />
@@ -147,7 +156,7 @@ const Login = () => {
                     <input
                       id='password'
                       type={showPassword ? 'text' : 'password'}
-                      placeholder='12345678'
+                      placeholder='password'
                       {...register('password', {
                         required: 'Password is required',
                       })}
@@ -213,7 +222,8 @@ const Login = () => {
                 );
                 if (googleBtn) googleBtn.click();
               }}
-              className='self-stretch px-6 py-3 bg-white rounded-[20px] shadow-[0px_5px_35px_0px_rgba(18,18,18,0.05)] inline-flex justify-center items-center gap-4 hover:bg-gray-50 transition-colors'
+              disabled={loading}
+              className='self-stretch px-6 py-3 bg-white rounded-[20px] shadow-[0px_5px_35px_0px_rgba(18,18,18,0.05)] inline-flex justify-center items-center gap-4 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
             >
               <svg
                 width='24'

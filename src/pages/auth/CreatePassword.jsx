@@ -3,21 +3,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import authService from '../../api/authService';
-import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
+import { useAuth } from '../../hooks/useAuth';
 
 const CreatePassword = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
-
-  const password = watch('password');
+  const { login } = useAuth();
 
   const onSubmit = async (data) => {
     try {
@@ -25,35 +21,36 @@ const CreatePassword = () => {
 
       // Get signup data from localStorage
       const signupData = JSON.parse(localStorage.getItem('signupData') || '{}');
-      const email = localStorage.getItem('signupEmail');
 
-      if (!signupData.firstName || !signupData.lastName || !email) {
+      if (!signupData.email || !signupData.password) {
         toast.error('Registration data missing. Please start from beginning.');
         navigate('/signup');
         return;
       }
 
-      // Call register API with all data
+      // Call register API with username
       const response = await authService.register(
-        signupData.firstName,
-        signupData.lastName,
-        email,
-        data.password
+        data.username,
+        data.username, // Using username for both fname and lname
+        signupData.email,
+        signupData.password
       );
 
-      if (response.success) {
-        toast.success('Registration successful! Please login.');
+      if (response.success && response.data) {
+        toast.success('Registration successful!');
         // Clean up localStorage
         localStorage.removeItem('signupData');
-        localStorage.removeItem('signupEmail');
-        // Redirect to login
-        navigate('/login');
+        // Save user name
+        localStorage.setItem('userName', data.username);
+        // Auto login
+        login(response.data);
+        navigate('/');
       } else {
         toast.error(response.message || 'Registration failed');
       }
     } catch (error) {
       toast.error(error.message || 'Registration failed. Please try again.');
-      console.error('Create password error:', error);
+      console.error('Username creation error:', error);
     } finally {
       setLoading(false);
     }
@@ -76,105 +73,48 @@ const CreatePassword = () => {
             <div className='self-stretch flex flex-col justify-start items-start gap-11'>
               <div className='self-stretch flex flex-col justify-start items-center gap-3'>
                 <div className="self-stretch text-center justify-start text-white text-4xl font-semibold font-['Lato'] leading-[60px]">
-                  Create Password
+                  Choose Username
                 </div>
                 <div className="self-stretch text-center justify-start text-white text-xl font-normal font-['Open_Sans'] leading-loose">
-                  Hi! Welcome back, you've been missed
+                  Pick a username that represents you
                 </div>
               </div>
               <div className='self-stretch flex flex-col justify-start items-start gap-7'>
-                {/* Password Input */}
+                {/* Username Input */}
                 <div className='self-stretch flex flex-col justify-start items-start gap-4'>
                   <div className="self-stretch justify-start text-white text-2xl font-semibold font-['Lato'] leading-9">
-                    Password
+                    Username
                   </div>
-                  <div className='self-stretch px-6 py-3 bg-white/10 rounded-xl inline-flex justify-between items-center relative'>
-                    <input
-                      id='password'
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder='********'
-                      {...register('password', {
-                        required: 'Password is required',
-                        minLength: {
-                          value: 8,
-                          message: 'Password must be at least 8 characters',
-                        },
-                      })}
-                      className="flex-1 bg-transparent text-white text-base font-normal font-['Open_Sans'] leading-normal placeholder-white/50 focus:outline-none"
-                    />
-                    <button
-                      type='button'
-                      onClick={() => setShowPassword(!showPassword)}
-                      className='flex-shrink-0 w-6 h-6 flex items-center justify-center text-white/70 hover:text-white transition-colors'
-                      aria-label='Toggle password visibility'
-                    >
-                      {showPassword ? (
-                        <IoEyeOutline className='w-5 h-5' />
-                      ) : (
-                        <IoEyeOffOutline className='w-5 h-5' />
-                      )}
-                    </button>
-                  </div>
-                  {errors.password && (
+                  <input
+                    id='username'
+                    type='text'
+                    placeholder='Enter your username'
+                    {...register('username', {
+                      required: 'Username is required',
+                      minLength: {
+                        value: 3,
+                        message: 'Username must be at least 3 characters',
+                      },
+                      maxLength: {
+                        value: 20,
+                        message: 'Username must be less than 20 characters',
+                      },
+                      pattern: {
+                        value: /^[a-zA-Z0-9_]+$/,
+                        message:
+                          'Username can only contain letters, numbers, and underscores',
+                      },
+                    })}
+                    className="self-stretch px-6 py-3 bg-white/10 rounded-xl text-white text-base font-normal font-['Open_Sans'] leading-normal placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                  />
+                  {errors.username && (
                     <p className='text-red-400 text-sm'>
-                      {errors.password.message}
-                    </p>
-                  )}
-                </div>
-                {/* Confirm Password Input */}
-                <div className='self-stretch flex flex-col justify-start items-start gap-4'>
-                  <div className="self-stretch justify-start text-white text-2xl font-semibold font-['Lato'] leading-9">
-                    Confirm password
-                  </div>
-                  <div className='self-stretch px-6 py-3 bg-white/10 rounded-xl inline-flex justify-between items-center relative'>
-                    <input
-                      id='confirmPassword'
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder='********'
-                      {...register('confirmPassword', {
-                        required: 'Please confirm your password',
-                        validate: (value) =>
-                          value === password || 'Passwords do not match',
-                      })}
-                      className="flex-1 bg-transparent text-white text-base font-normal font-['Open_Sans'] leading-normal placeholder-white/50 focus:outline-none"
-                    />
-                    <button
-                      type='button'
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      className='flex-shrink-0 w-6 h-6 flex items-center justify-center text-white/70 hover:text-white transition-colors'
-                      aria-label='Toggle confirm password visibility'
-                    >
-                      {showConfirmPassword ? (
-                        <IoEyeOutline className='w-5 h-5' />
-                      ) : (
-                        <IoEyeOffOutline className='w-5 h-5' />
-                      )}
-                    </button>
-                  </div>
-                  {errors.confirmPassword && (
-                    <p className='text-red-400 text-sm'>
-                      {errors.confirmPassword.message}
+                      {errors.username.message}
                     </p>
                   )}
                 </div>
               </div>
             </div>
-            <label className='self-stretch inline-flex justify-start items-center gap-2 cursor-pointer'>
-              <input
-                type='checkbox'
-                checked={showPassword && showConfirmPassword}
-                onChange={(e) => {
-                  setShowPassword(e.target.checked);
-                  setShowConfirmPassword(e.target.checked);
-                }}
-                className='w-4 h-4 rounded border border-white bg-transparent cursor-pointer accent-violet-600'
-              />
-              <span className="justify-start text-white text-base font-normal font-['Open_Sans'] leading-normal">
-                Show password
-              </span>
-            </label>
           </div>
           <button
             type='submit'
@@ -189,7 +129,7 @@ const CreatePassword = () => {
             }
           >
             <div className="text-center justify-start text-white text-base font-semibold font-['Lato'] leading-normal">
-              {loading ? 'Creating Account...' : 'Sign up'}
+              {loading ? 'Creating Account...' : 'Complete Sign up'}
             </div>
           </button>
           <div className='self-stretch inline-flex justify-center items-center gap-2'>

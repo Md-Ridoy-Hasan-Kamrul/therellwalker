@@ -13,9 +13,7 @@ import ProtectedRoute from './ProtectedRoute';
 // Pages
 import Login from '../pages/auth/Login';
 import Signup from '../pages/auth/Signup';
-import EmailVerification from '../pages/auth/EmailVerification';
 import VerifyOtp from '../pages/auth/VerifyOtp';
-import CreatePassword from '../pages/auth/CreatePassword';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import ResetPasswordOtp from '../pages/auth/ResetPasswordOtp';
 import CreateNewPassword from '../pages/auth/CreateNewPassword';
@@ -55,16 +53,8 @@ const AppRouter = () => {
       element: user ? <Navigate to='/' /> : <Signup />,
     },
     {
-      path: '/email-verification',
-      element: user ? <Navigate to='/' /> : <EmailVerification />,
-    },
-    {
       path: '/verify-otp',
       element: user ? <Navigate to='/' /> : <VerifyOtp />,
-    },
-    {
-      path: '/create-password',
-      element: user ? <Navigate to='/' /> : <CreatePassword />,
     },
     {
       path: '/forgot-password',

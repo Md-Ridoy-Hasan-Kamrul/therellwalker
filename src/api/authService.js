@@ -38,6 +38,19 @@ const authService = {
     }
   },
 
+  simpleRegister: async (email, password, username) => {
+    try {
+      const response = await axiosInstance.post('/api/auth/simple-register', {
+        email,
+        password,
+        username,
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
   login: async (email, password) => {
     try {
       const response = await axiosInstance.post('/api/auth/login', {

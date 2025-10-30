@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../../hooks/useAuth';
 import authService from '../../api/authService';
+import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
 
 const Signup = () => {
   const {
@@ -15,20 +16,39 @@ const Signup = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data) => {
     try {
-      // Store signup data temporarily (First name and Last name)
-      const signupData = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-      };
-      localStorage.setItem('signupData', JSON.stringify(signupData));
-      toast.success('Please verify your email!');
-      navigate('/email-verification');
+      setLoading(true);
+
+      // Call simple-register API with username, email, password
+      const response = await authService.simpleRegister(
+        data.email,
+        data.password,
+        data.username
+      );
+
+      if (response.success && response.data) {
+        toast.success('Registration successful!');
+        // Save user name locally
+        localStorage.setItem('userName', data.username);
+        // Ensure username is in the user object
+        if (response.data.user) {
+          response.data.user.username = data.username;
+          response.data.user.name = data.username;
+        }
+        // Auto login
+        login(response.data);
+        navigate('/');
+      } else {
+        toast.error(response.message || 'Registration failed');
+      }
     } catch (error) {
-      toast.error('Signup failed. Please try again.');
+      toast.error(error.message || 'Registration failed. Please try again.');
       console.error('Signup error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,8 +61,14 @@ const Signup = () => {
 
       if (response.success && response.data) {
         // Save user name locally for display
+        // Preserve existing username if user already signed up with email/password
+        const existingUserName = localStorage.getItem('userName');
         const userName =
-          response.data.user.fname || response.data.user.lname || 'User';
+          existingUserName ||
+          response.data.user.username ||
+          response.data.user.fname ||
+          response.data.user.lname ||
+          'User';
         localStorage.setItem('userName', userName);
 
         toast.success(`Welcome, ${userName}!`);
@@ -88,47 +114,88 @@ const Signup = () => {
                   Sign up
                 </div>
                 <div className="self-stretch text-center justify-start text-white text-base sm:text-lg md:text-xl font-normal font-['Open_Sans'] leading-relaxed sm:leading-loose px-2">
-                  Hi! Welcome back, you've been missed
+                  Hey there, ready to see your trading in a new light?
                 </div>
               </div>
               <div className='self-stretch flex flex-col justify-start items-start gap-7'>
-                {/* First Name Input */}
+                {/* Username Input */}
                 <div className='self-stretch flex flex-col justify-start items-start gap-4'>
                   <div className="self-stretch justify-start text-white text-2xl font-semibold font-['Lato'] leading-9">
-                    First name
+                    Username
                   </div>
                   <input
-                    id='firstName'
+                    id='username'
                     type='text'
-                    placeholder='Katona'
-                    {...register('firstName', {
-                      required: 'First name is required',
+                    placeholder='Enter your username'
+                    {...register('username', {
+                      required: 'Username is required',
                     })}
                     className="self-stretch px-6 py-3 bg-white/10 rounded-xl text-white text-base font-normal font-['Open_Sans'] leading-normal placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-violet-600"
                   />
-                  {errors.firstName && (
+                  {errors.username && (
                     <p className='text-red-400 text-sm'>
-                      {errors.firstName.message}
+                      {errors.username.message}
                     </p>
                   )}
                 </div>
-                {/* Last Name Input */}
+                {/* Email Input */}
                 <div className='self-stretch flex flex-col justify-start items-start gap-4'>
                   <div className="self-stretch justify-start text-white text-2xl font-semibold font-['Lato'] leading-9">
-                    Last name
+                    Email
                   </div>
                   <input
-                    id='lastName'
-                    type='text'
-                    placeholder='Beatrix'
-                    {...register('lastName', {
-                      required: 'Last name is required',
+                    id='email'
+                    type='email'
+                    placeholder='example@gmail.com'
+                    {...register('email', {
+                      required: 'Email is required',
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'Invalid email address',
+                      },
                     })}
                     className="self-stretch px-6 py-3 bg-white/10 rounded-xl text-white text-base font-normal font-['Open_Sans'] leading-normal placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-violet-600"
                   />
-                  {errors.lastName && (
+                  {errors.email && (
                     <p className='text-red-400 text-sm'>
-                      {errors.lastName.message}
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+                {/* Password Input */}
+                <div className='self-stretch flex flex-col justify-start items-start gap-4'>
+                  <div className="self-stretch justify-start text-white text-2xl font-semibold font-['Lato'] leading-9">
+                    Password
+                  </div>
+                  <div className='self-stretch px-6 py-3 bg-white/10 rounded-xl inline-flex justify-between items-center relative'>
+                    <input
+                      id='password'
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder='Make it easy to remember'
+                      {...register('password', {
+                        required: 'Password is required',
+                        minLength: {
+                          value: 6,
+                          message: 'Password must be at least 6 characters',
+                        },
+                      })}
+                      className="flex-1 bg-transparent text-white text-base font-normal font-['Open_Sans'] leading-normal placeholder-white/50 focus:outline-none"
+                    />
+                    <button
+                      type='button'
+                      onClick={() => setShowPassword(!showPassword)}
+                      className='w-6 h-6 relative overflow-hidden flex items-center justify-center text-white'
+                    >
+                      {showPassword ? (
+                        <IoEyeOutline size={20} />
+                      ) : (
+                        <IoEyeOffOutline size={20} />
+                      )}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className='text-red-400 text-sm'>
+                      {errors.password.message}
                     </p>
                   )}
                 </div>
@@ -137,17 +204,18 @@ const Signup = () => {
           </div>
           <button
             type='submit'
-            className='self-stretch px-6 py-3 rounded-[65px] inline-flex justify-center items-center gap-2 transition-colors'
+            disabled={loading}
+            className='self-stretch px-6 py-3 rounded-[65px] inline-flex justify-center items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
             style={{ backgroundColor: '#7C3AED' }}
             onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = '#6D28D9')
+              !loading && (e.currentTarget.style.backgroundColor = '#6D28D9')
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = '#7C3AED')
+              !loading && (e.currentTarget.style.backgroundColor = '#7C3AED')
             }
           >
             <div className="text-center justify-start text-white text-base font-semibold font-['Lato'] leading-normal">
-              Next
+              {loading ? 'Creating Account...' : 'Sign up'}
             </div>
           </button>
           <div className='self-stretch inline-flex justify-center items-center gap-2 sm:gap-3 flex-wrap px-2'>

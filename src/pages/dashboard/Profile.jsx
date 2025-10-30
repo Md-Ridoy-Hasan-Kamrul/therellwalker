@@ -137,8 +137,16 @@ const Profile = () => {
   };
 
   const fullName = profileData
-    ? `${profileData.fname} ${profileData.lname}`
-    : user?.name || 'User Name';
+    ? profileData.username ||
+      localStorage.getItem('userName') ||
+      `${profileData.fname || ''} ${profileData.lname || ''}`.trim() ||
+      user?.username ||
+      user?.name ||
+      'User Name'
+    : user?.username ||
+      user?.name ||
+      localStorage.getItem('userName') ||
+      'User Name';
 
   const email = profileData?.email || user?.email || 'email@example.com';
   const isVerified = profileData?.isVerified ?? true;
