@@ -245,7 +245,7 @@ const Reflections = () => {
 
       {/* Right Section - Past Reflections */}
       <div
-        className='xl:w-[40%] xl:h-[600px] h-auto rounded-2xl flex flex-col justify-start items-start gap-2.5 relative  backdrop-blur-xl'
+        className='xl:w-[40%] xl:h-[600px] h-[600px] rounded-2xl flex flex-col justify-start items-start gap-2.5 relative  backdrop-blur-xl'
         style={{
           background:
             'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
@@ -275,7 +275,7 @@ const Reflections = () => {
 
             <div className='self-stretch flex justify-end items-start gap-1 relative'>
               {/* Scrollable Reflections List */}
-              <div className='flex-1 xl:max-h-[480px] flex flex-col justify-start items-start gap-4 overflow-y-auto overflow-x-hidden custom-scrollbar pr-2 '>
+              <div className='flex-1 max-h-[480px] flex flex-col justify-start items-start gap-4 overflow-y-auto overflow-x-hidden custom-scrollbar pr-2 '>
                 {pastReflections.length === 0 ? (
                   <div className='w-full py-8 flex items-center justify-center'>
                     <div className="text-zinc-500 text-sm text-center font-['Poppins']">
