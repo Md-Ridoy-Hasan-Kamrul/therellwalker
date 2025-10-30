@@ -5,6 +5,9 @@ import { toast } from 'react-toastify';
 
 const TradeLog = () => {
   const [trades, setTrades] = useState([]);
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  const [selectedNote, setSelectedNote] = useState('');
+  const [tradeToDelete, setTradeToDelete] = useState(null);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     limit: 10,
@@ -20,6 +23,52 @@ const TradeLog = () => {
     direction: 'all', // 'all', 'long', 'short'
   });
   const filterDropdownRef = useRef(null);
+
+  const handleDeleteTrade = async () => {
+    if (!tradeToDelete) return;
+
+    try {
+      const response = await tradeService.deleteTrade(tradeToDelete);
+      if (response.success) {
+        toast.success('Trade deleted successfully', {
+          position: 'bottom-right',
+          autoClose: 3000,
+        });
+        fetchTrades(pagination.currentPage); // Refresh the list
+      } else {
+        toast.error(response.message || 'Failed to delete trade', {
+          position: 'bottom-right',
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting trade:', error);
+      toast.error('An error occurred while deleting the trade.', {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
+    } finally {
+      setTradeToDelete(null); // Close the confirmation modal
+    }
+  };
+
+  const openNotesModal = (notes) => {
+    setSelectedNote(notes);
+    setShowNotesModal(true);
+  };
+
+  const closeNotesModal = () => {
+    setShowNotesModal(false);
+    setSelectedNote('');
+  };
+
+  const confirmDelete = (tradeId) => {
+    setTradeToDelete(tradeId);
+  };
+
+  const cancelDelete = () => {
+    setTradeToDelete(null);
+  };
 
   // Fetch trades from backend
   const fetchTrades = async (page = 1) => {
@@ -414,6 +463,9 @@ const TradeLog = () => {
             <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
               Notes
             </div>
+            <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
+              Action
+            </div>
           </div>
 
           {/* Table Rows */}
@@ -479,8 +531,21 @@ const TradeLog = () => {
                     >
                       {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
                     </div>
-                    <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
+                    <div
+                      className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate cursor-pointer"
+                      onClick={() => openNotesModal(trade.notes)}
+                    >
                       {trade.notes || '-'}
+                    </div>
+                    <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
+                      <div
+                        onClick={() => confirmDelete(trade.id)}
+                        className='px-2 py-1 bg-red-700/10 rounded outline outline-1 outline-offset-[-1px] outline-white/30 inline-flex justify-center items-center gap-2.5 cursor-pointer'
+                      >
+                        <div className="justify-start text-white text-xs font-normal font-['Poppins']">
+                          Delete
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
@@ -576,6 +641,87 @@ const TradeLog = () => {
               </button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Notes Modal */}
+      {showNotesModal && (
+        <div
+          className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm'
+          onClick={closeNotesModal}
+        >
+          <div
+            className='relative w-full max-w-2xl mx-4 rounded-2xl backdrop-blur-xl'
+            style={{
+              background:
+                'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+              boxShadow:
+                '0px 8px 32px 0px rgba(0, 0, 0, 0.8), inset 0px 1px 1px 0px rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className='flex items-center justify-between p-6 border-b border-white/10'>
+              <h3 className="text-white text-lg font-semibold font-['Poppins']">
+                Trade Notes
+              </h3>
+              <button
+                onClick={closeNotesModal}
+                className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors'
+              >
+                <svg
+                  className='w-5 h-5 text-white'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
+                    d='M6 18L18 6M6 6l12 12'
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className='p-6 max-h-[70vh] overflow-y-auto'>
+              <p className='text-zinc-300 whitespace-pre-wrap break-words'>
+                {selectedNote || 'No notes for this trade.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {tradeToDelete && (
+        <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
+          <div className='bg-stone-800 rounded-lg shadow-xl p-6 w-full max-w-md mx-4'>
+            <h3 className="text-white text-lg font-semibold font-['Poppins'] mb-4">
+              Confirm Deletion
+            </h3>
+            <p className='text-zinc-300'>
+              Are you sure you want to delete this trade? This action cannot be
+              undone.
+            </p>
+            <div className='flex justify-end gap-4 mt-6'>
+              <button
+                onClick={cancelDelete}
+                className="px-4 py-2 bg-zinc-600 hover:bg-zinc-700 text-white text-sm font-medium font-['Poppins'] rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteTrade}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium font-['Poppins'] rounded-lg transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

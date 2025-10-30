@@ -30,6 +30,15 @@ const tradeService = {
       throw error.response?.data || error;
     }
   },
+
+  deleteTrade: async (id) => {
+    try {
+      const response = await axiosInstance.delete(`/api/trades/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
 };
 
 export default tradeService;
