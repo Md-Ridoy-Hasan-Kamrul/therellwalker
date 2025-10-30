@@ -714,7 +714,7 @@ const TradeEntry = () => {
       {/* Notes */}
       <div className='w-full flex flex-col justify-start items-start gap-4'>
         <div className="justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
-          Notes (optional)
+          Tell me what happened (optional)
         </div>
         <div className='w-full h-32 px-6 py-3 bg-white/10 rounded-lg border-none inline-flex justify-between items-start'>
           <textarea
