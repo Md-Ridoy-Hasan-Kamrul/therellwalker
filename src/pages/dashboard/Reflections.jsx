@@ -124,7 +124,7 @@ const Reflections = () => {
     <div className='flex flex-col xl:flex-row gap-6 w-full'>
       {/* Left Section - Reflection Input */}
       <div
-        className='xl:w-[75%] xl:h-[600px] w-full h-auto  rounded-2xl flex flex-col justify-between lg:items-start gap-2.5 relative backdrop-blur-xl'
+        className='xl:w-[75%] xl:h-[600px] w-full h-auto rounded-2xl flex flex-col justify-start lg:items-start gap-2.5 relative backdrop-blur-xl'
         style={{
           background:
             'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
@@ -146,7 +146,7 @@ const Reflections = () => {
             backgroundSize: '2px 100%, 100% 2px',
           }}
         />
-        <div className='relative z-10 w-full h-full px-6 pt-6 pb-10 flex flex-col justify-between items-start gap-2.5'>
+        <div className='relative z-10 w-full h-full px-6 pt-6 pb-6 flex flex-col justify-start items-start gap-2.5'>
           <div className='self-stretch flex flex-col justify-start items-start gap-5'>
             {/* Header */}
             <div className='w-full flex flex-col justify-start items-start gap-4'>
@@ -203,7 +203,7 @@ const Reflections = () => {
               </button>
 
               {/* Reflection Input and Save Button */}
-              <div className='self-stretch flex flex-col justify-start items-end gap-6'>
+              <div className='self-stretch flex flex-col justify-start items-start gap-6'>
                 {/* Text Area */}
                 <textarea
                   value={reflection}
@@ -212,24 +212,31 @@ const Reflections = () => {
                   className="self-stretch min-h-[140px] p-4 bg-stone-900 rounded border border-white/10 text-white text-sm font-normal font-['Poppins'] leading-relaxed placeholder:text-zinc-500 resize-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
                 />
 
-                {/* Save Button */}
-                <button
-                  onClick={handleSaveReflection}
-                  disabled={!reflection.trim()}
-                  className={`px-6 py-3 rounded-lg flex justify-center items-center gap-2 transition-opacity cursor-pointer ${
-                    !reflection.trim()
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'hover:opacity-90'
-                  }`}
-                  style={{
-                    background:
-                      'linear-gradient(89deg, #A33076 -2.62%, #353689 103.6%)',
-                  }}
-                >
-                  <div className="text-center text-white text-base font-semibold font-['Poppins'] leading-normal">
-                    Save Reflection
+                {/* Improvement Prompt Text and Save Button - Same Line */}
+                <div className='self-stretch flex flex-row justify-between items-center gap-4'>
+                  <div className="flex-1 text-purple-300 text-sm sm:text-base font-medium font-['Poppins'] leading-relaxed tracking-wide">
+                    For your improvement, please write your reflections in
+                    extensive detail
                   </div>
-                </button>
+
+                  <button
+                    onClick={handleSaveReflection}
+                    disabled={!reflection.trim()}
+                    className={`px-6 py-3 rounded-lg flex justify-center items-center gap-2 transition-opacity cursor-pointer flex-shrink-0 ${
+                      !reflection.trim()
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:opacity-90'
+                    }`}
+                    style={{
+                      background:
+                        'linear-gradient(89deg, #A33076 -2.62%, #353689 103.6%)',
+                    }}
+                  >
+                    <div className="text-center text-white text-base font-semibold font-['Poppins'] leading-normal whitespace-nowrap">
+                      Save Reflection
+                    </div>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

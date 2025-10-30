@@ -12,36 +12,38 @@ import {
   Bar,
   Legend,
 } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 import FeedbackButton from '../../components/common/FeedbackButton';
 import tradeService from '../../api/tradeService';
 import { toast } from 'react-toastify';
+import { reflectionPrompts, groupNames } from '../../data/reflectionPrompts';
 
 // Pixel-Perfect KPI Card Component with multi-layer gradient
 const KpiCard = ({ title, value, icon, iconBgColor, valueColor }) => {
   const Icon = icon;
   return (
     // Main Card Container with RGB border glow effect
-    <div className='relative w-full min-h-[160px] sm:min-h-[180px] md:h-48 rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
+    <div className='relative w-full min-h-[140px] sm:min-h-[150px] md:h-40 rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
       <div
         className={`
-          w-full h-full p-5 sm:p-6 md:p-8 rounded-2xl flex flex-col justify-between 
+          w-full h-full p-4 sm:p-5 md:p-6 rounded-2xl flex flex-col justify-between 
           bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]
         `}
       >
         {/* Icon Container */}
         <div
-          className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 ${iconBgColor} rounded-full flex items-center justify-center flex-shrink-0`}
+          className={`w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 ${iconBgColor} rounded-full flex items-center justify-center flex-shrink-0`}
         >
-          <Icon className='w-5 h-5 sm:w-5.5 sm:h-5.5 md:w-6 md:h-6 text-white' />
+          <Icon className='w-4 h-4 sm:w-5 sm:h-5 md:w-5.5 md:h-5.5 text-white' />
         </div>
 
         {/* Text Content Container */}
         <div className='flex flex-col gap-0.5 sm:gap-1'>
-          <p className='text-white text-2xl sm:text-3xl md:text-4xl font-semibold font-["Poppins"] leading-tight'>
+          <p className='text-white text-xl sm:text-2xl md:text-3xl font-semibold font-["Poppins"] leading-tight'>
             {value}
           </p>
           <p
-            className={`text-base sm:text-lg font-medium font-["Poppins"] leading-normal ${valueColor}`}
+            className={`text-sm sm:text-base font-medium font-["Poppins"] leading-normal ${valueColor}`}
           >
             {title}
           </p>
@@ -107,13 +109,13 @@ const CustomDirectionTooltip = ({ active, payload }) => {
 // Equity Curve Chart Component
 const EquityCurveChart = ({ data }) => {
   return (
-    <div className='relative w-full min-h-[320px] sm:min-h-[360px] md:min-h-[380px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
-      <div className='w-full h-full px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-4 sm:pb-5 md:pb-6 rounded-2xl flex flex-col justify-start items-start gap-3 sm:gap-4 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
-        <div className="self-stretch justify-start text-white/95 text-base sm:text-lg md:text-xl font-semibold font-['Poppins'] leading-tight sm:leading-loose">
+    <div className='relative w-full min-h-[280px] sm:min-h-[300px] md:min-h-[320px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
+      <div className='w-full h-full px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 pb-4 sm:pb-5 rounded-2xl flex flex-col justify-start items-start gap-2 sm:gap-3 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
+        <div className="self-stretch justify-start text-white/95 text-base sm:text-lg font-semibold font-['Poppins'] leading-tight">
           Equity Curve
         </div>
 
-        <ResponsiveContainer width='100%' height={280}>
+        <ResponsiveContainer width='100%' height={240}>
           <LineChart
             data={data}
             margin={{ top: 5, right: 10, left: 0, bottom: 30 }}
@@ -154,6 +156,93 @@ const EquityCurveChart = ({ data }) => {
   );
 };
 
+// Mindset Check Component - Shows latest reflection preview
+const MindsetCheckBox = () => {
+  const navigate = useNavigate();
+  const [latestReflection, setLatestReflection] = useState(null);
+  const [currentPrompt, setCurrentPrompt] = useState('');
+  const [currentGroup, setCurrentGroup] = useState('');
+
+  useEffect(() => {
+    // Load latest reflection from localStorage
+    const saved = localStorage.getItem('ledger_reflections');
+    const reflections = saved ? JSON.parse(saved) : [];
+    if (reflections.length > 0) {
+      setLatestReflection(reflections[0]);
+    }
+
+    // Load current prompt
+    const rotationSaved = localStorage.getItem('ledger_prompt_rotation');
+    const rotationState = rotationSaved
+      ? JSON.parse(rotationSaved)
+      : {
+          currentGroupIndex: 0,
+          promptIndexes: [0, 0, 0, 0],
+        };
+
+    const groupIndex = rotationState.currentGroupIndex;
+    const groupName = groupNames[groupIndex];
+    const promptIndex = rotationState.promptIndexes[groupIndex];
+    const prompt = reflectionPrompts[groupName][promptIndex];
+
+    setCurrentPrompt(prompt);
+    setCurrentGroup(groupName);
+  }, []);
+
+  const handleNewPrompt = () => {
+    navigate('/reflections');
+  };
+
+  return (
+    <div className='relative w-full rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
+      <div className='w-full h-full px-4 sm:px-5 md:px-6 py-4 sm:py-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
+        {/* Left Section - Reflection Content */}
+        <div className='flex-1 flex flex-col gap-2 min-w-0'>
+          <div className='flex items-center gap-2'>
+            <div className="text-white/95 text-base sm:text-lg md:text-xl font-semibold font-['Poppins'] leading-tight">
+              Mindset Check
+            </div>
+          </div>
+
+          {latestReflection ? (
+            <div className='flex flex-col gap-1.5'>
+              <div className='flex items-center gap-2'>
+                <div className="text-purple-300 text-xs font-semibold font-['Poppins'] uppercase tracking-wider">
+                  {currentGroup}
+                </div>
+              </div>
+              <div className="text-white/90 text-sm font-normal font-['Poppins'] leading-relaxed italic">
+                Q: {currentPrompt}
+              </div>
+              <div className="text-white text-sm sm:text-base font-normal font-['Poppins'] leading-relaxed line-clamp-2">
+                "{latestReflection.answer}"
+              </div>
+            </div>
+          ) : (
+            <div className="text-white/70 text-sm font-normal font-['Poppins'] leading-relaxed">
+              No reflections yet. Start your mindset journey today!
+            </div>
+          )}
+        </div>
+
+        {/* Right Section - New Prompt Button */}
+        <button
+          onClick={handleNewPrompt}
+          className='px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg flex-shrink-0 hover:opacity-90 transition-opacity'
+          style={{
+            background:
+              'linear-gradient(89deg, #A33076 -2.62%, #353689 103.6%)',
+          }}
+        >
+          <div className="text-center text-white text-sm sm:text-base font-semibold font-['Poppins'] leading-normal whitespace-nowrap">
+            NEW PROMPT
+          </div>
+        </button>
+      </div>
+    </div>
+  );
+};
+
 // Profit by Direction Chart Component
 const ProfitByDirectionChart = ({ longStats, shortStats }) => {
   const data = [
@@ -180,14 +269,14 @@ const ProfitByDirectionChart = ({ longStats, shortStats }) => {
   ];
 
   return (
-    <div className='relative w-full min-h-[320px] sm:min-h-[360px] md:min-h-[380px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
-      <div className='w-full h-full px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-4 sm:pb-5 md:pb-6 rounded-2xl flex flex-col justify-start items-start gap-3 sm:gap-4 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
-        <div className="justify-start text-white text-base sm:text-lg md:text-xl font-semibold font-['Poppins'] leading-tight sm:leading-loose">
+    <div className='relative w-full min-h-[280px] sm:min-h-[300px] md:min-h-[320px] rounded-2xl p-[1px] bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-amber-400/50 shadow-[0px_44px_250px_0px_rgba(110,33,196,0.15),0_0_20px_rgba(168,85,247,0.2)]'>
+      <div className='w-full h-full px-4 sm:px-5 md:px-6 pt-4 sm:pt-5 pb-4 sm:pb-5 rounded-2xl flex flex-col justify-start items-start gap-2 sm:gap-3 bg-[linear-gradient(142deg,rgba(255,255,255,0.2)_2.65%,rgba(255,255,255,0)_44.8%),radial-gradient(108%_167%_at_46%_14%,#000_0%,#000_56%,rgba(0,0,0,0.3)_74%,rgba(0,0,0,0)_100%),linear-gradient(90deg,rgba(92,46,212,0.6)_0%,rgba(158,79,199,0.5)_50%,rgba(251,191,36,0.4)_100%)]'>
+        <div className="justify-start text-white text-base sm:text-lg font-semibold font-['Poppins'] leading-tight">
           Profit by Direction
         </div>
 
         <div className='relative w-full'>
-          <ResponsiveContainer width='100%' height={280}>
+          <ResponsiveContainer width='100%' height={240}>
             <BarChart
               data={data}
               margin={{ top: 5, right: 10, left: 0, bottom: 30 }}
@@ -332,7 +421,7 @@ const DashboardHome = () => {
   }, []);
 
   return (
-    <div className='flex flex-col gap-6 pb-10 relative'>
+    <div className='flex flex-col gap-4 sm:gap-5 pb-10 relative'>
       {isLoading ? (
         <div className='flex items-center justify-center min-h-[400px]'>
           <div className="text-white text-xl font-medium font-['Poppins']">
@@ -342,7 +431,7 @@ const DashboardHome = () => {
       ) : (
         <>
           {/* KPI Cards Grid */}
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5'>
             <KpiCard
               title='Win Rate'
               value={`${stats.winRate.toFixed(1)}%`}
@@ -370,8 +459,11 @@ const DashboardHome = () => {
             />
           </div>
 
+          {/* Mindset Check Box - Reflection Preview */}
+          <MindsetCheckBox />
+
           {/* Charts Grid */}
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5'>
             <EquityCurveChart data={equityCurveData} />
             <ProfitByDirectionChart
               longStats={profitByDirection.long}
