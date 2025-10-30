@@ -434,7 +434,7 @@ const TradeLog = () => {
 
       {/* Table Section with Horizontal Scroll */}
       <div className='self-stretch w-full overflow-x-auto'>
-        <div className='min-w-[800px] rounded flex flex-col justify-start items-start'>
+        <div className='sm:min-w-[1000px]  rounded flex flex-col justify-start items-start'>
           {/* Table Header */}
           <div className='w-auto sm:w-full px-2 py-3 sm:py-4 bg-stone-900 flex items-center justify-between'>
             <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
@@ -541,7 +541,7 @@ const TradeLog = () => {
                     <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
                       <div
                         onClick={() => confirmDelete(trade.id)}
-                        className='px-2 py-1 bg-red-700/10 rounded outline outline-1 outline-offset-[-1px] outline-white/30 inline-flex justify-center items-center gap-2.5 cursor-pointer'
+                        className='px-2 py-1 bg-red-700/10 rounded outline  outline-offset-[-1px] outline-white/30 inline-flex justify-center items-center gap-2.5 cursor-pointer'
                       >
                         <div className="justify-start text-white text-xs font-normal font-['Poppins']">
                           Delete
