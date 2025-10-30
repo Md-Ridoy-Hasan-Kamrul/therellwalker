@@ -421,7 +421,7 @@ const DashboardHome = () => {
   }, []);
 
   return (
-    <div className='flex flex-col gap-4 sm:gap-5 pb-10 relative'>
+    <div className='flex flex-col gap-4 sm:gap-5 lg:py-2.5 py-2 relative'>
       {isLoading ? (
         <div className='flex items-center justify-center min-h-[400px]'>
           <div className="text-white text-xl font-medium font-['Poppins']">

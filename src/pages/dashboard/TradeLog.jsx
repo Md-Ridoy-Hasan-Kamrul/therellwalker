@@ -231,7 +231,8 @@ const TradeLog = () => {
   };
 
   return (
-    <div className='w-full bg-neutral-900 inline-flex flex-col justify-start items-start gap-6 sm:gap-8 md:gap-10 p-4 sm:p-5 md:p-6'>
+    <div className='lg:py-2.5 py-2'>
+      <div className='w-full bg-neutral-900 inline-flex flex-col justify-start items-start gap-6 sm:gap-8 md:gap-10 p-4 sm:p-5 md:p-6'>
       {/* Header Section */}
       <div className='self-stretch inline-flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0'>
         <div className="text-white text-xl sm:text-2xl font-semibold font-['Poppins'] leading-tight sm:leading-loose">
@@ -270,7 +271,7 @@ const TradeLog = () => {
 
             {/* Filter Dropdown */}
             {showFilterDropdown && (
-              <div className='absolute right-0 top-full mt-2 w-72 bg-stone-800 rounded-lg shadow-xl z-50 border border-zinc-700'>
+              <div className='absolute left-0 sm:left-auto sm:right-0 top-full mt-2 w-64 lg:w-72 bg-stone-800 rounded-lg shadow-xl z-50 border border-zinc-700'>
                 <div className='p-4 space-y-4'>
                   {/* Header */}
                   <div className='flex justify-between items-center border-b border-zinc-700 pb-3'>
@@ -765,6 +766,7 @@ const TradeLog = () => {
 
       {/* Feedback Button */}
       <FeedbackButton />
+    </div>
     </div>
   );
 };
