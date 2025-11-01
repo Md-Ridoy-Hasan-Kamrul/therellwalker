@@ -231,7 +231,8 @@ const TradeLog = () => {
   };
 
   return (
-    <div className='w-full bg-neutral-900 inline-flex flex-col justify-start items-start gap-6 sm:gap-8 md:gap-10 p-4 sm:p-5 md:p-6'>
+    <div className='lg:py-2.5 py-2'>
+      <div className='w-full bg-neutral-900 inline-flex flex-col justify-start items-start gap-6 sm:gap-8 md:gap-10 p-4 sm:p-5 md:p-6'>
       {/* Header Section */}
       <div className='self-stretch inline-flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0'>
         <div className="text-white text-xl sm:text-2xl font-semibold font-['Poppins'] leading-tight sm:leading-loose">
@@ -270,7 +271,7 @@ const TradeLog = () => {
 
             {/* Filter Dropdown */}
             {showFilterDropdown && (
-              <div className='absolute right-0 top-full mt-2 w-72 bg-stone-800 rounded-lg shadow-xl z-50 border border-zinc-700'>
+              <div className='absolute left-0 sm:left-auto sm:right-0 top-full mt-2 w-64 lg:w-72 bg-stone-800 rounded-lg shadow-xl z-50 border border-zinc-700'>
                 <div className='p-4 space-y-4'>
                   {/* Header */}
                   <div className='flex justify-between items-center border-b border-zinc-700 pb-3'>
@@ -433,7 +434,7 @@ const TradeLog = () => {
 
       {/* Table Section with Horizontal Scroll */}
       <div className='self-stretch w-full overflow-x-auto'>
-        <div className='min-w-[800px] rounded flex flex-col justify-start items-start'>
+        <div className='sm:min-w-[1000px]  rounded flex flex-col justify-start items-start'>
           {/* Table Header */}
           <div className='w-auto sm:w-full px-2 py-3 sm:py-4 bg-stone-900 flex items-center justify-between'>
             <div className="text-white text-sm sm:text-base font-semibold font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
@@ -540,7 +541,7 @@ const TradeLog = () => {
                     <div className="text-white text-xs sm:text-sm font-normal font-['Poppins'] flex-shrink-0 text-center w-[70px] truncate">
                       <div
                         onClick={() => confirmDelete(trade.id)}
-                        className='px-2 py-1 bg-red-700/10 rounded outline outline-1 outline-offset-[-1px] outline-white/30 inline-flex justify-center items-center gap-2.5 cursor-pointer'
+                        className='px-2 py-1 bg-red-700/10 rounded outline  outline-offset-[-1px] outline-white/30 inline-flex justify-center items-center gap-2.5 cursor-pointer'
                       >
                         <div className="justify-start text-white text-xs font-normal font-['Poppins']">
                           Delete
@@ -765,6 +766,7 @@ const TradeLog = () => {
 
       {/* Feedback Button */}
       <FeedbackButton />
+    </div>
     </div>
   );
 };

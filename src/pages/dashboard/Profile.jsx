@@ -172,8 +172,8 @@ const Profile = () => {
   return (
     <div className='flex flex-col gap-6'>
       {/* Page Title */}
-      <div className='mb-2'>
-        <h1 className="text-white text-4xl font-bold font-['Poppins'] mb-2">
+      <div className=''>
+        <h1 className="text-white text-2xl xl:text-3xl font-bold font-['Poppins'] mb-2">
           My Profile
         </h1>
         <p className="text-white/60 text-sm font-normal font-['Poppins']">
@@ -256,10 +256,10 @@ const Profile = () => {
 
             {/* User Info */}
             <div className='flex-1 text-center md:text-left'>
-              <h2 className="text-white text-3xl font-bold font-['Poppins'] mb-2">
+              <h2 className="text-white text-xl lg:text-2xl font-bold font-['Poppins'] mb-2">
                 {fullName}
               </h2>
-              <p className="text-white/70 text-base font-normal font-['Poppins'] mb-4">
+              <p className="text-white/70 text-sm xl:text-base font-normal font-['Poppins'] mb-4">
                 {email}
               </p>
               <div className='flex flex-wrap gap-2 justify-center md:justify-start'>
@@ -277,23 +277,23 @@ const Profile = () => {
         </div>
 
         {/* Information Grid */}
-        <div className='p-8'>
+        <div className='p-4 lg:p-8'>
           <h3 className="text-white text-xl font-semibold font-['Poppins'] mb-6">
             Account Information
           </h3>
 
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-5'>
             {/* Name Field */}
-            <div className='group p-5 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300'>
+            <div className='group sm:p-5 p-2.5 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300'>
               <div className='flex items-center gap-4'>
-                <div className='w-12 h-12 bg-gradient-to-br from-violet-600/40 to-violet-700/40 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
-                  <IoPersonOutline className='text-violet-300 w-6 h-6' />
+                <div className='sm:w-12 w-9 h-9 sm:h-12 bg-gradient-to-br from-violet-600/40 to-violet-700/40 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
+                  <IoPersonOutline className='text-violet-300 w-4 h-4 sm:w-6 sm:h-6' />
                 </div>
                 <div className='flex-1 min-w-0'>
                   <p className="text-white/50 text-xs font-medium font-['Poppins'] uppercase tracking-wider mb-1">
                     Full Name
                   </p>
-                  <p className="text-white text-lg font-semibold font-['Poppins'] truncate">
+                  <p className="text-white text-sm  font-semibold font-['Poppins'] truncate">
                     {fullName}
                   </p>
                 </div>
@@ -301,16 +301,16 @@ const Profile = () => {
             </div>
 
             {/* Email Field */}
-            <div className='group p-5 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300'>
+            <div className='group sm:p-5 p-2.5 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300'>
               <div className='flex items-center gap-4'>
-                <div className='w-12 h-12 bg-gradient-to-br from-amber-500/40 to-amber-600/40 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
-                  <IoMailOutline className='text-amber-300 w-6 h-6' />
+                <div className='sm:w-12 w-9 h-9 sm:h-12 bg-gradient-to-br from-amber-500/40 to-amber-600/40 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
+                  <IoMailOutline className='text-amber-300 w-4 h-4 sm:w-6 sm:h-6' />
                 </div>
                 <div className='flex-1 min-w-0'>
                   <p className="text-white/50 text-xs font-medium font-['Poppins'] uppercase tracking-wider mb-1">
                     Email Address
                   </p>
-                  <p className="text-white text-lg font-semibold font-['Poppins'] truncate">
+                  <p className="text-white text-sm  whitespace-nowrap font-semibold font-['Poppins'] overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
                     {email}
                   </p>
                 </div>
@@ -318,16 +318,16 @@ const Profile = () => {
             </div>
 
             {/* Member Since */}
-            <div className='group p-5 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300'>
+            <div className='group sm:p-5 p-2.5 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300'>
               <div className='flex items-center gap-4'>
-                <div className='w-12 h-12 bg-gradient-to-br from-emerald-500/40 to-emerald-600/40 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
-                  <IoCalendarOutline className='text-emerald-300 w-6 h-6' />
+                <div className='sm:w-12 w-9 h-9 sm:h-12 bg-gradient-to-br from-emerald-500/40 to-emerald-600/40 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
+                  <IoCalendarOutline className='text-emerald-300 w-4 h-4 sm:w-6 sm:h-6' />
                 </div>
                 <div className='flex-1 min-w-0'>
                   <p className="text-white/50 text-xs font-medium font-['Poppins'] uppercase tracking-wider mb-1">
                     Member Since
                   </p>
-                  <p className="text-white text-lg font-semibold font-['Poppins']">
+                  <p className="text-white text-sm  font-semibold font-['Poppins']">
                     {memberSince}
                   </p>
                 </div>
@@ -335,17 +335,17 @@ const Profile = () => {
             </div>
 
             {/* Account Status */}
-            <div className='group p-5 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300'>
+            <div className='group sm:p-5 p-2.5 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300'>
               <div className='flex items-center gap-4'>
-                <div className='w-12 h-12 bg-gradient-to-br from-green-500/40 to-green-600/40 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
-                  <IoShieldCheckmarkOutline className='text-green-300 w-6 h-6' />
+                <div className='sm:w-12 w-9 h-9 sm:h-12 bg-gradient-to-br from-green-500/40 to-green-600/40 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
+                  <IoShieldCheckmarkOutline className='text-green-300 w-4 h-4 sm:w-6 sm:h-6' />
                 </div>
                 <div className='flex-1 min-w-0'>
                   <p className="text-white/50 text-xs font-medium font-['Poppins'] uppercase tracking-wider mb-1">
                     Account Status
                   </p>
                   <p
-                    className={`text-lg font-semibold font-['Poppins'] ${
+                    className={`text-sm  font-semibold font-['Poppins'] ${
                       isVerified ? 'text-green-400' : 'text-amber-400'
                     }`}
                   >
@@ -358,7 +358,7 @@ const Profile = () => {
         </div>
 
         {/* Footer Section */}
-        <div className='px-8 pb-8'>
+        <div className='lg:px-8 px-4 pb-4 lg:pb-8'>
           <div className='p-6 bg-gradient-to-r from-violet-600/10 to-fuchsia-600/10 rounded-2xl border border-white/10'>
             <div className='flex items-start gap-4'>
               <div className='w-10 h-10 bg-violet-600/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-1'>
@@ -368,7 +368,7 @@ const Profile = () => {
                 <h4 className="text-white text-base font-semibold font-['Poppins'] mb-2">
                   Profile Settings
                 </h4>
-                <p className="text-white/60 text-sm font-normal font-['Poppins'] leading-relaxed">
+                <p className="text-white/60 text-xs sm:text-sm font-normal font-['Poppins'] leading-relaxed">
                   Additional profile customization options and security settings
                   will be available soon. Keep your account information up to
                   date for the best experience.
