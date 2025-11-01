@@ -87,12 +87,26 @@ const Reflections = () => {
 
   // Auto-save draft reflections
   useEffect(() => {
-    if (!draftKey || !reflection.trim()) return;
+    if (!draftKey || !user) return;
+
+    const groupIndex = rotationState.currentGroupIndex;
+    const promptIndex = rotationState.promptIndexes[groupIndex];
+
+    if (
+      groupIndex === undefined ||
+      promptIndex === undefined ||
+      Number.isNaN(promptIndex)
+    ) {
+      return;
+    }
+
+    if (!reflection.trim()) {
+      clearDraft(user.id, groupIndex, promptIndex);
+      return;
+    }
 
     const autoSaveTimer = setTimeout(() => {
       setIsAutoSaving(true);
-      const groupIndex = rotationState.currentGroupIndex;
-      const promptIndex = rotationState.promptIndexes[groupIndex];
       saveDraft(user.id, groupIndex, promptIndex, reflection);
 
       // Show auto-save indicator briefly
