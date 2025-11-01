@@ -19,7 +19,6 @@ import { toast } from 'react-toastify';
 import { getAllReflections } from '../../api/reflectionService';
 import { getPromptById } from '../../data/reflectionPrompts';
 import { useAuth } from '../../hooks/useAuth';
-import ReflectionIntegrityChecker from '../../components/common/ReflectionIntegrityChecker';
 
 // Pixel-Perfect KPI Card Component with multi-layer gradient
 const KpiCard = ({ title, value, icon, iconBgColor, valueColor }) => {
@@ -392,7 +391,6 @@ const DashboardHome = () => {
     short: { wins: 0, losses: 0, totalPnL: 0, winRate: 0, totalTrades: 0 },
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [showIntegrityChecker, setShowIntegrityChecker] = useState(false);
 
   // Fetch dashboard statistics from backend
   useEffect(() => {
@@ -512,19 +510,6 @@ const DashboardHome = () => {
               shortStats={profitByDirection.short}
             />
           </div>
-
-          {/* Debug Toggle for Reflection Data Integrity (can be removed in production) */}
-          <div className='flex justify-end'>
-            <button
-              onClick={() => setShowIntegrityChecker(!showIntegrityChecker)}
-              className='px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white text-xs'
-            >
-              {showIntegrityChecker ? 'Hide' : 'Show'} Data Integrity Check
-            </button>
-          </div>
-
-          {/* Reflection Data Integrity Checker (Development only) */}
-          <ReflectionIntegrityChecker isVisible={showIntegrityChecker} />
 
           {/* Feedback Button */}
           <FeedbackButton />
