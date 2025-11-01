@@ -384,7 +384,7 @@ const DashboardHome = () => {
     losingTrades: 0,
   });
   const [equityCurveData, setEquityCurveData] = useState([
-    { tradeId: '000', equity: 10000 },
+    { tradeId: '000', equity: 0 },
   ]);
   const [profitByDirection, setProfitByDirection] = useState({
     long: { wins: 0, losses: 0, totalPnL: 0, winRate: 0, totalTrades: 0 },
@@ -412,7 +412,7 @@ const DashboardHome = () => {
             losingTrades: data.losingTrades || 0,
           });
 
-          // Set equity curve data - transform 'balance' to 'equity'
+          // Set equity curve data - transform 'balance' to 'equity' and normalize to start from 0
           const transformedEquityCurve = (data.equityCurve || []).map(
             (item) => ({
               tradeId: item.tradeId,
@@ -420,11 +420,20 @@ const DashboardHome = () => {
               pnl: item.pnl,
             })
           );
-          setEquityCurveData(
-            transformedEquityCurve.length > 0
-              ? transformedEquityCurve
-              : [{ tradeId: '000', equity: 10000 }]
-          );
+
+          // Normalize equity curve to start from 0
+          if (transformedEquityCurve.length > 0) {
+            const initialBalance = transformedEquityCurve[0].equity;
+            const normalizedEquityCurve = transformedEquityCurve.map(
+              (item) => ({
+                ...item,
+                equity: item.equity - initialBalance,
+              })
+            );
+            setEquityCurveData(normalizedEquityCurve);
+          } else {
+            setEquityCurveData([{ tradeId: '000', equity: 0 }]);
+          }
 
           // Set profit by direction
           setProfitByDirection(
