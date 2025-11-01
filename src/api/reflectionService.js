@@ -76,3 +76,32 @@ export const updateReflection = async (id, updateData) => {
     throw error;
   }
 };
+
+// Draft management functions for better user experience
+export const saveDraft = (userId, groupIndex, promptIndex, content) => {
+  const draftKey = `reflection_draft_${userId}_${groupIndex}_${promptIndex}`;
+  if (content.trim()) {
+    localStorage.setItem(draftKey, content);
+  } else {
+    localStorage.removeItem(draftKey);
+  }
+};
+
+export const getDraft = (userId, groupIndex, promptIndex) => {
+  const draftKey = `reflection_draft_${userId}_${groupIndex}_${promptIndex}`;
+  return localStorage.getItem(draftKey) || '';
+};
+
+export const clearDraft = (userId, groupIndex, promptIndex) => {
+  const draftKey = `reflection_draft_${userId}_${groupIndex}_${promptIndex}`;
+  localStorage.removeItem(draftKey);
+};
+
+export const clearAllUserDrafts = (userId) => {
+  const keys = Object.keys(localStorage);
+  keys.forEach((key) => {
+    if (key.startsWith(`reflection_draft_${userId}_`)) {
+      localStorage.removeItem(key);
+    }
+  });
+};

@@ -4,6 +4,11 @@ import { reflectionPrompts, groupNames } from '../../data/reflectionPrompts';
 import {
   getAllReflections,
   createReflection,
+  getPromptState,
+  updatePromptState,
+  getDraft,
+  saveDraft,
+  clearDraft,
 } from '../../api/reflectionService';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -13,23 +18,41 @@ const Reflections = () => {
   const [currentGroup, setCurrentGroup] = useState('');
   const [selectedReflection, setSelectedReflection] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [draftKey, setDraftKey] = useState(''); // Key for current draft
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
   const { user } = useAuth();
 
   // Load reflections from API
   const [pastReflections, setPastReflections] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [rotationState, setRotationState] = useState(() => {
-    const saved = localStorage.getItem('ledger_prompt_rotation');
-    return saved
-      ? JSON.parse(saved)
-      : {
-          currentGroupIndex: 0,
-          promptIndexes: [0, 0, 0, 0], // Track which prompt we're on in each group
-        };
+  const [rotationState, setRotationState] = useState({
+    currentGroupIndex: 0,
+    promptIndexes: [0, 0, 0, 0], // Track which prompt we're on in each group
+    lastRefreshedGroup: null, // Track if user refreshed current group
   });
 
-  // Get current prompt based on rotation state
+  // Load rotation state from server (NO localStorage fallback for account sync)
+  useEffect(() => {
+    const loadRotationState = async () => {
+      try {
+        if (user) {
+          const response = await getPromptState();
+          if (response.success && response.data) {
+            setRotationState(response.data);
+          }
+          // If no server data, keep default state (starts fresh for user)
+        }
+      } catch (error) {
+        console.error('Error loading rotation state:', error);
+        // NO localStorage fallback - ensures all data is tied to user account
+      }
+    };
+
+    loadRotationState();
+  }, [user]);
+
+  // Get current prompt based on rotation state and load draft
   useEffect(() => {
     const groupIndex = rotationState.currentGroupIndex;
     const groupName = groupNames[groupIndex];
@@ -38,15 +61,52 @@ const Reflections = () => {
 
     setCurrentPrompt(prompt);
     setCurrentGroup(groupName);
-  }, [rotationState]);
 
-  // Save rotation state to localStorage whenever it changes
+    // Generate unique draft key for this user and prompt combination
+    if (user && prompt) {
+      const newDraftKey = `reflection_draft_${user.id}_${groupIndex}_${promptIndex}`;
+      setDraftKey(newDraftKey);
+
+      // Load saved draft for this specific prompt
+      const savedDraft = getDraft(user.id, groupIndex, promptIndex);
+      setReflection(savedDraft);
+    }
+  }, [rotationState, user]);
+
+  // Save rotation state to server (account-tied, no localStorage)
+  const saveRotationState = async (newState) => {
+    try {
+      if (user) {
+        await updatePromptState(newState);
+      }
+    } catch (error) {
+      console.error('Error saving rotation state:', error);
+      // NO localStorage fallback - ensures data stays tied to account
+    }
+  };
+
+  // Auto-save draft reflections
   useEffect(() => {
-    localStorage.setItem(
-      'ledger_prompt_rotation',
-      JSON.stringify(rotationState)
-    );
-  }, [rotationState]);
+    if (!draftKey || !reflection.trim()) return;
+
+    const autoSaveTimer = setTimeout(() => {
+      setIsAutoSaving(true);
+      const groupIndex = rotationState.currentGroupIndex;
+      const promptIndex = rotationState.promptIndexes[groupIndex];
+      saveDraft(user.id, groupIndex, promptIndex, reflection);
+
+      // Show auto-save indicator briefly
+      setTimeout(() => setIsAutoSaving(false), 1000);
+    }, 2000); // Auto-save after 2 seconds of no typing
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [
+    reflection,
+    draftKey,
+    rotationState.currentGroupIndex,
+    rotationState.promptIndexes,
+    user,
+  ]);
 
   // Fetch reflections from API on component mount
   useEffect(() => {
@@ -71,15 +131,63 @@ const Reflections = () => {
     }
   }, [user]);
 
-  const handleRefreshPrompt = () => {
-    // Move to next group
-    const nextGroupIndex =
-      (rotationState.currentGroupIndex + 1) % groupNames.length;
+  // Cleanup effect - save current draft before unmounting
+  useEffect(() => {
+    return () => {
+      if (user && reflection.trim()) {
+        const groupIndex = rotationState.currentGroupIndex;
+        const promptIndex = rotationState.promptIndexes[groupIndex];
+        saveDraft(user.id, groupIndex, promptIndex, reflection);
+      }
+    };
+  }, [
+    user,
+    reflection,
+    rotationState.currentGroupIndex,
+    rotationState.promptIndexes,
+  ]);
 
-    setRotationState({
-      ...rotationState,
-      currentGroupIndex: nextGroupIndex,
-    });
+  const handleRefreshPrompt = async () => {
+    // Save current draft before switching prompts
+    if (user && reflection.trim()) {
+      const groupIndex = rotationState.currentGroupIndex;
+      const promptIndex = rotationState.promptIndexes[groupIndex];
+      saveDraft(user.id, groupIndex, promptIndex, reflection);
+    }
+
+    const currentGroupIndex = rotationState.currentGroupIndex;
+    const currentPromptIndex = rotationState.promptIndexes[currentGroupIndex];
+    const totalPromptsInGroup =
+      reflectionPrompts[groupNames[currentGroupIndex]].length;
+
+    // For refresh: try to get a different prompt from the same group first
+    // If no more prompts in current group available, move to next group
+    const nextPromptInGroup = (currentPromptIndex + 1) % totalPromptsInGroup;
+
+    let newState;
+    if (nextPromptInGroup !== 0 && nextPromptInGroup !== currentPromptIndex) {
+      // There are more unused prompts in current group, show next prompt in same group
+      const newPromptIndexes = [...rotationState.promptIndexes];
+      newPromptIndexes[currentGroupIndex] = nextPromptInGroup;
+
+      newState = {
+        ...rotationState,
+        promptIndexes: newPromptIndexes,
+        lastRefreshedGroup: currentGroupIndex,
+      };
+    } else {
+      // No more unused prompts in current group, move to next group
+      const nextGroupIndex = (currentGroupIndex + 1) % groupNames.length;
+
+      newState = {
+        ...rotationState,
+        currentGroupIndex: nextGroupIndex,
+        lastRefreshedGroup: null,
+      };
+    }
+
+    setRotationState(newState);
+    await saveRotationState(newState);
   };
 
   const handleSaveReflection = async () => {
@@ -113,30 +221,38 @@ const Reflections = () => {
         // Add to local state immediately for better UX
         setPastReflections([response.data, ...pastReflections]);
 
-        // Move to next prompt in current group
+        // CORRECT ROTATION LOGIC:
+        // After saving, move to the NEXT GROUP (not next prompt in same group)
+        // The prompt index in current group advances only when all groups complete a cycle
+
         const currentGroupIndex = rotationState.currentGroupIndex;
-        const currentPromptIndex =
-          rotationState.promptIndexes[currentGroupIndex];
-        const totalPromptsInGroup =
-          reflectionPrompts[groupNames[currentGroupIndex]].length;
-
-        // Move to next prompt in the same group
-        const nextPromptIndex = (currentPromptIndex + 1) % totalPromptsInGroup;
-
-        // Update prompt indexes
-        const newPromptIndexes = [...rotationState.promptIndexes];
-        newPromptIndexes[currentGroupIndex] = nextPromptIndex;
-
-        // Move to next group
         const nextGroupIndex = (currentGroupIndex + 1) % groupNames.length;
 
-        setRotationState({
+        // If we've completed all 4 groups (back to group 0), advance all prompt indexes
+        let newPromptIndexes = [...rotationState.promptIndexes];
+        if (nextGroupIndex === 0) {
+          // Completed full cycle, advance to next prompt in each group
+          newPromptIndexes = newPromptIndexes.map((promptIndex, groupIndex) => {
+            const totalPromptsInGroup =
+              reflectionPrompts[groupNames[groupIndex]].length;
+            return (promptIndex + 1) % totalPromptsInGroup;
+          });
+        }
+
+        const newState = {
           currentGroupIndex: nextGroupIndex,
           promptIndexes: newPromptIndexes,
-        });
+          lastRefreshedGroup: null, // Reset refresh state
+        };
 
-        // Clear reflection input
+        setRotationState(newState);
+        await saveRotationState(newState);
+
+        // Clear reflection input and remove draft
         setReflection('');
+        const groupIndex = rotationState.currentGroupIndex;
+        const promptIndex = rotationState.promptIndexes[groupIndex];
+        clearDraft(user.id, groupIndex, promptIndex);
       }
     } catch (error) {
       console.error('Error saving reflection:', error);
@@ -159,7 +275,7 @@ const Reflections = () => {
     <div className='flex flex-col xl:flex-row gap-6 w-full lg:py-2.5 py-2'>
       {/* Left Section - Reflection Input */}
       <div
-        className='xl:w-[75%] xl:h-[600px] w-full h-auto rounded-2xl flex flex-col justify-start lg:items-start gap-2.5 relative backdrop-blur-xl'
+        className='xl:w-[75%] xl:h-[680px] w-full h-auto rounded-2xl flex flex-col justify-start lg:items-start gap-2.5 relative backdrop-blur-xl'
         style={{
           background:
             'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
@@ -195,15 +311,51 @@ const Reflections = () => {
 
             {/* Content */}
             <div className='self-stretch flex flex-col justify-start items-start gap-5'>
-              {/* Category Badge */}
-              <div className='inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-full border border-purple-400/30'>
-                <div className="text-purple-200 text-xs font-semibold font-['Poppins'] uppercase tracking-wider">
-                  {currentGroup}
+              {/* Category Badge and Progress */}
+              <div className='flex flex-col gap-3 w-full'>
+                <div className='flex items-center gap-3'>
+                  <div className='inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-full border border-purple-400/30'>
+                    <div className="text-purple-200 text-xs font-semibold font-['Poppins'] uppercase tracking-wider">
+                      {currentGroup}
+                    </div>
+                  </div>
+                  <div className="text-zinc-500 text-xs font-normal font-['Poppins']">
+                    Round {Math.max(...rotationState.promptIndexes) + 1} • Group{' '}
+                    {rotationState.currentGroupIndex + 1}/4
+                  </div>
+                </div>
+
+                {/* Progress Bar */}
+                <div className='w-full bg-zinc-800 rounded-full h-1.5'>
+                  <div
+                    className='bg-gradient-to-r from-purple-500 to-pink-500 h-1.5 rounded-full transition-all duration-500'
+                    style={{
+                      width: `${
+                        ((rotationState.currentGroupIndex + 1) / 4) * 100
+                      }%`,
+                    }}
+                  />
                 </div>
               </div>
 
-              <div className="justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
-                Daily Prompt
+              <div className='flex flex-col gap-2'>
+                <div className='flex items-center gap-3'>
+                  <div className="justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
+                    Daily Prompt
+                  </div>
+                  {reflection && (
+                    <div className='flex items-center gap-1 px-2 py-1 bg-blue-600/20 rounded-full border border-blue-400/30'>
+                      <div className='w-1.5 h-1.5 bg-blue-400 rounded-full'></div>
+                      <span className="text-blue-400 text-xs font-medium font-['Poppins']">
+                        Draft saved
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="justify-start text-zinc-600 text-sm font-normal font-['Poppins'] leading-relaxed">
+                  Each reflection moves you through 4 focus areas. Complete all
+                  groups to advance to the next round of prompts.
+                </div>
               </div>
 
               {/* Prompt Display */}
@@ -233,19 +385,57 @@ const Reflections = () => {
                   />
                 </svg>
                 <div className="justify-start text-stone-300 text-sm font-normal font-['Poppins'] leading-tight tracking-tight">
-                  Refresh Prompt
+                  {(() => {
+                    const currentPromptIndex =
+                      rotationState.promptIndexes[
+                        rotationState.currentGroupIndex
+                      ];
+                    const totalPromptsInGroup =
+                      reflectionPrompts[
+                        groupNames[rotationState.currentGroupIndex]
+                      ]?.length || 0;
+                    const hasMoreInGroup =
+                      (currentPromptIndex + 1) % totalPromptsInGroup !== 0;
+
+                    return hasMoreInGroup
+                      ? 'Next Prompt in Group'
+                      : 'Next Group';
+                  })()}
                 </div>
               </button>
 
               {/* Reflection Input and Save Button */}
               <div className='self-stretch flex flex-col justify-start items-start gap-6'>
-                {/* Text Area */}
-                <textarea
-                  value={reflection}
-                  onChange={(e) => setReflection(e.target.value)}
-                  placeholder='Write your reflection here...'
-                  className="self-stretch min-h-[140px] p-4 bg-stone-900 rounded border border-white/10 text-white text-sm font-normal font-['Poppins'] leading-relaxed placeholder:text-zinc-500 resize-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
-                />
+                {/* Text Area with Auto-save indicator */}
+                <div className='self-stretch flex flex-col gap-2'>
+                  <textarea
+                    value={reflection}
+                    onChange={(e) => setReflection(e.target.value)}
+                    placeholder='Write your reflection here...'
+                    className="self-stretch min-h-[140px] p-4 bg-stone-900 rounded border border-white/10 text-white text-sm font-normal font-['Poppins'] leading-relaxed placeholder:text-zinc-500 resize-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                  />
+
+                  {/* Auto-save indicator */}
+                  {reflection.trim() && (
+                    <div className='flex items-center gap-2 text-xs'>
+                      {isAutoSaving ? (
+                        <>
+                          <div className='w-3 h-3 border border-purple-400 border-t-transparent rounded-full animate-spin'></div>
+                          <span className="text-purple-400 font-['Poppins']">
+                            Saving draft...
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <div className='w-2 h-2 bg-green-400 rounded-full'></div>
+                          <span className="text-green-400 font-['Poppins']">
+                            Draft saved
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 {/* Improvement Prompt Text and Save Button - Same Line */}
                 <div className='self-stretch flex flex-row justify-between items-center gap-4'>
@@ -289,7 +479,7 @@ const Reflections = () => {
 
       {/* Right Section - Past Reflections */}
       <div
-        className='xl:w-[40%] xl:h-[600px] h-[600px] rounded-2xl flex flex-col justify-start items-start gap-2.5 relative  backdrop-blur-xl'
+        className='xl:w-[40%] xl:h-[680px] h-[680px] rounded-2xl flex flex-col justify-start items-start gap-2.5 relative  backdrop-blur-xl'
         style={{
           background:
             'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
@@ -319,7 +509,7 @@ const Reflections = () => {
 
             <div className='self-stretch flex justify-end items-start gap-1 relative'>
               {/* Scrollable Reflections List */}
-              <div className='flex-1 max-h-[480px] flex flex-col justify-start items-start gap-4 overflow-y-auto overflow-x-hidden custom-scrollbar pr-2 '>
+              <div className='flex-1 max-h-[560px] flex flex-col justify-start items-start gap-4 overflow-y-auto overflow-x-hidden custom-scrollbar pr-2 '>
                 {pastReflections.length === 0 ? (
                   <div className='w-full py-8 flex items-center justify-center'>
                     <div className="text-zinc-500 text-sm text-center font-['Poppins']">
