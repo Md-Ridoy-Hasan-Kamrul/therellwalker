@@ -16,7 +16,8 @@ import { useNavigate } from 'react-router-dom';
 import FeedbackButton from '../../components/common/FeedbackButton';
 import tradeService from '../../api/tradeService';
 import { toast } from 'react-toastify';
-import { reflectionPrompts, groupNames } from '../../data/reflectionPrompts';
+import { getAllReflections } from '../../api/reflectionService';
+import { useAuth } from '../../hooks/useAuth';
 
 // Pixel-Perfect KPI Card Component with multi-layer gradient
 const KpiCard = ({ title, value, icon, iconBgColor, valueColor }) => {
@@ -159,35 +160,27 @@ const EquityCurveChart = ({ data }) => {
 // Mindset Check Component - Shows latest reflection preview
 const MindsetCheckBox = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [latestReflection, setLatestReflection] = useState(null);
-  const [currentPrompt, setCurrentPrompt] = useState('');
-  const [currentGroup, setCurrentGroup] = useState('');
 
   useEffect(() => {
-    // Load latest reflection from localStorage
-    const saved = localStorage.getItem('ledger_reflections');
-    const reflections = saved ? JSON.parse(saved) : [];
-    if (reflections.length > 0) {
-      setLatestReflection(reflections[0]);
-    }
+    const loadReflectionData = async () => {
+      try {
+        // Only fetch if user exists
+        if (user) {
+          // Load latest reflection from API
+          const response = await getAllReflections();
+          if (response.success && response.data && response.data.length > 0) {
+            setLatestReflection(response.data[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading latest reflection:', error);
+      }
+    };
 
-    // Load current prompt
-    const rotationSaved = localStorage.getItem('ledger_prompt_rotation');
-    const rotationState = rotationSaved
-      ? JSON.parse(rotationSaved)
-      : {
-          currentGroupIndex: 0,
-          promptIndexes: [0, 0, 0, 0],
-        };
-
-    const groupIndex = rotationState.currentGroupIndex;
-    const groupName = groupNames[groupIndex];
-    const promptIndex = rotationState.promptIndexes[groupIndex];
-    const prompt = reflectionPrompts[groupName][promptIndex];
-
-    setCurrentPrompt(prompt);
-    setCurrentGroup(groupName);
-  }, []);
+    loadReflectionData();
+  }, [user]);
 
   const handleNewPrompt = () => {
     navigate('/reflections');
@@ -208,11 +201,11 @@ const MindsetCheckBox = () => {
             <div className='flex flex-col gap-1.5'>
               <div className='flex items-center gap-2'>
                 <div className="text-purple-300 text-xs font-semibold font-['Poppins'] uppercase tracking-wider">
-                  {currentGroup}
+                  {latestReflection.group}
                 </div>
               </div>
               <div className="text-white/90 text-sm font-normal font-['Poppins'] leading-relaxed italic">
-                Q: {currentPrompt}
+                Q: {latestReflection.prompt}
               </div>
               <div className="text-white text-sm sm:text-base font-normal font-['Poppins'] leading-relaxed line-clamp-2">
                 "{latestReflection.answer}"
