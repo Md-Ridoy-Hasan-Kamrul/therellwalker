@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import { getAllReflections } from '../../api/reflectionService';
 import { getPromptById } from '../../data/reflectionPrompts';
 import { useAuth } from '../../hooks/useAuth';
+import { formatNumberWithCommas } from '../../utils/calculatePnL';
 
 // Pixel-Perfect KPI Card Component with multi-layer gradient
 const KpiCard = ({ title, value, icon, iconBgColor, valueColor }) => {
@@ -64,7 +65,7 @@ const CustomEquityTooltip = ({ active, payload }) => {
           Trade #{payload[0].payload.tradeId}
         </p>
         <p className="text-violet-700 text-sm font-bold font-['Poppins']">
-          Balance: ${payload[0].value.toFixed(2)}
+          Balance: ${formatNumberWithCommas(payload[0].value, 2)}
         </p>
         {payload[0].payload.pnl !== undefined && (
           <p
@@ -73,7 +74,7 @@ const CustomEquityTooltip = ({ active, payload }) => {
             }`}
           >
             P&L: {payload[0].payload.pnl >= 0 ? '+' : ''}$
-            {payload[0].payload.pnl.toFixed(2)}
+            {formatNumberWithCommas(payload[0].payload.pnl, 2)}
           </p>
         )}
       </div>
@@ -91,13 +92,13 @@ const CustomDirectionTooltip = ({ active, payload }) => {
           {payload[0].payload.direction}
         </p>
         <p className="text-green-600 text-sm font-bold font-['Poppins']">
-          Wins: {payload[0].value}
+          Wins: {formatNumberWithCommas(payload[0].value, 0)}
         </p>
         <p className="text-red-600 text-sm font-bold font-['Poppins']">
-          Losses: {payload[1].value}
+          Losses: {formatNumberWithCommas(payload[1].value, 0)}
         </p>
         <p className="text-violet-700 text-sm font-bold font-['Poppins'] mt-1">
-          Total P&L: ${payload[0].payload.totalPnL.toFixed(2)}
+          Total P&L: ${formatNumberWithCommas(payload[0].payload.totalPnL, 2)}
         </p>
         <p className="text-indigo-600 text-sm font-bold font-['Poppins']">
           Win Rate: {payload[0].payload.winRate.toFixed(1)}%
@@ -136,6 +137,7 @@ const EquityCurveChart = ({ data }) => {
               stroke='rgba(255,255,255,0.7)'
               tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11 }}
               width={60}
+              tickFormatter={(value) => `$${formatNumberWithCommas(value, 0)}`}
             />
             <Tooltip content={<CustomEquityTooltip />} />
             <Line
@@ -336,6 +338,7 @@ const ProfitByDirectionChart = ({ longStats, shortStats }) => {
                 stroke='rgba(255,255,255,0.7)'
                 tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11 }}
                 width={50}
+                tickFormatter={(value) => formatNumberWithCommas(value, 0)}
               />
               <Tooltip content={<CustomDirectionTooltip />} />
               <Bar
@@ -492,7 +495,7 @@ const DashboardHome = () => {
               title='Total Profit'
               value={`${
                 stats.totalProfit >= 0 ? '+' : ''
-              }$${stats.totalProfit.toFixed(2)}`}
+              }$${formatNumberWithCommas(stats.totalProfit, 2)}`}
               icon={FaWallet}
               iconBgColor='bg-gradient-to-b from-amber-400 to-amber-600'
               valueColor={
@@ -501,7 +504,7 @@ const DashboardHome = () => {
             />
             <KpiCard
               title='Avg Win Profit'
-              value={`$${stats.avgWinProfit.toFixed(2)}`}
+              value={`$${formatNumberWithCommas(stats.avgWinProfit, 2)}`}
               icon={FaTrophy}
               iconBgColor='bg-gradient-to-b from-pink-500 to-rose-600'
               valueColor='text-pink-400'
