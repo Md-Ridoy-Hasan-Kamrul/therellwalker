@@ -442,8 +442,8 @@ const Reflections = () => {
                   )}
                 </div>
 
-                {/* Improvement Prompt Text and Save Button - Same Line */}
-                <div className='self-stretch flex flex-row justify-between items-center gap-4'>
+                {/* Improvement Prompt Text and Save Button - Responsive Layout */}
+                <div className='self-stretch flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4'>
                   <div className="flex-1 text-purple-300 text-sm sm:text-base font-medium font-['Poppins'] leading-relaxed tracking-wide">
                     For your improvement, please write your reflections in
                     extensive detail
@@ -452,7 +452,7 @@ const Reflections = () => {
                   <button
                     onClick={handleSaveReflection}
                     disabled={!reflection.trim() || isLoading}
-                    className={`px-6 py-3 rounded-lg flex justify-center items-center gap-2 transition-opacity cursor-pointer flex-shrink-0 ${
+                    className={`px-6 py-3 rounded-lg flex justify-center items-center gap-2 transition-opacity cursor-pointer w-full sm:w-auto sm:flex-shrink-0 ${
                       !reflection.trim() || isLoading
                         ? 'opacity-50 cursor-not-allowed'
                         : 'hover:opacity-90'
