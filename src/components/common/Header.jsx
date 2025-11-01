@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { getProfilePicture, getUserInitials } from '../../utils/profileUtils';
 import {
   IoChevronDown,
   IoLogOutOutline,
@@ -35,10 +36,10 @@ export const Header = ({ title, onMenuClick }) => {
     (user?.name && user?.name !== 'null' ? user?.name : null) ||
     'Guest';
   const userEmail = user?.email || '';
-  const profilePic = user?.profilePic || null;
-
-  // Get first letter for avatar fallback
-  const userInitial = userName ? userName.charAt(0).toUpperCase() : 'U';
+  
+  // Get profile picture with fallback
+  const profilePicUrl = getProfilePicture(user?.profilePic, userName);
+  const userInitials = getUserInitials(userName);
 
   // Dropdown er baire click korle dropdown close hobe
   useEffect(() => {
@@ -105,21 +106,15 @@ export const Header = ({ title, onMenuClick }) => {
       >
         {/* Profile Photo */}
         <div className='w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl flex-shrink-0 overflow-hidden bg-gradient-to-br from-violet-600 via-fuchsia-600 to-violet-700 flex items-center justify-center'>
-          {profilePic ? (
-            <img
-              className='w-full h-full object-cover'
-              src={profilePic}
-              alt={userName}
-              onError={(e) => {
-                // Fallback if image fails to load
-                e.target.style.display = 'none';
-              }}
-            />
-          ) : (
-            <span className="text-white text-lg sm:text-xl md:text-2xl font-bold font-['Poppins']">
-              {userInitial}
-            </span>
-          )}
+          <img
+            className='w-full h-full object-cover'
+            src={profilePicUrl}
+            alt={userName}
+            onError={(e) => {
+              // Fallback to initials if image fails to load
+              e.target.outerHTML = `<span class="text-white text-lg sm:text-xl md:text-2xl font-bold font-['Poppins']">${userInitials}</span>`;
+            }}
+          />
         </div>
         <div
           className='hidden sm:flex items-center gap-2 cursor-pointer'

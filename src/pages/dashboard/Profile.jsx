@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import userService from '../../api/userService';
 import { toast } from 'react-toastify';
+import { isValidProfilePic, getUserInitials } from '../../utils/profileUtils';
 import {
   IoPersonOutline,
   IoMailOutline,
@@ -188,15 +189,20 @@ const Profile = () => {
             {/* Avatar */}
             <div className='relative group'>
               <div className='w-28 h-28 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-violet-700 rounded-2xl flex items-center justify-center shadow-xl ring-4 ring-white/10 overflow-hidden'>
-                {profileData?.profilePic ? (
+                {isValidProfilePic(profileData?.profilePic) ? (
                   <img
                     src={profileData.profilePic}
                     alt={fullName}
                     className='w-full h-full object-cover'
+                    onError={(e) => {
+                      // Fallback to initials if image fails to load
+                      const initials = getUserInitials(fullName);
+                      e.target.outerHTML = `<span class="text-white text-5xl font-bold font-['Poppins']">${initials}</span>`;
+                    }}
                   />
                 ) : (
                   <span className="text-white text-5xl font-bold font-['Poppins']">
-                    {fullName.charAt(0).toUpperCase()}
+                    {getUserInitials(fullName)}
                   </span>
                 )}
               </div>
@@ -218,7 +224,7 @@ const Profile = () => {
                 >
                   <IoCameraOutline className='text-white w-5 h-5' />
                 </button>
-                {profileData?.profilePic && (
+                {isValidProfilePic(profileData?.profilePic) && (
                   <button
                     onClick={handleDeletePhoto}
                     disabled={uploading}
