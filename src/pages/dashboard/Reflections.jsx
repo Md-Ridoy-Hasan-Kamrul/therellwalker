@@ -156,7 +156,7 @@ const Reflections = () => {
   };
 
   return (
-    <div className='flex flex-col xl:flex-row gap-6 w-full'>
+    <div className='flex flex-col xl:flex-row gap-6 w-full lg:py-2.5 py-2'>
       {/* Left Section - Reflection Input */}
       <div
         className='xl:w-[75%] xl:h-[600px] w-full h-auto rounded-2xl flex flex-col justify-start lg:items-start gap-2.5 relative backdrop-blur-xl'

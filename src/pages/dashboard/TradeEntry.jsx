@@ -159,7 +159,8 @@ const TradeEntry = () => {
   const pnl = calculatedPnL();
 
   return (
-    <div className='w-full sm:p-10 p-5 bg-neutral-900 flex flex-col justify-start items-start gap-6'>
+    <div className='lg:py-2.5 py-2'>
+      <div className='w-full sm:p-10 p-5 bg-neutral-900 flex flex-col justify-start items-start gap-6'>
       <div className="justify-start text-white text-2xl font-semibold font-['Poppins'] leading-loose">
         Log New Trade
       </div>
@@ -759,6 +760,7 @@ const TradeEntry = () => {
           </div>
         </button>
       </div>
+    </div>
     </div>
   );
 };
