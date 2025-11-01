@@ -116,7 +116,7 @@ const EquityCurveChart = ({ data }) => {
           Equity Curve
         </div>
 
-        <ResponsiveContainer width='100%' height={240}>
+        <ResponsiveContainer width='100%' height={300}>
           <LineChart
             data={data}
             margin={{ top: 5, right: 10, left: 0, bottom: 30 }}
@@ -269,7 +269,7 @@ const ProfitByDirectionChart = ({ longStats, shortStats }) => {
         </div>
 
         <div className='relative w-full'>
-          <ResponsiveContainer width='100%' height={240}>
+          <ResponsiveContainer width='100%' height={300}>
             <BarChart
               data={data}
               margin={{ top: 5, right: 10, left: 0, bottom: 30 }}
