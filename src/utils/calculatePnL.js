@@ -7,6 +7,55 @@ const POINT_VALUES = {
   MES: 5,
 };
 
+// Utility function to format numbers with commas
+const formatNumberWithCommas = (number, decimalPlaces = 2) => {
+  if (number === null || number === undefined || isNaN(number)) {
+    return '0.00';
+  }
+
+  const num = Number(number);
+  return num.toLocaleString('en-US', {
+    minimumFractionDigits: decimalPlaces,
+    maximumFractionDigits: decimalPlaces,
+  });
+};
+
+// Utility function to format input values with commas for display
+const formatInputWithCommas = (value) => {
+  if (!value || value === '') return '';
+
+  // Remove any existing commas and non-numeric characters except decimal point
+  const cleanValue = value.toString().replace(/[^0-9.]/g, '');
+
+  // Handle empty or invalid input
+  if (!cleanValue || cleanValue === '.') return cleanValue;
+
+  // Split by decimal point
+  const parts = cleanValue.split('.');
+
+  // Handle case where we just have a decimal point
+  if (parts[0] === '') return cleanValue;
+
+  const integerPart = parseInt(parts[0]);
+  if (isNaN(integerPart)) return cleanValue;
+
+  // Format integer part with commas
+  const formattedInteger = integerPart.toLocaleString('en-US');
+
+  // If there's a decimal part, append it
+  if (parts.length > 1) {
+    return `${formattedInteger}.${parts[1]}`;
+  }
+
+  return formattedInteger;
+};
+
+// Utility function to clean formatted input back to number
+const cleanFormattedInput = (value) => {
+  if (!value) return '';
+  return value.toString().replace(/[^0-9.]/g, '');
+};
+
 const calculatePnL = (entryPrice, exitPrice, quantity, direction, ticker) => {
   const entry = Number(entryPrice);
   const exit = Number(exitPrice);
@@ -31,5 +80,11 @@ const calculatePnL = (entryPrice, exitPrice, quantity, direction, ticker) => {
   };
 };
 
-export { calculatePnL, POINT_VALUES };
+export {
+  calculatePnL,
+  POINT_VALUES,
+  formatNumberWithCommas,
+  formatInputWithCommas,
+  cleanFormattedInput,
+};
 export default calculatePnL;
