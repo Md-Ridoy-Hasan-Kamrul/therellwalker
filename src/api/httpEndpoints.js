@@ -20,5 +20,7 @@ export const endpoints = {
     update: (id) => `/api/reflections/${id}`,
     delete: (id) => `/api/reflections/${id}`,
     promptState: '/api/reflections/prompt-state',
+    analytics: '/api/reflections/analytics',
+    byQuestionId: (questionId) => `/api/reflections/by-question/${questionId}`,
   },
 };

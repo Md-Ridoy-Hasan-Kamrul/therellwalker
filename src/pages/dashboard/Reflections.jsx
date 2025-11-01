@@ -57,13 +57,13 @@ const Reflections = () => {
     const groupIndex = rotationState.currentGroupIndex;
     const groupName = groupNames[groupIndex];
     const promptIndex = rotationState.promptIndexes[groupIndex];
-    const prompt = reflectionPrompts[groupName][promptIndex];
+    const promptData = reflectionPrompts[groupName][promptIndex];
 
-    setCurrentPrompt(prompt);
+    setCurrentPrompt(promptData);
     setCurrentGroup(groupName);
 
     // Generate unique draft key for this user and prompt combination
-    if (user && prompt) {
+    if (user && promptData) {
       const newDraftKey = `reflection_draft_${user.id}_${groupIndex}_${promptIndex}`;
       setDraftKey(newDraftKey);
 
@@ -198,9 +198,11 @@ const Reflections = () => {
     try {
       setIsLoading(true);
 
-      // Create new reflection data
+      // Create new reflection data with proper question ID linking
+      const now = new Date();
       const reflectionData = {
-        date: new Date().toLocaleString('en-US', {
+        // Human-friendly date for display (kept for backward compatibility)
+        date: now.toLocaleString('en-US', {
           month: '2-digit',
           day: '2-digit',
           year: 'numeric',
@@ -209,7 +211,10 @@ const Reflections = () => {
           second: '2-digit',
           hour12: true,
         }),
-        prompt: currentPrompt,
+        // ISO timestamp used for reliable sorting / analytics
+        createdAt: now.toISOString(),
+        questionId: currentPrompt.id, // Store unique question ID for proper linking
+        prompt: currentPrompt.text, // Store the question text for display
         group: currentGroup,
         answer: reflection,
       };
@@ -361,7 +366,7 @@ const Reflections = () => {
               {/* Prompt Display */}
               <div className='self-stretch min-h-[60px] p-4 bg-zinc-800 rounded border border-white/10 flex justify-start items-center'>
                 <div className="justify-start text-white text-sm font-normal font-['Poppins'] leading-relaxed">
-                  {currentPrompt}
+                  {currentPrompt?.text || currentPrompt}
                 </div>
               </div>
 

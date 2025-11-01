@@ -17,7 +17,9 @@ import FeedbackButton from '../../components/common/FeedbackButton';
 import tradeService from '../../api/tradeService';
 import { toast } from 'react-toastify';
 import { getAllReflections } from '../../api/reflectionService';
+import { getPromptById } from '../../data/reflectionPrompts';
 import { useAuth } from '../../hooks/useAuth';
+import ReflectionIntegrityChecker from '../../components/common/ReflectionIntegrityChecker';
 
 // Pixel-Perfect KPI Card Component with multi-layer gradient
 const KpiCard = ({ title, value, icon, iconBgColor, valueColor }) => {
@@ -157,22 +159,63 @@ const EquityCurveChart = ({ data }) => {
   );
 };
 
-// Mindset Check Component - Shows latest reflection preview
+// Mindset Check Component - Shows latest reflection preview with proper question-answer linking
 const MindsetCheckBox = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [latestReflection, setLatestReflection] = useState(null);
+  const [linkedQuestionData, setLinkedQuestionData] = useState(null);
 
   useEffect(() => {
     const loadReflectionData = async () => {
       try {
-        // Only fetch if user exists
-        if (user) {
-          // Load latest reflection from API
-          const response = await getAllReflections();
-          if (response.success && response.data && response.data.length > 0) {
-            setLatestReflection(response.data[0]);
+        if (!user) return;
+
+        // Load reflections from API
+        const response = await getAllReflections();
+        if (!(response && response.success && Array.isArray(response.data)))
+          return;
+
+        const reflections = response.data;
+
+        // Pick the most recent reflection. Prefer ISO 'createdAt' if available,
+        // otherwise fall back to the human-friendly 'date' field (parsed).
+        const latest = reflections.reduce((latestSoFar, r) => {
+          const parseDate = (item) => {
+            if (!item) return null;
+            if (item.createdAt) return new Date(item.createdAt);
+            if (item.date) {
+              const d = new Date(item.date);
+              return isNaN(d.getTime()) ? null : d;
+            }
+            return null;
+          };
+
+          const a = parseDate(latestSoFar) || new Date(0);
+          const b = parseDate(r) || new Date(0);
+          return b > a ? r : latestSoFar;
+        }, reflections[0]);
+
+        setLatestReflection(latest);
+
+        // If the reflection has a questionId, map it to the prompt using getPromptById
+        if (latest && latest.questionId) {
+          const questionData = getPromptById(latest.questionId);
+          if (questionData) {
+            setLinkedQuestionData(questionData);
+          } else {
+            setLinkedQuestionData({
+              text: latest.prompt,
+              group: latest.group,
+              id: latest.questionId,
+            });
           }
+        } else if (latest) {
+          // Backwards-compatible fallback when questionId is missing
+          setLinkedQuestionData({
+            text: latest.prompt,
+            group: latest.group,
+          });
         }
       } catch (error) {
         console.error('Error loading latest reflection:', error);
@@ -197,15 +240,20 @@ const MindsetCheckBox = () => {
             </div>
           </div>
 
-          {latestReflection ? (
+          {latestReflection && linkedQuestionData ? (
             <div className='flex flex-col gap-1.5'>
               <div className='flex items-center gap-2'>
                 <div className="text-purple-300 text-xs font-semibold font-['Poppins'] uppercase tracking-wider">
-                  {latestReflection.group}
+                  {linkedQuestionData.group || latestReflection.group}
                 </div>
+                {linkedQuestionData.id && (
+                  <div className="text-indigo-400 text-xs font-medium font-['Poppins'] uppercase tracking-wider">
+                    ID: {linkedQuestionData.id}
+                  </div>
+                )}
               </div>
               <div className="text-white/90 text-sm font-normal font-['Poppins'] leading-relaxed italic">
-                Q: {latestReflection.prompt}
+                Q: {linkedQuestionData.text || latestReflection.prompt}
               </div>
               <div className="text-white text-sm sm:text-base font-normal font-['Poppins'] leading-relaxed line-clamp-2">
                 "{latestReflection.answer}"
@@ -344,6 +392,7 @@ const DashboardHome = () => {
     short: { wins: 0, losses: 0, totalPnL: 0, winRate: 0, totalTrades: 0 },
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [showIntegrityChecker, setShowIntegrityChecker] = useState(false);
 
   // Fetch dashboard statistics from backend
   useEffect(() => {
@@ -463,6 +512,19 @@ const DashboardHome = () => {
               shortStats={profitByDirection.short}
             />
           </div>
+
+          {/* Debug Toggle for Reflection Data Integrity (can be removed in production) */}
+          <div className='flex justify-end'>
+            <button
+              onClick={() => setShowIntegrityChecker(!showIntegrityChecker)}
+              className='px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white text-xs'
+            >
+              {showIntegrityChecker ? 'Hide' : 'Show'} Data Integrity Check
+            </button>
+          </div>
+
+          {/* Reflection Data Integrity Checker (Development only) */}
+          <ReflectionIntegrityChecker isVisible={showIntegrityChecker} />
 
           {/* Feedback Button */}
           <FeedbackButton />

@@ -77,6 +77,30 @@ export const updateReflection = async (id, updateData) => {
   }
 };
 
+export const getReflectionsByQuestionId = async (questionId) => {
+  try {
+    const response = await axiosInstance[httpMethods.GET](
+      `${endpoints.reflections.getAll}?questionId=${questionId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching reflections by question ID:', error);
+    throw error;
+  }
+};
+
+export const getReflectionAnalytics = async () => {
+  try {
+    const response = await axiosInstance[httpMethods.GET](
+      `${endpoints.reflections.getAll}/analytics`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching reflection analytics:', error);
+    throw error;
+  }
+};
+
 // Draft management functions for better user experience
 export const saveDraft = (userId, groupIndex, promptIndex, content) => {
   const draftKey = `reflection_draft_${userId}_${groupIndex}_${promptIndex}`;
