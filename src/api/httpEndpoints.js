@@ -14,11 +14,11 @@ export const endpoints = {
     kpis: '/dashboard/kpis',
   },
   reflections: {
-    getAll: '/reflections',
-    create: '/reflections',
-    getById: (id) => `/reflections/${id}`,
-    update: (id) => `/reflections/${id}`,
-    delete: (id) => `/reflections/${id}`,
-    promptState: '/reflections/prompt-state',
+    getAll: '/api/reflections',
+    create: '/api/reflections',
+    getById: (id) => `/api/reflections/${id}`,
+    update: (id) => `/api/reflections/${id}`,
+    delete: (id) => `/api/reflections/${id}`,
+    promptState: '/api/reflections/prompt-state',
   },
 };

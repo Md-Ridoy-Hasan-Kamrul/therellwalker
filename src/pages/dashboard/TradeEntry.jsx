@@ -170,13 +170,17 @@ const TradeEntry = () => {
           <div className="self-stretch justify-start text-zinc-400 text-base font-medium font-['Poppins'] leading-normal">
             Date
           </div>
-          <div className='self-stretch px-6 py-3 bg-white/10 rounded-lg border-none inline-flex justify-between items-center relative'>
+          <div
+            className='self-stretch px-6 py-3 bg-white/10 rounded-lg border-none inline-flex justify-between items-center relative'
+            lang='en-US'
+          >
             <input
               type='date'
               name='date'
               id='date-input'
               value={formData.date}
               onChange={handleInputChange}
+              lang='en-US'
               className="bg-transparent text-zinc-400 text-xs font-normal font-['Poppins'] leading-tight tracking-tight outline-none border-none w-full [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
             />
             <svg

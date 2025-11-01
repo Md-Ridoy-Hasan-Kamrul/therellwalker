@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 const axiosInstance = axios.create({
   baseURL: baseURL,

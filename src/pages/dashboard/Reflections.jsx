@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import FeedbackButton from '../../components/common/FeedbackButton';
 import { reflectionPrompts, groupNames } from '../../data/reflectionPrompts';
+import {
+  getAllReflections,
+  createReflection,
+} from '../../api/reflectionService';
+import { useAuth } from '../../hooks/useAuth';
 
 const Reflections = () => {
   const [reflection, setReflection] = useState('');
@@ -8,12 +13,11 @@ const Reflections = () => {
   const [currentGroup, setCurrentGroup] = useState('');
   const [selectedReflection, setSelectedReflection] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useAuth();
 
-  // Load saved reflections and rotation state from localStorage
-  const [pastReflections, setPastReflections] = useState(() => {
-    const saved = localStorage.getItem('ledger_reflections');
-    return saved ? JSON.parse(saved) : [];
-  });
+  // Load reflections from API
+  const [pastReflections, setPastReflections] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [rotationState, setRotationState] = useState(() => {
     const saved = localStorage.getItem('ledger_prompt_rotation');
@@ -44,10 +48,28 @@ const Reflections = () => {
     );
   }, [rotationState]);
 
-  // Save reflections to localStorage whenever they change
+  // Fetch reflections from API on component mount
   useEffect(() => {
-    localStorage.setItem('ledger_reflections', JSON.stringify(pastReflections));
-  }, [pastReflections]);
+    const fetchReflections = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getAllReflections();
+
+        if (response.success) {
+          setPastReflections(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching reflections:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // Only fetch if user exists
+    if (user) {
+      fetchReflections();
+    }
+  }, [user]);
 
   const handleRefreshPrompt = () => {
     // Move to next group
@@ -60,54 +82,67 @@ const Reflections = () => {
     });
   };
 
-  const handleSaveReflection = () => {
+  const handleSaveReflection = async () => {
     if (!reflection.trim()) {
       return;
     }
 
-    // Create new reflection entry
-    const newReflection = {
-      id: Date.now(),
-      date: new Date().toLocaleString('en-US', {
-        month: '2-digit',
-        day: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true,
-      }),
-      prompt: currentPrompt,
-      group: currentGroup,
-      answer: reflection,
-    };
+    try {
+      setIsLoading(true);
 
-    // Add to reflections history
-    setPastReflections([newReflection, ...pastReflections]);
+      // Create new reflection data
+      const reflectionData = {
+        date: new Date().toLocaleString('en-US', {
+          month: '2-digit',
+          day: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
+        }),
+        prompt: currentPrompt,
+        group: currentGroup,
+        answer: reflection,
+      };
 
-    // Move to next prompt in current group
-    const currentGroupIndex = rotationState.currentGroupIndex;
-    const currentPromptIndex = rotationState.promptIndexes[currentGroupIndex];
-    const totalPromptsInGroup =
-      reflectionPrompts[groupNames[currentGroupIndex]].length;
+      // Save to API
+      const response = await createReflection(reflectionData);
 
-    // Move to next prompt in the same group
-    const nextPromptIndex = (currentPromptIndex + 1) % totalPromptsInGroup;
+      if (response.success) {
+        // Add to local state immediately for better UX
+        setPastReflections([response.data, ...pastReflections]);
 
-    // Update prompt indexes
-    const newPromptIndexes = [...rotationState.promptIndexes];
-    newPromptIndexes[currentGroupIndex] = nextPromptIndex;
+        // Move to next prompt in current group
+        const currentGroupIndex = rotationState.currentGroupIndex;
+        const currentPromptIndex =
+          rotationState.promptIndexes[currentGroupIndex];
+        const totalPromptsInGroup =
+          reflectionPrompts[groupNames[currentGroupIndex]].length;
 
-    // Move to next group
-    const nextGroupIndex = (currentGroupIndex + 1) % groupNames.length;
+        // Move to next prompt in the same group
+        const nextPromptIndex = (currentPromptIndex + 1) % totalPromptsInGroup;
 
-    setRotationState({
-      currentGroupIndex: nextGroupIndex,
-      promptIndexes: newPromptIndexes,
-    });
+        // Update prompt indexes
+        const newPromptIndexes = [...rotationState.promptIndexes];
+        newPromptIndexes[currentGroupIndex] = nextPromptIndex;
 
-    // Clear reflection input
-    setReflection('');
+        // Move to next group
+        const nextGroupIndex = (currentGroupIndex + 1) % groupNames.length;
+
+        setRotationState({
+          currentGroupIndex: nextGroupIndex,
+          promptIndexes: newPromptIndexes,
+        });
+
+        // Clear reflection input
+        setReflection('');
+      }
+    } catch (error) {
+      console.error('Error saving reflection:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleOpenModal = (item) => {
@@ -221,9 +256,9 @@ const Reflections = () => {
 
                   <button
                     onClick={handleSaveReflection}
-                    disabled={!reflection.trim()}
+                    disabled={!reflection.trim() || isLoading}
                     className={`px-6 py-3 rounded-lg flex justify-center items-center gap-2 transition-opacity cursor-pointer flex-shrink-0 ${
-                      !reflection.trim()
+                      !reflection.trim() || isLoading
                         ? 'opacity-50 cursor-not-allowed'
                         : 'hover:opacity-90'
                     }`}
@@ -232,9 +267,18 @@ const Reflections = () => {
                         'linear-gradient(89deg, #A33076 -2.62%, #353689 103.6%)',
                     }}
                   >
-                    <div className="text-center text-white text-base font-semibold font-['Poppins'] leading-normal whitespace-nowrap">
-                      Save Reflection
-                    </div>
+                    {isLoading ? (
+                      <>
+                        <div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin'></div>
+                        <div className="text-center text-white text-base font-semibold font-['Poppins'] leading-normal whitespace-nowrap">
+                          Saving...
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center text-white text-base font-semibold font-['Poppins'] leading-normal whitespace-nowrap">
+                        Save Reflection
+                      </div>
+                    )}
                   </button>
                 </div>
               </div>
