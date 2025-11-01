@@ -36,7 +36,7 @@ export const Header = ({ title, onMenuClick }) => {
     (user?.name && user?.name !== 'null' ? user?.name : null) ||
     'Guest';
   const userEmail = user?.email || '';
-  
+
   // Get profile picture with fallback
   const profilePicUrl = getProfilePicture(user?.profilePic, userName);
   const userInitials = getUserInitials(userName);

@@ -13,10 +13,12 @@ export const getProfilePicture = (profilePic, userName = 'User') => {
   if (profilePic && profilePic !== 'null' && profilePic !== '') {
     return profilePic;
   }
-  
+
   // Return default avatar using ui-avatars API
   const cleanName = userName.replace(/[^a-zA-Z0-9\s]/g, '').trim() || 'User';
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanName)}&background=7C3AED&color=ffffff&size=128&bold=true`;
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    cleanName
+  )}&background=7C3AED&color=ffffff&size=128&bold=true`;
 };
 
 /**
@@ -26,15 +28,17 @@ export const getProfilePicture = (profilePic, userName = 'User') => {
  */
 export const getUserInitials = (userName = 'User') => {
   if (!userName || userName === 'null') return 'U';
-  
+
   const cleanName = userName.trim();
-  const nameParts = cleanName.split(' ').filter(part => part.length > 0);
-  
+  const nameParts = cleanName.split(' ').filter((part) => part.length > 0);
+
   if (nameParts.length === 0) return 'U';
   if (nameParts.length === 1) return nameParts[0].charAt(0).toUpperCase();
-  
+
   // Return first letter of first and last name
-  return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
+  return (
+    nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)
+  ).toUpperCase();
 };
 
 /**
@@ -43,5 +47,10 @@ export const getUserInitials = (userName = 'User') => {
  * @returns {boolean} - True if valid, false otherwise
  */
 export const isValidProfilePic = (profilePic) => {
-  return profilePic && profilePic !== 'null' && profilePic !== '' && typeof profilePic === 'string';
+  return (
+    profilePic &&
+    profilePic !== 'null' &&
+    profilePic !== '' &&
+    typeof profilePic === 'string'
+  );
 };
