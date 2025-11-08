@@ -5,6 +5,8 @@ const POINT_VALUES = {
   MNQ: 2,
   MYM: 0.5,
   MES: 5,
+  GC: 10, // Gold futures: $10 per point
+  MGC: 1, // Micro Gold futures: $1 per point
 };
 
 // Utility function to format numbers with commas

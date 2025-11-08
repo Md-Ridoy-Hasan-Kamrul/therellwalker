@@ -56,7 +56,7 @@ const TradeEntry = () => {
     quantity: '1',
   });
 
-  const tickers = ['NQ', 'YM', 'ES', 'MNQ', 'MYM', 'MES'];
+  const tickers = ['NQ', 'YM', 'ES', 'MNQ', 'MYM', 'MES', 'GC', 'MGC'];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -107,7 +107,16 @@ const TradeEntry = () => {
     const exit = Number(formData.exitPrice);
     const qty = Number(formData.quantity);
 
-    const pointValues = { NQ: 20, YM: 5, ES: 50, MNQ: 2, MYM: 0.5, MES: 5 };
+    const pointValues = {
+      NQ: 20,
+      YM: 5,
+      ES: 50,
+      MNQ: 2,
+      MYM: 0.5,
+      MES: 5,
+      GC: 10,
+      MGC: 1,
+    };
     const pointValue = pointValues[formData.ticker] || 20;
 
     let pointDifference = 0;
